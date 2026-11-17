@@ -1,0 +1,1075 @@
+/* ==========================================================================
+   style.css - Jin.com.mx
+   Remasterización Visual Y2K 3D Glossy / Glassmorphism / Neo-Brutalism
+   ========================================================================== */
+
+/* --- 1. Variables & Fuentes --- */
+:root {
+    --color-primary: #4F6BFF;
+    --color-magenta: #FF56B2;
+    --color-purple: #9D4EDD;
+    --color-cyan: #00F5D4;
+    --color-neon-pink: #FF007F;
+    --color-white: #FFFFFF;
+    --color-dark: #120e29;
+    --color-dark-text: #1a1a24;
+    
+    --glass-bg: rgba(255, 255, 255, 0.16);
+    --glass-border: rgba(255, 255, 255, 0.35);
+    --glass-blur: 16px;
+    
+    --card-white-bg: rgba(255, 255, 255, 0.88);
+    --card-border: rgba(255, 255, 255, 0.95);
+    
+    --sticker-shadow: drop-shadow(0 0 1px #ffffff) drop-shadow(0 0 6px rgba(255,255,255,0.8)) drop-shadow(0 14px 28px rgba(0,0,0,0.45));
+    --card-size: 280px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+    color: var(--color-white);
+    background-color: var(--color-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    padding-bottom: 60px;
+}
+
+/* Efecto de aberración cromática RGB Split */
+.rgb-split-text {
+    position: relative;
+    display: inline-block;
+    text-shadow: -2px 0 rgba(0, 245, 212, 0.85), 2px 0 rgba(255, 0, 127, 0.85);
+}
+
+/* ==========================================================================
+   2. HEADER STICKY & NAVEGACIÓN
+   ========================================================================== */
+.header-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(18, 14, 41, 0.65);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    transition: background 0.3s ease;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--color-white);
+}
+
+.header-brand img.brand-icon {
+    height: 48px;
+    width: auto;
+    filter: var(--sticker-shadow);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.header-brand:hover img.brand-icon {
+    transform: scale(1.1) rotate(-4deg);
+}
+
+.brand-text {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #ffffff 40%, var(--color-cyan) 80%, var(--color-magenta) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-magenta));
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 15px rgba(255, 86, 178, 0.35);
+    transition: all 0.3s ease;
+}
+
+.header-cta-btn:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 6px 20px rgba(0, 245, 212, 0.5);
+    border-color: #ffffff;
+}
+
+/* Buscador y Controles */
+.search-controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 8px 24px 16px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.search-box-wrapper {
+    flex: 1;
+    min-width: 280px;
+    max-width: 620px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 13px 22px 13px 46px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-dark-text);
+    background: rgba(255, 255, 255, 0.94);
+    border: 2px solid rgba(255, 255, 255, 0.98);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.search-input::placeholder {
+    color: #666;
+    font-weight: 500;
+}
+
+.search-input:focus {
+    background: #ffffff;
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 25px rgba(0, 245, 212, 0.6), 0 0 10px rgba(79, 107, 255, 0.5);
+    transform: scale(1.01);
+}
+
+.search-icon-svg {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    fill: #4f6bff;
+    pointer-events: none;
+}
+
+.slider-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    padding: 8px 18px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.slider-controls label {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--color-dark-text);
+    white-space: nowrap;
+}
+
+.slider-controls input[type="range"] {
+    cursor: pointer;
+    width: 120px;
+    accent-color: var(--color-primary);
+}
+
+/* Barra de Menú y Filtros Desplegables */
+.glass-menu {
+    display: flex;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.main-nav {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown {
+    position: relative;
+    padding: 12px 14px;
+}
+
+.dropdown > a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dropdown > a:hover {
+    color: var(--color-cyan);
+    text-shadow: 0 0 10px rgba(0, 245, 212, 0.7);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(20px);
+    list-style: none;
+    padding: 8px 0;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    min-width: 250px;
+    border: 2px solid rgba(255, 255, 255, 0.95);
+    z-index: 1001;
+    animation: fadeInSlide 0.25s ease forwards;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 9px 20px;
+    color: #1a1a24;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.dropdown-menu li a:hover,
+.dropdown-menu li a.active {
+    background: rgba(79, 107, 255, 0.12);
+    color: var(--color-primary);
+    border-left: 5px solid var(--color-primary);
+    padding-left: 24px;
+}
+
+/* Regla especial para baterías LTH en envíos nacionales (se muestra si el usuario filtra explícitamente baterías) */
+body.is-national:not(.force-show-batteries) .battery-link {
+    display: none !important;
+}
+
+/* ==========================================================================
+   3. HERO SECTION CON ARQUITECTURA RADIAL / ORBITAL
+   ========================================================================== */
+.hero-orbital-section {
+    position: relative;
+    width: 100%;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    overflow: hidden;
+}
+
+.hero-orbital-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    height: 580px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Centro Absoluto (El Núcleo 3D) */
+.orbital-core {
+    position: relative;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    text-align: center;
+}
+
+.logo-3d-floating {
+    width: clamp(260px, 36vw, 420px);
+    height: auto;
+    object-fit: contain;
+    filter: var(--sticker-shadow);
+    will-change: transform, filter;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+}
+
+.logo-3d-floating:hover {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.95))
+           drop-shadow(0 0 35px rgba(255, 86, 178, 0.8))
+           drop-shadow(0 18px 35px rgba(0, 0, 0, 0.55));
+}
+
+
+/* Nodos Orbitales Alrededor del Logo */
+.orbit-track {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.orbit-node {
+    pointer-events: auto;
+    cursor: pointer;
+    width: 215px;
+    padding: 10px 14px 12px 14px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    
+    /* Estado Normal: Semi-transparente glassmorphism para lucir los aros 3D */
+    opacity: 0.40;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    user-select: none;
+    
+    transition: opacity 0.35s ease,
+                transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                border-color 0.35s ease,
+                box-shadow 0.35s ease,
+                background 0.35s ease;
+}
+
+.node-icon {
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+.node-img-wrapper {
+    width: 100%;
+    height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.node-category-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.orbit-node:hover .node-category-img,
+.orbit-node.is-active .node-category-img {
+    transform: scale(1.06) translateY(-2px);
+}
+
+.node-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.node-title {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.node-desc {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 2px;
+}
+
+/* Efecto Hover / Focus / Activo: Pierde transparencia por completo */
+.orbit-node:hover,
+.orbit-node:focus,
+.orbit-node.is-active {
+    opacity: 1.0 !important;
+    transform: scale(1.1) translateZ(10px) !important;
+    background: rgba(255, 255, 255, 0.32) !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 25px rgba(255, 86, 178, 0.7),
+                0 0 45px rgba(0, 245, 212, 0.5),
+                0 15px 35px rgba(0, 0, 0, 0.4) !important;
+    z-index: 60;
+}
+
+.orbit-node:hover .node-desc,
+.orbit-node.is-active .node-desc {
+    color: #ffffff;
+}
+
+/* Colores de acento individual en los nodos */
+.orbit-node[data-node="juguetes"] { --node-glow: #ff56b2; }
+.orbit-node[data-node="juguetes_coleccio"] { --node-glow: #ffaa00; }
+.orbit-node[data-node="refacciones"] { --node-glow: #00f5d4; }
+.orbit-node[data-node="acumuladores"] { --node-glow: #4f6bff; }
+.orbit-node[data-node="bazar_1"] { --node-glow: #9d4edd; }
+.orbit-node[data-node="bazar_2"] { --node-glow: #ff007f; }
+
+/* ==========================================================================
+   4. BLOQUE DE VALOR Y PROPUESTA (FUSIÓN CANVA)
+   ========================================================================== */
+.canva-highlights-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    max-width: 1250px;
+    width: 100%;
+    margin: 20px auto 40px auto;
+    padding: 0 20px;
+}
+
+.highlight-pill {
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.highlight-pill:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #ffffff;
+    box-shadow: 0 12px 30px rgba(0, 245, 212, 0.3);
+}
+
+.highlight-icon {
+    font-size: 28px;
+}
+
+.highlight-title {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.highlight-subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   5. SECCIÓN CATÁLOGO Y GALERÍA DE PRODUCTOS (WHITE GLASSMORPHISM 3D)
+   ========================================================================== */
+.catalog-section {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 24px;
+}
+
+.catalog-header-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.catalog-title-group h2 {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.catalog-title-group p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-size), 1fr));
+    gap: 26px;
+    width: 100%;
+    min-height: 400px;
+    margin: 0 auto;
+}
+
+/* Tarjeta Flip 3D */
+.flip-card {
+    background-color: transparent;
+    width: 100%;
+    aspect-ratio: 0.62;
+    height: auto;
+    perspective: 1500px;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    position: relative;
+}
+
+.flip-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    z-index: 10;
+}
+
+.flip-card.flipped {
+    z-index: 15;
+}
+
+.flip-card.fade-out {
+    opacity: 0;
+    transform: scale(0.92);
+    pointer-events: none;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Frentes y Reversos de Tarjeta */
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    
+    background-color: var(--card-white-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 2px solid var(--card-border);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+    transition: box-shadow 0.3s ease;
+}
+
+.flip-card:hover .flip-card-front,
+.flip-card:hover .flip-card-back {
+    box-shadow: 0 18px 45px rgba(255, 86, 178, 0.3), 0 0 20px rgba(0, 245, 212, 0.3);
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+    padding: 22px 18px;
+}
+
+/* Área de Imagen del Producto */
+.card-image-area {
+    height: 48%;
+    padding: 16px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    position: relative;
+}
+
+.card-image-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform 0.4s ease;
+}
+
+.flip-card:hover .card-image-area img {
+    transform: scale(1.06);
+}
+
+/* Área de Información */
+.card-info-area {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: clamp(13px, 3.8vw, 16px);
+    font-weight: 900;
+    color: var(--color-dark-text);
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+.ref-id {
+    font-size: 11px;
+    color: #666;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-weight: 700;
+}
+
+/* Pantalla Digital LCD de Precios */
+.front-price,
+.back-price {
+    background: #88c599;
+    color: #0a0a0a;
+    font-family: 'Courier New', 'VT323', monospace;
+    font-weight: 900;
+    border: 2px solid #5a936a;
+    border-radius: 8px;
+    padding: 6px 14px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+    display: inline-block;
+    font-size: clamp(18px, 4.5vw, 24px);
+    letter-spacing: 2px;
+    margin: 6px 0;
+}
+
+.installments {
+    font-size: 12px;
+    color: #0047eb;
+    font-weight: 900;
+}
+
+.tap-hint {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #777;
+    font-weight: 700;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Badges de Estado */
+.stock-badge,
+.discount-badge {
+    position: absolute;
+    font-weight: 800;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-size: 11px;
+    z-index: 10;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.stock-badge {
+    top: 12px;
+    left: 12px;
+    background: rgba(18, 14, 41, 0.9);
+    color: #ffffff;
+}
+
+.stock-badge.last-piece {
+    background: #ff0040;
+    animation: pulseRed 1.6s infinite;
+    border: 1px solid #ffcccc;
+}
+
+.discount-badge {
+    top: 12px;
+    right: 12px;
+    background: var(--color-neon-pink);
+    color: #ffffff;
+}
+
+@keyframes pulseRed {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 64, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 0, 64, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 64, 0); }
+}
+
+/* Contenido del Reverso */
+.back-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-logo-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+    margin-bottom: 4px;
+}
+
+.back-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--color-dark-text);
+    margin-bottom: 2px;
+}
+
+/* Botones de Acción de Compra */
+.action-buttons-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.glass-btn {
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    padding: 11px 14px;
+    font-weight: 800;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ml-btn {
+    background: linear-gradient(135deg, #2d74e7, #1c5dc2);
+    border: 1px solid #4a8df8;
+}
+
+.ml-btn:hover {
+    background: linear-gradient(135deg, #3782fb, #246ad5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(45, 116, 231, 0.45);
+}
+
+.wa-btn {
+    background: linear-gradient(135deg, #25d366, #1ca64f);
+    border: 1px solid #41e87f;
+}
+
+.wa-btn:hover {
+    background: linear-gradient(135deg, #2ce26f, #22bd5a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+}
+
+.return-btn {
+    background: transparent;
+    border: none;
+    color: #666;
+    font-weight: 700;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 6px;
+    transition: color 0.2s ease;
+}
+
+.return-btn:hover {
+    color: #000;
+}
+
+/* ==========================================================================
+   6. CONTACTO RÁPIDO & CANALES DIRECTOS (CANVA INTEGRATION)
+   ========================================================================== */
+.contact-hub-section {
+    max-width: 1100px;
+    margin: 50px auto 30px auto;
+    padding: 30px 24px;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-radius: 28px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+    text-align: center;
+}
+
+.contact-hub-title {
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.contact-hub-desc {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 650px;
+    margin: 0 auto 25px auto;
+}
+
+.contact-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    text-align: left;
+}
+
+.contact-channel-card {
+    background: rgba(255, 255, 255, 0.88);
+    border-radius: 18px;
+    padding: 20px;
+    color: var(--color-dark-text);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-channel-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0, 245, 212, 0.4);
+}
+
+.contact-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.contact-card-icon {
+    font-size: 32px;
+}
+
+.contact-card-header h3 {
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.contact-card-header p {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   7. FOOTER Y2K GLOSSY
+   ========================================================================== */
+.main-footer {
+    max-width: 1200px;
+    margin: 40px auto 0 auto;
+    padding: 30px 20px 10px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-logo {
+    height: 45px;
+    width: auto;
+    filter: var(--sticker-shadow);
+    margin-bottom: 12px;
+}
+
+.footer-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 600;
+}
+
+.footer-links {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: var(--color-cyan);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--color-magenta);
+}
+
+/* ==========================================================================
+   8. RESPONSIVIDAD Y MEDIA QUERIES (DESKTOP -> TABLET -> MOBILE)
+   ========================================================================== */
+@media (max-width: 991px) {
+    .hero-orbital-wrapper {
+        height: auto;
+        min-height: auto;
+        flex-direction: column;
+        gap: 30px;
+        padding-top: 20px;
+    }
+
+    .orbit-track {
+        position: relative;
+        width: 100%;
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        padding: 10px;
+    }
+
+    .orbit-node {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        transform: none !important;
+        opacity: 0.85; /* Mayor legibilidad en móviles táctiles */
+    }
+
+    .orbit-node:active {
+        opacity: 1 !important;
+        transform: scale(0.98) !important;
+    }
+
+    .search-controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .slider-controls {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .header-top {
+        padding: 10px 16px;
+    }
+
+    .brand-text {
+        font-size: 18px;
+    }
+
+    .header-cta-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .orbit-track {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .node-title {
+        font-size: 12px;
+    }
+
+    .node-desc {
+        display: none;
+    }
+
+    .gallery {
+        --card-size: 160px;
+        gap: 14px;
+        padding: 0;
+    }
+
+    .card-title {
+        font-size: 12px;
+    }
+
+    .front-price {
+        font-size: 16px;
+        padding: 4px 8px;
+    }
+
+    .glass-btn {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+}

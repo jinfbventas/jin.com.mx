@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIN.COM.MX 3D | Catálogo Oficial</title>
+    
+    <!-- Metadatos de SEO y Redes Sociales -->
+    <meta name="description" content="¡Oportunidades únicas te esperan en JIN.COM.MX! Catálogo oficial de Juguetes, Coleccionables Marvel, DC, Star Wars, y Acumuladores LTH.">
+    <meta property="og:title" content="JIN.COM.MX 3D | Catálogo Oficial">
+    <meta property="og:description" content="Catálogo interactivo Y2K 3D Glossy de Juguetes y Refacciones Automotrices. Envíos nacionales y entregas locales en zona Arbide.">
+    <meta property="og:image" content="https://www.jin.com.mx/static/img/logo_jin_hero.png">
+    <meta property="og:url" content="https://www.jin.com.mx/">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://www.jin.com.mx/">
+
+    <!-- Favicon -->
+    <link rel="icon" href="static/img/favicon.png" type="image/png">
+    
+    <!-- Hojas de Estilos -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body class="is-national <!-- BODY_CLASS -->">
+
+    <!-- ========================================================
+         1. CABECERA Y BARRA DE NAVEGACIÓN STICKY
+         ======================================================== -->
+    <header class="header-wrapper">
+        <div class="header-top">
+            <a href="/" class="header-brand">
+                <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX Logo" class="brand-icon">
+                <span class="brand-text">jin<span class="rgb-split-text">.COM.MX</span></span>
+            </a>
+
+            <div class="header-actions">
+                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20deseo%20información%20del%20catálogo" target="_blank" rel="noopener" class="header-cta-btn">
+                    <span>💬 WhatsApp</span>
+                </a>
+                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener" class="header-cta-btn" style="background: linear-gradient(135deg, #2d74e7, #1c5dc2);">
+                    <span>🛒 Mercado Libre</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Buscador y Control Dinámico de Tamaño de Tarjetas -->
+        <div class="search-controls-bar">
+            <div class="search-box-wrapper">
+                <svg class="search-icon-svg" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar productos intergalácticos (Nombre, Marca o Ref)...">
+            </div>
+
+            <div class="slider-controls">
+                <label for="cardSizeSlider">🔍 Escala Mosaico:</label>
+                <input type="range" id="cardSizeSlider" min="160" max="400" value="280">
+            </div>
+        </div>
+
+        <!-- Menú de Categorías y Marcas Profundas -->
+        <nav class="glass-menu">
+            <ul class="main-nav">
+                <li class="dropdown">
+                    <a href="#catalogArea">Categorías Principales ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="filter-btn active" data-type="category" data-val="all">🌟 Ver Todo el Catálogo</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="toy">🧸 Outlet Juguetes</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="colecciones">🏆 Juguetes Colecciones</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="refacciones">🔧 Refa en Línea</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="battery">🔋 Baterías para auto LTH</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="bazar">🛍️ Bazar</a></li>
+                        <li><a href="/acumuladores">⚡ Catálogo Acumuladores LTH</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#catalogArea">Marcas y Franquicias ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="filter-btn" data-type="brand" data-val="marvel">Spider-Man & Marvel</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="star wars">Star Wars</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="batman">DC Comics (Batman/Superman)</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="hot wheels">Hot Wheels</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="hasbro">Hasbro</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="mattel">Mattel</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="barbie">Barbie & Muñecas</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="funko">Funko Pop!</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="lego">LEGO</a></li>
+                        <li><a class="filter-btn" data-type="brand" data-val="lth">Acumuladores LTH</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#catalogArea">Destacados y Ofertas ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="filter-btn" data-type="special" data-val="offer">🔥 En Oferta Especial</a></li>
+                        <li><a class="filter-btn" data-type="special" data-val="last">⚡ Últimas Piezas</a></li>
+                        <li><a class="filter-btn" data-type="special" data-val="installments">💳 Meses sin Intereses</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ========================================================
+         2. HERO SECTION Y MENÚ PRINCIPAL ORBITAL
+         ======================================================== -->
+    <section class="hero-orbital-section">
+        <div class="hero-orbital-wrapper">
+            
+            <!-- Núcleo Central: Logotipo 3D Flotante con Animación Perpetua (Recuadro inferior retirado para total despeje) -->
+            <div class="orbital-core">
+                <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX 3D Core Logo" class="logo-3d-floating">
+            </div>
+
+            <!-- Órbita de Secciones Alrededor del Logo (Desktop Orbital / Mobile Radial) -->
+            <div class="orbit-track">
+                
+                <!-- Nodo 1: Outlet Juguetes (juguetes) -->
+                <div class="orbit-node" data-node="juguetes" data-filter="toy" data-scroll="#catalogArea">
+                    <div class="node-img-wrapper">
+                        <img src="static/img/juguetes.png" alt="Outlet Juguetes" class="node-category-img">
+                    </div>
+                    <div class="node-info">
+                        <span class="node-title">Outlet Juguetes</span>
+                        <span class="node-desc">Juguetes & Ofertas</span>
+                    </div>
+                </div>
+
+                <!-- Nodo 2: Juguetes Colecciones (juguetes_coleccio) -->
+                <div class="orbit-node" data-node="juguetes_coleccio" data-filter="colecciones" data-scroll="#catalogArea">
+                    <div class="node-img-wrapper">
+                        <img src="static/img/juguetes_colecciones.png" alt="Juguetes Colecciones" class="node-category-img">
+                    </div>
+                    <div class="node-info">
+                        <span class="node-title">Juguetes Colecciones</span>
+                        <span class="node-desc">Marvel, Star Wars, DC</span>
+                    </div>
+                </div>
+
+                <!-- Nodo 3: Refa en Línea (refacciones) -->
+                <div class="orbit-node" data-node="refacciones" data-filter="refacciones" data-scroll="#catalogArea">
+                    <div class="node-img-wrapper">
+                        <img src="static/img/refacciones.png" alt="Refa en Línea" class="node-category-img">
+                    </div>
+                    <div class="node-info">
+                        <span class="node-title">Refa en Línea</span>
+                        <span class="node-desc">Refacciones Automotrices</span>
+                    </div>
+                </div>
+
+                <!-- Nodo 4: Baterías para auto LTH (acumuladores) -->
+                <div class="orbit-node" data-node="acumuladores" data-filter="battery" data-scroll="#catalogArea">
+                    <div class="node-img-wrapper">
+                        <img src="static/img/acumuladores.png" alt="Baterías para auto LTH" class="node-category-img">
+                    </div>
+                    <div class="node-info">
+                        <span class="node-title">Baterías para auto LTH</span>
+                        <span class="node-desc">Acumuladores Automotrices</span>
+                    </div>
+                </div>
+
+                <!-- Nodo 5: Bazar (bazar_1) -->
+                <div class="orbit-node" data-node="bazar_1" data-filter="bazar" data-scroll="#catalogArea">
+                    <div class="node-img-wrapper">
+                        <img src="static/img/bazar_1.png" alt="Bazar" class="node-category-img">
+                    </div>
+                    <div class="node-info">
+                        <span class="node-title">Bazar</span>
+                        <span class="node-desc">Ofertas & Novedades</span>
+                    </div>
+                </div>
+
+                <!-- Nodo 6: Bazar (bazar_2) -->
+                <div class="orbit-node" data-node="bazar_2" data-filter="all" data-scroll="#catalogArea">
+                    <div class="node-img-wrapper">
+                        <img src="static/img/bazar_2.png" alt="Bazar" class="node-category-img">
+                    </div>
+                    <div class="node-info">
+                        <span class="node-title">Bazar</span>
+                        <span class="node-desc">Explorar Vitrina</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================
+         3. BLOQUES DE PROPUESTA DE VALOR (ESTILO CANVA)
+         ======================================================== -->
+    <div class="canva-highlights-banner">
+        <div class="highlight-pill">
+            <span class="highlight-icon">📍</span>
+            <div>
+                <div class="highlight-title">Entregas en Zona Arbide</div>
+                <div class="highlight-subtitle">Punto de entrega en León, Gto.</div>
+            </div>
+        </div>
+
+        <div class="highlight-pill">
+            <span class="highlight-icon">💳</span>
+            <div>
+                <div class="highlight-title">Meses sin Intereses</div>
+                <div class="highlight-subtitle">Disponibles vía Mercado Libre</div>
+            </div>
+        </div>
+
+        <div class="highlight-pill">
+            <span class="highlight-icon">🛡️</span>
+            <div>
+                <div class="highlight-title">Compra 100% Protegida</div>
+                <div class="highlight-subtitle">Garantía oficial y stock real</div>
+            </div>
+        </div>
+
+        <div class="highlight-pill">
+            <span class="highlight-icon">⚡</span>
+            <div>
+                <div class="highlight-title">Atención Personalizada</div>
+                <div class="highlight-subtitle">Respuestas rápidas por WhatsApp</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+         4. SECCIÓN PRINCIPAL: VITRINA DE PRODUCTOS (FLIP CARDS)
+         ======================================================== -->
+    <main class="catalog-section" id="catalogArea">
+        <div class="catalog-header-bar">
+            <div class="catalog-title-group">
+                <h2>Vitrina de Productos <span class="rgb-split-text">3D</span></h2>
+                <p id="activeFilterIndicator">Mostrando todos los productos</p>
+            </div>
+        </div>
+
+        <!-- Mosaico de Tarjetas 3D -->
+        <div class="gallery">
+            <!-- PRODUCTOS_AQUI -->
+            <!-- ========================================================
+                 PRODUCTOS DESTACADOS DEL CATÁLOGO JIN.COM.MX CON FOTOGRAFÍA ALTA RESOLUCIÓN
+                 ======================================================== -->
+
+            <!-- Producto 1: Capitán América 15 cm Avengers -->
+            <div class="product-card flip-card" data-id="MLM21848544" data-title="Capitán América 15 Cm Marvel Avengers Hasbro" data-type="toy">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <span class="stock-badge">Stock: Disponible</span>
+                        <span class="discount-badge">-18%</span>
+                        <div class="card-image-area">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_795646-MLM51761611099_092022-F.webp" 
+                                 alt="Capitán América Avengers"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                        </div>
+                        <div class="card-info-area">
+                            <h3 class="card-title">Capitán América 15 Cm Marvel Avengers Hasbro</h3>
+                            <div class="ref-id">REF: MLM21848544</div>
+                            <div class="front-price">$180.00 MXN</div>
+                            <div class="installments">Hasta 12 MSI</div>
+                            <div class="tap-hint">👆 Toca para ver opciones</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="back-content">
+                            <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX" class="back-logo-img">
+                            <h4 class="back-title">Capitán América 15 Cm</h4>
+                            <div class="back-price">$180.00 MXN</div>
+                            <p style="font-size: 11px; color: #555; font-weight: 600;">Con escudo desmontable. Figura coleccionable Marvel original Hasbro.</p>
+                            <div class="action-buttons-group">
+                                <a href="https://www.mercadolibre.com.mx/capitan-america-15-cm-marvel-avengers/p/MLM21848544?pdp_filters=seller_id%3A491131225" target="_blank" rel="noopener" class="glass-btn ml-btn">
+                                    🛒 Comprar en Mercado Libre
+                                </a>
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20me%20interesa%20Capitan%20America%20Marvel" target="_blank" rel="noopener" class="glass-btn wa-btn">
+                                    💬 Pedir por WhatsApp
+                                </a>
+                                <button class="return-btn" type="button">Volver al frente ↩</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 2: Batman Missions 15 cm -->
+            <div class="product-card flip-card" data-id="MLM-BATMAN-15" data-title="Batman Missions 15 Cm DC Comics Mattel" data-type="toy">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <span class="stock-badge last-piece">⚡ ¡ÚLTIMA PIEZA!</span>
+                        <span class="discount-badge">-21%</span>
+                        <div class="card-image-area">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_616188-MLM43555364132_092020-F.webp" 
+                                 alt="Batman Missions 15 cm"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                        </div>
+                        <div class="card-info-area">
+                            <h3 class="card-title">Batman Missions 15 Cm DC Comics Mattel</h3>
+                            <div class="ref-id">REF: MLM-BATMAN-15</div>
+                            <div class="front-price">$150.00 MXN</div>
+                            <div class="installments">Hasta 3 MSI</div>
+                            <div class="tap-hint">👆 Toca para ver opciones</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="back-content">
+                            <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX" class="back-logo-img">
+                            <h4 class="back-title">Batman Missions 15 Cm</h4>
+                            <div class="back-price">$150.00 MXN</div>
+                            <p style="font-size: 11px; color: #555; font-weight: 600;">Figura articulada oficial de colección DC Comics. Entregas zona Arbide o envíos.</p>
+                            <div class="action-buttons-group">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener" class="glass-btn ml-btn">
+                                    🛒 Comprar en Mercado Libre
+                                </a>
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20me%20interesa%20Batman%20Missions%2015%20Cm" target="_blank" rel="noopener" class="glass-btn wa-btn">
+                                    💬 Pedir por WhatsApp
+                                </a>
+                                <button class="return-btn" type="button">Volver al frente ↩</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 3: Spider-Man Titan Hero Series -->
+            <div class="product-card flip-card" data-id="MLM-SPIDER-30" data-title="Spider-Man Titan Hero Series 30 Cm Marvel Hasbro" data-type="toy">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <span class="stock-badge">Stock: Disponible</span>
+                        <span class="discount-badge">-17%</span>
+                        <div class="card-image-area">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_792370-MLM46882672722_072021-F.webp" 
+                                 alt="Spider-Man Titan Hero"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                        </div>
+                        <div class="card-info-area">
+                            <h3 class="card-title">Spider-Man Titan Hero Series 30 Cm Marvel Hasbro</h3>
+                            <div class="ref-id">REF: MLM-SPIDER-30</div>
+                            <div class="front-price">$299.00 MXN</div>
+                            <div class="installments">Hasta 12 MSI</div>
+                            <div class="tap-hint">👆 Toca para ver opciones</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="back-content">
+                            <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX" class="back-logo-img">
+                            <h4 class="back-title">Spider-Man Titan Hero</h4>
+                            <div class="back-price">$299.00 MXN</div>
+                            <p style="font-size: 11px; color: #555; font-weight: 600;">Gran tamaño de 30 cm con articulación premium Marvel Hasbro.</p>
+                            <div class="action-buttons-group">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener" class="glass-btn ml-btn">
+                                    🛒 Comprar en Mercado Libre
+                                </a>
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20me%20interesa%20Spider-Man%2030cm" target="_blank" rel="noopener" class="glass-btn wa-btn">
+                                    💬 Pedir por WhatsApp
+                                </a>
+                                <button class="return-btn" type="button">Volver al frente ↩</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 4: Star Wars The Mandalorian & Grogu -->
+            <div class="product-card flip-card" data-id="MLM-MANDO-01" data-title="Star Wars The Mandalorian & Grogu Figura Colección" data-type="toy">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <span class="stock-badge">Stock: 2 piezas</span>
+                        <span class="discount-badge">COLECCIÓN</span>
+                        <div class="card-image-area">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_910776-MLM48384218765_112021-F.webp" 
+                                 alt="Star Wars The Mandalorian"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                        </div>
+                        <div class="card-info-area">
+                            <h3 class="card-title">Star Wars The Mandalorian & Grogu Figura Colección</h3>
+                            <div class="ref-id">REF: MLM-MANDO-01</div>
+                            <div class="front-price">$340.00 MXN</div>
+                            <div class="installments">Hasta 12 MSI</div>
+                            <div class="tap-hint">👆 Toca para ver opciones</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="back-content">
+                            <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX" class="back-logo-img">
+                            <h4 class="back-title">The Mandalorian & Grogu</h4>
+                            <div class="back-price">$340.00 MXN</div>
+                            <p style="font-size: 11px; color: #555; font-weight: 600;">Auténtico coleccionable de la saga Star Wars con accesorios.</p>
+                            <div class="action-buttons-group">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener" class="glass-btn ml-btn">
+                                    🛒 Comprar en Mercado Libre
+                                </a>
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20me%20interesa%20The%20Mandalorian" target="_blank" rel="noopener" class="glass-btn wa-btn">
+                                    💬 Pedir por WhatsApp
+                                </a>
+                                <button class="return-btn" type="button">Volver al frente ↩</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 5: Hot Wheels 5-Pack Collector -->
+            <div class="product-card flip-card" data-id="MLM-HW-PACK5" data-title="Hot Wheels 5-Pack Vehículos Escala 1:64 Mattel" data-type="toy">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <span class="stock-badge">Stock: Disponible</span>
+                        <span class="discount-badge">-18%</span>
+                        <div class="card-image-area">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_985556-MLM51893322047_102022-F.webp" 
+                                 alt="Hot Wheels 5 Pack"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                        </div>
+                        <div class="card-info-area">
+                            <h3 class="card-title">Hot Wheels 5-Pack Vehículos Escala 1:64 Mattel</h3>
+                            <div class="ref-id">REF: MLM-HW-PACK5</div>
+                            <div class="front-price">$195.00 MXN</div>
+                            <div class="installments">Meses sin Intereses</div>
+                            <div class="tap-hint">👆 Toca para ver opciones</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="back-content">
+                            <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX" class="back-logo-img">
+                            <h4 class="back-title">Hot Wheels 5-Pack</h4>
+                            <div class="back-price">$195.00 MXN</div>
+                            <p style="font-size: 11px; color: #555; font-weight: 600;">Modelos clásicos y deportivos en metal die-cast Mattel.</p>
+                            <div class="action-buttons-group">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener" class="glass-btn ml-btn">
+                                    🛒 Comprar en Mercado Libre
+                                </a>
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20me%20interesa%20Hot%20Wheels%205-Pack" target="_blank" rel="noopener" class="glass-btn wa-btn">
+                                    💬 Pedir por WhatsApp
+                                </a>
+                                <button class="return-btn" type="button">Volver al frente ↩</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 6: Acumulador LTH Automotriz (Local León Gto) -->
+            <div class="product-card flip-card battery-link" data-id="MLM-LTH-L42" data-title="Batería Acumulador LTH L-42-500 Automotriz" data-type="battery">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <span class="stock-badge">Local Arbide</span>
+                        <span class="discount-badge">GARANTÍA</span>
+                        <div class="card-image-area">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_2X_899203-MLM44976766461_022021-F.webp" 
+                                 alt="Batería LTH"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                        </div>
+                        <div class="card-info-area">
+                            <h3 class="card-title">Batería Acumulador LTH L-42-500 Automotriz</h3>
+                            <div class="ref-id">REF: MLM-LTH-L42</div>
+                            <div class="front-price">$2,150.00 MXN</div>
+                            <div class="installments">48 Meses Garantía</div>
+                            <div class="tap-hint">👆 Toca para ver opciones</div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="back-content">
+                            <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX" class="back-logo-img">
+                            <h4 class="back-title">Acumulador LTH L-42</h4>
+                            <div class="back-price">$2,150.00 MXN</div>
+                            <p style="font-size: 11px; color: #555; font-weight: 600;">Entrega e instalación en zona Arbide (León, Gto). Máximo poder de arranque.</p>
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20cotización%20de%20Batería%20LTH%20L-42" target="_blank" rel="noopener" class="glass-btn wa-btn">
+                                    💬 Pedir por WhatsApp
+                                </a>
+                                <button class="return-btn" type="button">Volver al frente ↩</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIN_PRODUCTOS_AQUI -->
+        </div>
+
+        <!-- Mensaje de Búsqueda sin Resultados -->
+        <div id="noResultsMsg" style="display: none; text-align: center; padding: 40px; background: rgba(255,255,255,0.2); border-radius: 16px; margin-top: 30px;">
+            <h3>🔍 No encontramos productos que coincidan con tu búsqueda.</h3>
+            <p style="margin-top: 8px;">Intenta con otra palabra clave o restablece los filtros.</p>
+            <button onclick="window.JinCatalog.reset()" class="glass-btn ml-btn" style="max-width: 220px; margin: 15px auto 0 auto;">
+                Ver Todo el Catálogo
+            </button>
+        </div>
+    </main>
+
+    <!-- ========================================================
+         5. HUB DE CONTACTO DIRECTO Y ENLACES (CANVA ADAPTATION)
+         ======================================================== -->
+    <section class="contact-hub-section" id="contactHub">
+        <h2 class="contact-hub-title">Canales Oficiales <span class="rgb-split-text">JIN.COM.MX</span></h2>
+        <p class="contact-hub-desc">
+            Contáctanos para atención inmediata, apartados, cotizaciones especiales y compras protegidas con envío a toda la República.
+        </p>
+
+        <div class="contact-cards-grid">
+            <!-- Tarjeta WhatsApp -->
+            <div class="contact-channel-card">
+                <div class="contact-card-header">
+                    <span class="contact-card-icon">💬</span>
+                    <div>
+                        <h3>WhatsApp Directo</h3>
+                        <p>Atención inmediata & Entregas</p>
+                    </div>
+                </div>
+                <p style="font-size: 13px; color: #444; font-weight: 600;">
+                    Atención directa vía chat para resolver dudas, apartar productos o coordinar entregas locales en zona Arbide.
+                </p>
+                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20deseo%20hacer%20una%20consulta%20de%20productos" target="_blank" rel="noopener" class="glass-btn wa-btn">
+                    💬 Enviar Mensaje WhatsApp
+                </a>
+            </div>
+
+            <!-- Tarjeta Mercado Libre -->
+            <div class="contact-channel-card">
+                <div class="contact-card-header">
+                    <span class="contact-card-icon">🛒</span>
+                    <div>
+                        <h3>Tienda Mercado Libre</h3>
+                        <p>Ventas Oficiales Mercado Libre</p>
+                    </div>
+                </div>
+                <p style="font-size: 13px; color: #444; font-weight: 600;">
+                    Disfruta de envíos rápidos a todo México, Meses sin Intereses y la seguridad del programa Compra Protegida de Mercado Libre.
+                </p>
+                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener" class="glass-btn ml-btn">
+                    🛒 Visitar Tienda Oficial ML
+                </a>
+            </div>
+
+            <!-- Tarjeta Punto de Entrega -->
+            <div class="contact-channel-card">
+                <div class="contact-card-header">
+                    <span class="contact-card-icon">📍</span>
+                    <div>
+                        <h3>Entregas Personales</h3>
+                        <p>Zona Arbide (León, Gto)</p>
+                    </div>
+                </div>
+                <p style="font-size: 13px; color: #444; font-weight: 600;">
+                    Punto de encuentro y entrega local segura sin costo adicional en colonia Arbide y zonas aledañas en León, Guanajuato.
+                </p>
+                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20quiero%20agendar%20una%20entrega%20en%20Zona%20Arbide" target="_blank" rel="noopener" class="glass-btn wa-btn" style="background: linear-gradient(135deg, #4f6bff, #9d4edd);">
+                    📍 Coordinar Entrega Local
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================
+         6. FOOTER Y2K GLOSSY
+         ======================================================== -->
+    <footer class="main-footer">
+        <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX Logo Footer" class="footer-logo">
+        <div class="footer-text">
+            © 2026 <strong>JIN.COM.MX</strong> | Todos los derechos reservados.
+        </div>
+        <div class="footer-links">
+            <a href="#catalogArea">Catálogo</a>
+            <a href="https://wa.me/524771230000" target="_blank" rel="noopener">WhatsApp Oficial</a>
+            <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener">Mercado Libre</a>
+        </div>
+    </footer>
+
+    <!-- ========================================================
+         7. SCRIPTS DEL MOTOR GRÁFICO Y COMPORTAMIENTO
+         ======================================================== -->
+    <script src="static/js/background3d.js"></script>
+    <script src="static/js/orbital.js"></script>
+    <script src="static/js/catalog.js"></script>
+
+</body>
+</html>

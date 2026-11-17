@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: jin-com-mx
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: MELI_SELLER_ID
+        value: "491131225"
+      - key: NGROK_URL
+        value: "https://www.jin.com.mx"
