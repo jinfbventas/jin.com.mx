@@ -37,6 +37,21 @@ app = FastAPI(
     version="2.2.0"
 )
 
+
+@app.middleware("http")
+async def redirect_non_www_to_www(request: Request, call_next):
+    """
+    Redirige peticiones entrantes desde jin.com.mx (sin www) hacia https://www.jin.com.mx
+    con código HTTP 301, respetando localhost y 127.0.0.1 en entorno local.
+    """
+    host_header = request.headers.get("host", "")
+    hostname = host_header.split(":")[0].lower().strip()
+    if hostname == "jin.com.mx":
+        path = request.url.path or "/"
+        query = f"?{request.url.query}" if request.url.query else ""
+        return RedirectResponse(url=f"https://www.jin.com.mx{path}{query}", status_code=301)
+    return await call_next(request)
+
 # Montaje de archivos estáticos e imágenes
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -703,6 +718,20 @@ async def read_root(request: Request):
             "products": products
         }
     )
+
+
+@app.get("/auth/mercadolibre")
+@app.get("/login")
+async def mercadolibre_auth_redirect():
+    """
+    Redirige al flujo de autorización OAuth2 de Mercado Libre México para conceder permisos
+    con la cuenta oficial (jinfbventas@gmail.com).
+    """
+    auth_url = (
+        f"https://auth.mercadolibre.com.mx/authorization"
+        f"?response_type=code&client_id={CLIENT_ID}&redirect_uri={quote(REDIRECT_URI, safe='')}"
+    )
+    return RedirectResponse(url=auth_url, status_code=302)
 
 
 @app.get("/webhook/mercadolibre")
