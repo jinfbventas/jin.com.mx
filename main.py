@@ -9,7 +9,10 @@ import io
 import csv
 import json
 import time
+import asyncio
 import logging
+import urllib.request
+from contextlib import asynccontextmanager
 from urllib.parse import quote
 from typing import Optional, List, Dict, Any, Tuple
 import requests
@@ -31,10 +34,48 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 IMAGES_DIR = os.path.join(BASE_DIR, "images")
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
+KEEP_ALIVE_URL = "https://www.jin.com.mx/health"
+KEEP_ALIVE_INTERVAL_SECONDS = 600  # 10 minutos
+
+
+def _perform_keep_alive_ping() -> None:
+    """Realiza un GET ligero hacia https://www.jin.com.mx/health de forma silenciosa."""
+    try:
+        req = urllib.request.Request(
+            KEEP_ALIVE_URL,
+            headers={"User-Agent": "jin.com.mx-keepalive/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            resp.read()
+    except Exception:
+        pass
+
+
+async def _keep_alive_ping_loop() -> None:
+    """Bucle asíncrono en segundo plano que ejecuta auto-ping cada 10 minutos."""
+    while True:
+        await asyncio.sleep(KEEP_ALIVE_INTERVAL_SECONDS)
+        try:
+            await asyncio.to_thread(_perform_keep_alive_ping)
+        except Exception:
+            pass
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Inicia la tarea de Keep-Alive al arrancar FastAPI para evitar suspensión en Render."""
+    keep_alive_task = asyncio.create_task(_keep_alive_ping_loop())
+    try:
+        yield
+    finally:
+        keep_alive_task.cancel()
+
+
 app = FastAPI(
     title="JIN.COM.MX Catálogo 3D",
     description="Aplicación web www.jin.com.mx con estética Y2K 3D Glossy, Menú Orbital y Catálogo Interactivo",
-    version="2.2.0"
+    version="2.2.0",
+    lifespan=lifespan
 )
 
 
@@ -1287,16 +1328,15 @@ async def acumuladores_page():
     return HTMLResponse(content=html_page, status_code=200)
 
 
-@app.get("/healthz", response_class=JSONResponse)
 @app.get("/health", response_class=JSONResponse)
+@app.get("/ping", response_class=JSONResponse)
+@app.get("/healthz", response_class=JSONResponse)
 async def health_check():
-    """Health check endpoint para monitoreo de Render (/healthz y /health)."""
-    return {
-        "status": "healthy",
-        "app": "JIN.COM.MX",
-        "domain": "www.jin.com.mx",
-        "version": "2.2.0-y2k"
-    }
+    """
+    Endpoint ultraligero de salud (/health, /ping, /healthz) para monitores externos y Keep-Alive.
+    Responde inmediatamente HTTP 200 sin consultar Mercado Libre ni procesar plantillas HTML.
+    """
+    return {"status": "ok", "service": "jin.com.mx"}
 
 
 @app.get("/logo_cabecera_jinfbventas.png")
