@@ -268,7 +268,7 @@ def invalidate_product_cache() -> None:
 
 
 # ==============================================================================
-# 3. CLASIFICACIÓN, GEOLOCALIZACIÓN Y CONSTRUCCIÓN DE TARJETAS 3D
+# 3. CLASIFICACIÓN INTELIGENTE MULTI-ETIQUETA, GEOLOCALIZACIÓN Y TARJETAS 3D
 # ==============================================================================
 def is_battery_product(title: str) -> bool:
     """Detecta si un producto corresponde a batería o acumulador."""
@@ -276,46 +276,243 @@ def is_battery_product(title: str) -> bool:
     return any(w in t for w in ["bateria", "batería", "acumulador", "lth"])
 
 
-def classify_category(title: str) -> Dict[str, str]:
-    """Clasifica automáticamente la categoría y marca según el título del producto."""
+def extract_attributes_text(attributes: Optional[List[Dict[str, Any]]]) -> Dict[str, str]:
+    """Extrae un diccionario de atributos clave de Mercado Libre (BRAND, LINE, CHARACTER, FRANCHISE, etc.)."""
+    attr_map: Dict[str, str] = {}
+    if not attributes or not isinstance(attributes, list):
+        return attr_map
+    for attr in attributes:
+        if not isinstance(attr, dict):
+            continue
+        attr_id = (attr.get("id") or attr.get("name") or "").upper()
+        val_name = str(attr.get("value_name") or "").strip()
+        if attr_id and val_name:
+            attr_map[attr_id] = val_name
+    return attr_map
+
+
+def classify_item_detailed(item: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Analiza todos los campos de la publicación de Mercado Libre (title, condition, price,
+    original_price, category_id, attributes, tags, available_quantity) y asigna etiquetas
+    múltiples de categorías (cats) y subcategorías (subs) para los menús y nodos orbitales.
+    """
+    title = str(item.get("title") or "")
     t = title.lower()
-    cat = "toy"
-    brand = ""
+    attr_map = extract_attributes_text(item.get("attributes"))
+    all_attr_text = " ".join(v.lower() for v in attr_map.values())
+    combined_text = f"{t} {all_attr_text}"
 
-    if is_battery_product(t):
-        cat = "battery"
+    raw_cond = str(item.get("condition") or "").lower()
+    cond_attr = attr_map.get("ITEM_CONDITION", "").lower()
+    is_used = (
+        raw_cond == "used"
+        or "usado" in cond_attr
+        or any(w in t for w in ["usado", "usada", "segunda mano", "exhibición", "exhibicion", "seminuevo", "preowned"])
+    )
+    condition = "used" if is_used else "new"
+
+    price = float(item.get("price") or 0)
+    orig_price_raw = item.get("original_price")
+    orig_price = float(orig_price_raw) if orig_price_raw else None
+    avail_qty = int(item.get("available_quantity", 1) or 1)
+    category_id = str(item.get("category_id") or "").upper()
+
+    tags_raw = item.get("tags") or []
+    tags_lower = [str(tg).lower() for tg in tags_raw if tg]
+    deal_ids = item.get("deal_ids") or []
+
+    # Cálculo de descuento real o detección de promoción ML
+    discount_pct = 0
+    if orig_price and orig_price > price > 0:
+        discount_pct = int(round(((orig_price - price) / orig_price) * 100))
+    has_promo_tag = any(
+        k in tg for tg in tags_lower
+        for k in ["deal_of_the_day", "lightning", "promotion", "discount", "campaign"]
+    ) or bool(deal_ids)
+
+    # Detección de ramas principales
+    is_battery = is_battery_product(combined_text)
+
+    refa_keywords = [
+        "refaccion", "refacción", "autoparte", "bujia", "bujía", "bobina", "encendido",
+        "banda", "polea", "tensor", "distribucion", "distribución", "alternador",
+        "filtro", "sensor", "oxigeno", "oxígeno", "maf", "map", "tps", "inyector",
+        "amortiguador", "balata", "freno", "disco de freno", "rotula", "rótula",
+        "horquilla", "terminal", "bieleta", "maza", "balero", "suspensión", "suspension",
+        "embrague", "clutch", "radiador", "termostato", "bomba de agua", "bomba de gasolina",
+        "faro", "calavera", "espejo lateral", "parrilla automotriz", "junta homocinetica"
+    ]
+    is_refaccion = (not is_battery) and (
+        any(k in combined_text for k in refa_keywords)
+        or category_id.startswith("MLM1747")
+    )
+
+    toy_keywords = [
+        "juguete", "figura", "colección", "coleccion", "coleccionable", "muñeco", "muñeca",
+        "marvel", "spider", "avengers", "capitán", "capitan", "iron man", "thor", "hulk",
+        "wolverine", "deadpool", "venom", "x-men", "star wars", "mandalorian", "grogu",
+        "yoda", "vader", "jedi", "stormtrooper", "kenner", "batman", "superman", "dc comics",
+        "joker", "flash", "justice league", "wonder woman", "aquaman", "pokemon", "pokémon",
+        "pikachu", "charizard", "pokebola", "mewtwo", "trolls", "mattel", "hasbro",
+        "hot wheels", "barbie", "funko", "lego", "max steel", "nerf", "transformers",
+        "jurassic", "he-man", "masters of the universe", "toy story", "disney", "pixar",
+        "bandai", "neca", "mcfarlane", "playmobil", "peluche", "escala 1:"
+    ]
+    is_toy = (not is_battery and not is_refaccion) and (
+        any(k in combined_text for k in toy_keywords)
+        or category_id.startswith("MLM1132")
+    )
+
+    cats: List[str] = []
+    subs: List[str] = []
+    brand = (attr_map.get("BRAND") or "").lower()
+
+    # 1. BATERÍAS PARA AUTO LTH
+    if is_battery:
+        cats.append("battery")
+        subs.append("bat_all")
+        subs.append("bat_aplicacion")
         brand = "lth"
-    elif any(k in t for k in ["refaccion", "refacción", "bujia", "bujía", "filtro", "balata", "amortiguador", "alternador", "sensor", "faro"]):
-        cat = "refacciones"
-    elif any(k in t for k in ["marvel", "spider", "avengers", "capitán", "capitan", "hulk", "iron man", "thor", "x-men"]):
-        cat = "colecciones"
-        brand = "marvel"
-    elif any(k in t for k in ["star wars", "mandalorian", "grogu", "yoda", "vader", "jedi"]):
-        cat = "colecciones"
-        brand = "star wars"
-    elif any(k in t for k in ["batman", "superman", "dc", "joker", "flash", "justice league"]):
-        cat = "colecciones"
-        brand = "batman"
-    elif "hot wheels" in t:
-        cat = "toy"
-        brand = "hot wheels"
-    elif "barbie" in t or "muñeca" in t:
-        cat = "toy"
-        brand = "barbie"
-    elif "funko" in t:
-        cat = "colecciones"
-        brand = "funko"
-    elif "lego" in t:
-        cat = "colecciones"
-        brand = "lego"
-    elif "hasbro" in t:
-        cat = "toy"
-        brand = "hasbro"
-    elif "mattel" in t:
-        cat = "toy"
-        brand = "mattel"
+        if any(k in combined_text for k in ["hi-tec", "hitec", "agm", "evolution", "protect", "optima", "gel", "start-stop"]):
+            subs.append("bat_hitec_agm")
+        else:
+            subs.append("bat_convencional")
 
-    return {"category": cat, "brand": brand}
+    # 2. REFA EN LÍNEA (REFACCIONES AUTOMOTRICES)
+    if is_refaccion:
+        cats.append("refacciones")
+        subs.append("refa_all")
+        matched_refa_sub = False
+        if any(k in combined_text for k in ["bujia", "bujía", "bobina", "cable", "encendido", "ngk", "champion", "bosch", "denso", "autolite", "distribuidor"]):
+            subs.append("refa_bujias")
+            matched_refa_sub = True
+        if any(k in combined_text for k in ["banda", "polea", "tensor", "distribucion", "distribución", "alternador", "tiempo", "gates", "continental", "dayco"]):
+            subs.append("refa_bandas")
+            matched_refa_sub = True
+        if any(k in combined_text for k in ["filtro", "sensor", "oxigeno", "oxígeno", "maf", "map", "tps", "aceite", "aire", "gasolina", "cabina", "fram", "gonher", "interfil", "inyector", "valvula", "válvula"]):
+            subs.append("refa_filtros_sensores")
+            matched_refa_sub = True
+        if any(k in combined_text for k in ["amortiguador", "balata", "freno", "disco", "rotula", "rótula", "terminal", "horquilla", "buje", "bieleta", "maza", "balero", "soporte", "suspension", "suspensión", "embrague", "clutch", "bomba"]):
+            subs.append("refa_suspension_frenos")
+            matched_refa_sub = True
+        if not matched_refa_sub:
+            subs.append("refa_otras")
+
+    # 3. JUGUETES Y COLECCIONES + OUTLET DEL JUGUETE
+    if is_toy:
+        cats.extend(["toy", "colecciones"])
+        subs.extend(["col_all", "outlet_baratos"])
+
+        # Subcategorías Outlet del Juguete por rango de precio
+        if price < 300:
+            subs.append("outlet_menos_300")
+        if 300 <= price <= 600:
+            subs.append("outlet_300_600")
+        if discount_pct > 0 or price <= 220 or avail_qty == 1:
+            subs.append("outlet_remates")
+
+        # Subcategorías Juguetes y Colecciones por franquicia / marca
+        if any(k in combined_text for k in ["star wars", "mandalorian", "grogu", "yoda", "vader", "jedi", "stormtrooper", "boba fett", "kenner"]):
+            subs.append("col_star_wars")
+            brand = brand or "star wars"
+        if any(k in combined_text for k in ["marvel", "spider", "avengers", "capitán", "capitan", "iron man", "thor", "hulk", "x-men", "wolverine", "deadpool", "venom"]):
+            subs.append("col_marvel_dc")
+            brand = brand or "marvel"
+        if any(k in combined_text for k in ["batman", "superman", "dc", "joker", "flash", "justice league", "wonder woman", "aquaman"]):
+            if "col_marvel_dc" not in subs:
+                subs.append("col_marvel_dc")
+            brand = brand or "batman"
+        if any(k in combined_text for k in ["pokemon", "pokémon", "pikachu", "charizard", "pokebola", "mewtwo", "eevee"]):
+            subs.append("col_pokemon")
+            brand = brand or "pokemon"
+        if any(k in combined_text for k in ["trolls", "mattel", "hasbro", "hot wheels", "barbie", "max steel", "nerf", "transformers", "my little pony", "jurassic", "he-man", "masters of the universe"]):
+            subs.append("col_trolls_mattel_hasbro")
+            if "hot wheels" in combined_text:
+                brand = "hot wheels"
+            elif "barbie" in combined_text or "muñeca" in combined_text:
+                brand = "barbie"
+            elif "hasbro" in combined_text and not brand:
+                brand = "hasbro"
+            elif "mattel" in combined_text and not brand:
+                brand = "mattel"
+        if "funko" in combined_text:
+            brand = "funko"
+        if "lego" in combined_text:
+            brand = "lego"
+        if any(k in combined_text for k in ["figura", "colección", "coleccion", "collector", "funko", "lego", "escala", "die-cast", "titan hero", "missions"]):
+            subs.append("col_figuras_accion")
+
+    # 4. BAZAR (USADOS / SEGUNDA MANO)
+    if is_used:
+        cats.append("bazar")
+        subs.append("bazar_usados_all")
+        if is_toy:
+            subs.append("bazar_usados_juguetes")
+        elif any(k in combined_text for k in ["electr", "hogar", "cocina", "audio", "bocina", "tv", "pantalla", "consola", "celular", "comput", "lámpara", "lampara", "mueble"]):
+            subs.append("bazar_usados_electronica_hogar")
+        else:
+            subs.append("bazar_usados_otros")
+
+    # 5. BAZAR 2 / VARIEDADES Y MISCELÁNEA (No juguetes, no baterías, no refacciones)
+    if not is_toy and not is_battery and not is_refaccion:
+        cats.append("bazar_2")
+        subs.append("bazar2_all")
+        matched_b2 = False
+        if any(k in combined_text for k in ["hogar", "oficina", "cocina", "decoracion", "decoración", "organizador", "mueble", "baño", "jardín", "jardin", "termo", "taza"]):
+            subs.append("bazar2_hogar")
+            matched_b2 = True
+        if any(k in combined_text for k in ["herramienta", "llave", "pinza", "desarmador", "taladro", "cinta", "accesorio", "candado", "linterna", "multimetro"]):
+            subs.append("bazar2_herramientas")
+            matched_b2 = True
+        if any(k in combined_text for k in ["electr", "gadget", "cable", "bocina", "audifono", "audífono", "cargador", "usb", "led", "camara", "cámara", "bluetooth", "adaptador"]):
+            subs.append("bazar2_electronica")
+            matched_b2 = True
+        if not matched_b2:
+            subs.append("bazar2_variedades")
+
+    # 6. OFERTAS ESPECIALES (DESCUENTOS, RELÁMPAGO, MSI, ÚLTIMAS PIEZAS)
+    has_installments = bool(item.get("installments") or item.get("accepts_mercadopago"))
+    if discount_pct > 0 or has_promo_tag:
+        subs.append("oferta_mayores")
+    if has_promo_tag or discount_pct >= 15:
+        subs.append("oferta_relampago")
+    if has_installments:
+        subs.append("oferta_msi")
+    if avail_qty == 1 or bool(item.get("is_last")):
+        subs.append("oferta_ultimas")
+
+    # Categoría primaria para data-type
+    if is_battery:
+        primary_cat = "battery"
+    elif is_refaccion:
+        primary_cat = "refacciones"
+    elif is_used and not is_toy:
+        primary_cat = "bazar"
+    elif is_toy:
+        primary_cat = "colecciones" if "col_figuras_accion" in subs else "toy"
+    else:
+        primary_cat = "bazar_2"
+
+    # Deduplicar manteniendo orden
+    cats_unique = list(dict.fromkeys(cats))
+    subs_unique = list(dict.fromkeys(subs))
+
+    return {
+        "category": primary_cat,
+        "brand": brand,
+        "condition": condition,
+        "discount_pct": discount_pct,
+        "has_promo_tag": has_promo_tag,
+        "cats": cats_unique,
+        "subs": subs_unique
+    }
+
+
+def classify_category(title: str) -> Dict[str, str]:
+    """Wrapper compatible con llamadas simples por título."""
+    res = classify_item_detailed({"title": title})
+    return {"category": res["category"], "brand": res["brand"]}
 
 
 def detect_client_is_local(request: Request) -> bool:
@@ -415,8 +612,32 @@ def build_card_html(p: Dict[str, Any], is_local: bool) -> str:
                                         💬 Pedir por WhatsApp
                                     </a>"""
 
+    # Asegurar clasificación detallada para atributos data-* del DOM
+    if "cats" not in p or "subs" not in p:
+        detailed = classify_item_detailed(p)
+        cats_str = ",".join(detailed["cats"])
+        subs_str = ",".join(detailed["subs"])
+        cond_str = detailed["condition"]
+        disc_pct = detailed["discount_pct"]
+        brand_str = p.get("brand") or detailed["brand"]
+    else:
+        cats_str = ",".join(p.get("cats") or [category])
+        subs_str = ",".join(p.get("subs") or [])
+        cond_str = p.get("condition") or "new"
+        disc_pct = int(p.get("discount_pct") or 0)
+        brand_str = p.get("brand") or ""
+
     return f"""
-                <div class="product-card flip-card {battery_class}" data-id="{item_id}" data-title="{title}" data-type="{category}">
+                <div class="product-card flip-card {battery_class}"
+                     data-id="{item_id}"
+                     data-title="{title}"
+                     data-type="{category}"
+                     data-cats="{cats_str}"
+                     data-subs="{subs_str}"
+                     data-condition="{cond_str}"
+                     data-price="{price:.2f}"
+                     data-discount-pct="{disc_pct}"
+                     data-brand="{brand_str}">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
                             {stock_badge_html}
@@ -509,19 +730,26 @@ def normalize_ml_item(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     elif item.get("accepts_mercadopago"):
         installments_str = "Meses sin Intereses"
 
-    classification = classify_category(title)
-    is_battery = is_battery_product(title)
+    detailed = classify_item_detailed(item)
+    is_battery = is_battery_product(title) or ("battery" in detailed["cats"])
     date_created = item.get("date_created") or item.get("start_time") or ""
     last_updated = item.get("last_updated") or date_created or ""
+    disc_pct = detailed["discount_pct"]
+    if not discount_badge and detailed.get("has_promo_tag"):
+        discount_badge = "OFERTA"
 
     return {
         "id": item.get("id", ""),
         "title": title,
-        "category": classification["category"],
-        "brand": classification["brand"],
+        "category": detailed["category"],
+        "brand": detailed["brand"],
+        "condition": detailed["condition"],
+        "cats": detailed["cats"],
+        "subs": detailed["subs"],
         "price": price,
         "original_price": float(orig_price) if orig_price else None,
         "discount": discount_badge,
+        "discount_pct": disc_pct,
         "available_quantity": avail_qty,
         "stock": "1 pieza" if avail_qty == 1 else f"{avail_qty} disp.",
         "is_last": avail_qty == 1,
@@ -693,8 +921,8 @@ def fetch_mercadolibre_catalog(is_local: bool = False) -> Tuple[List[Dict[str, A
                 # Consulta multiget /items?ids= en bloques de 20 (chunk_size = 20) para optimizar RAM
                 chunk_size = 20
                 fields = (
-                    "id,title,price,original_price,available_quantity,status,"
-                    "permalink,thumbnail,pictures,installments,shipping,attributes,"
+                    "id,title,condition,price,original_price,category_id,available_quantity,status,"
+                    "permalink,thumbnail,pictures,installments,shipping,attributes,tags,deal_ids,"
                     "accepts_mercadopago,date_created,last_updated,start_time"
                 )
 
@@ -748,7 +976,15 @@ def fetch_mercadolibre_catalog(is_local: bool = False) -> Tuple[List[Dict[str, A
 
     # C. Respaldo local garantizado si no hay conexión o tokens activos
     if not fetched_products:
-        fetched_products = [dict(p) for p in LOCAL_FALLBACK_PRODUCTS]
+        fetched_products = []
+        for raw_fb in LOCAL_FALLBACK_PRODUCTS:
+            p_copy = dict(raw_fb)
+            detailed = classify_item_detailed(p_copy)
+            p_copy.setdefault("cats", detailed["cats"])
+            p_copy.setdefault("subs", detailed["subs"])
+            p_copy.setdefault("condition", detailed["condition"])
+            p_copy.setdefault("discount_pct", detailed["discount_pct"])
+            fetched_products.append(p_copy)
         source_used = "fallback"
 
     # Construir el HTML de las tarjetas (filtrando baterías en vista nacional por defecto en el HTML renderizado)

@@ -57,47 +57,82 @@
             </div>
         </div>
 
-        <!-- Menú de Categorías, Marcas, Destacados y Contacto -->
+        <!-- Menú de Categorías, Submenús Detallados, Ofertas y Contacto -->
         <nav class="glass-menu">
             <ul class="main-nav">
+                <!-- 1. Juguetes y Colecciones -->
                 <li class="dropdown">
-                    <a href="#catalogArea">Categorías Principales ▾</a>
+                    <a href="#catalogArea">Juguetes y Colecciones ▾</a>
                     <ul class="dropdown-menu">
                         <li><a class="filter-btn active" data-type="category" data-val="all">Ver Todo el Catálogo</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="toy">Outlet Juguetes</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="colecciones">Juguetes Colecciones</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="refacciones">Refa en Línea</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="battery">Baterías para auto LTH</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="bazar">Bazar</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="col_all">Todo en Juguetes y Colecciones</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="col_star_wars">Star Wars</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="col_marvel_dc">Marvel / DC</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="col_pokemon">Pokémon</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="col_trolls_mattel_hasbro">Trolls / Mattel / Hasbro</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="col_figuras_accion">Figuras de Acción y Coleccionables</a></li>
+                    </ul>
+                </li>
+
+                <!-- 2. Outlet del Juguete (Menor Precio) -->
+                <li class="dropdown">
+                    <a href="#catalogArea">Outlet del Juguete ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="filter-btn" data-type="sub" data-val="outlet_baratos">Súper Económicos (Menor Precio)</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="outlet_menos_300">Juguetes por Menos de $300</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="outlet_300_600">Juguetes de $300 a $600</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="outlet_remates">Remates de Juguetería</a></li>
+                    </ul>
+                </li>
+
+                <!-- 3. Refa en Línea y Baterías LTH -->
+                <li class="dropdown">
+                    <a href="#catalogArea">Refa en Línea y LTH ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><span class="dropdown-section-label">Refacciones Automotrices</span></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="refa_all">Todas las Refacciones</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="refa_bujias">Bujías y Encendido</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="refa_bandas">Bandas y Poleas</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="refa_filtros_sensores">Filtros y Sensores</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="refa_suspension_frenos">Suspensión y Frenos</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="refa_otras">Otras Refacciones</a></li>
+                        <li><span class="dropdown-section-label">Baterías para Auto LTH</span></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bat_convencional">LTH Convencional</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bat_hitec_agm">LTH Hi-Tec / AGM</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bat_aplicacion">Acumuladores por Aplicación</a></li>
                         <li><a href="/acumuladores">Catálogo Acumuladores LTH</a></li>
                     </ul>
                 </li>
 
+                <!-- 4. Bazar Usados y Bazar 2 Variedades -->
                 <li class="dropdown">
-                    <a href="#catalogArea">Marcas y Franquicias ▾</a>
+                    <a href="#catalogArea">Bazar y Variedades ▾</a>
                     <ul class="dropdown-menu">
-                        <li><a class="filter-btn" data-type="brand" data-val="marvel">Spider-Man & Marvel</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="star wars">Star Wars</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="batman">DC Comics (Batman/Superman)</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="hot wheels">Hot Wheels</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="hasbro">Hasbro</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="mattel">Mattel</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="barbie">Barbie & Muñecas</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="funko">Funko Pop!</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="lego">LEGO</a></li>
-                        <li><a class="filter-btn" data-type="brand" data-val="lth">Acumuladores LTH</a></li>
+                        <li><span class="dropdown-section-label">Bazar (Usados / Segunda Mano)</span></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar_usados_all">Todo en Bazar Usados</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar_usados_juguetes">Juguetes y Coleccionables Usados</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar_usados_electronica_hogar">Electrónica y Hogar Usados</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar_usados_otros">Otros Artículos Usados</a></li>
+                        <li><span class="dropdown-section-label">Bazar 2 (Variedades y Miscelánea)</span></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar2_hogar">Hogar y Oficina</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar2_herramientas">Herramientas y Accesorios</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar2_electronica">Electrónica y Gadgets</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="bazar2_variedades">Variedades</a></li>
                     </ul>
                 </li>
 
+                <!-- 5. Ofertas Especiales (Mayor % Descuento) -->
                 <li class="dropdown">
-                    <a href="#catalogArea">Destacados y Ofertas ▾</a>
+                    <a href="#catalogArea">Ofertas Especiales ▾</a>
                     <ul class="dropdown-menu">
-                        <li><a class="filter-btn" data-type="special" data-val="offer">En Oferta Especial</a></li>
-                        <li><a class="filter-btn" data-type="special" data-val="last">Últimas Piezas</a></li>
-                        <li><a class="filter-btn" data-type="special" data-val="installments">Meses sin Intereses</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="oferta_mayores">Mayores Descuentos (%)</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="oferta_relampago">Ofertas Relámpago</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="oferta_msi">Meses Sin Intereses</a></li>
+                        <li><a class="filter-btn" data-type="sub" data-val="oferta_ultimas">Últimas Piezas en Oferta</a></li>
                     </ul>
                 </li>
 
+                <!-- 6. Contacto y Redes Oficiales -->
                 <li class="dropdown">
                     <a href="#socialCommunity">Contacto ▾</a>
                     <ul class="dropdown-menu">
@@ -196,18 +231,18 @@
                     </div>
                     <div class="node-info">
                         <span class="node-title">Bazar</span>
-                        <span class="node-desc">Ofertas & Novedades</span>
+                        <span class="node-desc">Usados & Segunda Mano</span>
                     </div>
                 </div>
 
-                <!-- Nodo 6: Bazar (bazar_2) -->
-                <div class="orbit-node" data-node="bazar_2" data-filter="all" data-scroll="#catalogArea">
+                <!-- Nodo 6: Bazar 2 (bazar_2) -->
+                <div class="orbit-node" data-node="bazar_2" data-filter="bazar_2" data-scroll="#catalogArea">
                     <div class="node-img-wrapper">
-                        <img src="static/img/bazar_2.png" alt="Bazar" class="node-category-img">
+                        <img src="static/img/bazar_2.png" alt="Bazar 2" class="node-category-img">
                     </div>
                     <div class="node-info">
-                        <span class="node-title">Bazar</span>
-                        <span class="node-desc">Explorar Vitrina</span>
+                        <span class="node-title">Bazar 2</span>
+                        <span class="node-desc">Variedades & Miscelánea</span>
                     </div>
                 </div>
 
@@ -474,7 +509,13 @@
                 <div class="product-card flip-card {% if p.category == 'battery' %}battery-link{% endif %}" 
                      data-id="{{ p.id }}" 
                      data-title="{{ p.title }}" 
-                     data-type="{{ p.category }}">
+                     data-type="{{ p.category }}"
+                     data-cats="{{ (p.cats or [p.category])|join(',') }}"
+                     data-subs="{{ (p.subs or [])|join(',') }}"
+                     data-condition="{{ p.condition or 'new' }}"
+                     data-price="{{ '%.2f'|format(p.price) }}"
+                     data-discount-pct="{{ p.discount_pct or 0 }}"
+                     data-brand="{{ p.brand or '' }}">
                     <div class="flip-card-inner">
                         <!-- Frente de Tarjeta -->
                         <div class="flip-card-front">
@@ -780,13 +821,29 @@
             <!-- FIN_PRODUCTOS_AQUI -->
         </div>
 
-        <!-- Mensaje de Búsqueda sin Resultados -->
-        <div id="noResultsMsg" style="display: none; text-align: center; padding: 40px; background: rgba(255,255,255,0.2); border-radius: 16px; margin-top: 30px;">
-            <h3>🔍 No encontramos productos que coincidan con tu búsqueda.</h3>
-            <p style="margin-top: 8px;">Intenta con otra palabra clave o restablece los filtros.</p>
-            <button onclick="window.JinCatalog.reset()" class="glass-btn ml-btn" style="max-width: 220px; margin: 15px auto 0 auto;">
-                Ver Todo el Catálogo
-            </button>
+        <!-- Mensaje de Búsqueda sin Resultados o Categoría Vacía + Recomendaciones Inteligentes -->
+        <div id="noResultsMsg" class="no-results-container" style="display: none;">
+            <div class="no-results-banner">
+                <img src="/images/no_disponible.gif"
+                     alt="Sin coincidencias exactas"
+                     class="no-disponible-gif"
+                     onerror="this.onerror=null; this.src='images/no_disponible.gif';">
+                <h3 id="noResultsTitle">Por el momento no encontramos coincidencias exactas para tu búsqueda o esta categoría está vacía</h3>
+                <p id="noResultsSub">Explora otras opciones del menú o descubre estos artículos seleccionados para ti.</p>
+                <button onclick="window.JinCatalog.reset()" class="glass-btn ml-btn" style="max-width: 240px; margin: 14px auto 0 auto;">
+                    Ver Todo el Catálogo
+                </button>
+            </div>
+
+            <div class="recommended-wrapper" id="recommendedSection">
+                <div class="catalog-header-bar" style="margin-top: 28px;">
+                    <div class="catalog-title-group">
+                        <h2>Productos que te podrían <span class="rgb-split-text">interesar</span></h2>
+                        <p id="recommendedSubtitle">Sugerencias similares o con los mayores descuentos del momento</p>
+                    </div>
+                </div>
+                <div class="gallery" id="recommendedGallery"></div>
+            </div>
         </div>
     </main>
 
