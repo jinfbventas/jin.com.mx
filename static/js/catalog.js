@@ -210,7 +210,167 @@
             });
         });
 
-        // 6. Sincronización en Vivo de Publicaciones de Mercado Libre México (/api/productos-ml)
+        // 6. Motor del Banner Horizontal Slider (Publicaciones Más Recientes de Mercado Libre)
+        const recentTrack = document.getElementById('recentSliderTrack');
+        const recentDotsContainer = document.getElementById('recentSliderDots');
+        const recentPrevBtn = document.getElementById('recentSliderPrev');
+        const recentNextBtn = document.getElementById('recentSliderNext');
+        const recentBannerBox = document.getElementById('recentBannerContainer');
+        let currentSlideIndex = 0;
+        let recentSlideTimer = null;
+
+        function initRecentSlider() {
+            if (!recentTrack) return;
+            const slides = Array.from(recentTrack.querySelectorAll('.recent-slide'));
+            const totalSlides = slides.length;
+            if (totalSlides === 0) return;
+
+            if (currentSlideIndex >= totalSlides) currentSlideIndex = 0;
+
+            // Generar puntos indicadores inferiores
+            if (recentDotsContainer) {
+                recentDotsContainer.innerHTML = '';
+                slides.forEach((_, idx) => {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.className = `recent-slider-dot ${idx === currentSlideIndex ? 'active' : ''}`;
+                    dot.setAttribute('aria-label', `Ir a publicación reciente ${idx + 1}`);
+                    dot.addEventListener('click', function () {
+                        goToRecentSlide(idx);
+                        restartRecentTimer();
+                    });
+                    recentDotsContainer.appendChild(dot);
+                });
+            }
+
+            updateRecentSlidePosition();
+            restartRecentTimer();
+        }
+
+        function updateRecentSlidePosition() {
+            if (!recentTrack) return;
+            const slides = Array.from(recentTrack.querySelectorAll('.recent-slide'));
+            if (slides.length === 0) return;
+
+            recentTrack.style.transform = `translate3d(-${currentSlideIndex * 100}%, 0, 0)`;
+            slides.forEach((s, idx) => {
+                s.classList.toggle('is-active', idx === currentSlideIndex);
+            });
+
+            if (recentDotsContainer) {
+                const dots = recentDotsContainer.querySelectorAll('.recent-slider-dot');
+                dots.forEach((d, idx) => {
+                    d.classList.toggle('active', idx === currentSlideIndex);
+                });
+            }
+        }
+
+        function goToRecentSlide(index) {
+            if (!recentTrack) return;
+            const total = recentTrack.querySelectorAll('.recent-slide').length;
+            if (total === 0) return;
+            currentSlideIndex = (index + total) % total;
+            updateRecentSlidePosition();
+        }
+
+        function stopRecentTimer() {
+            if (recentSlideTimer) {
+                clearInterval(recentSlideTimer);
+                recentSlideTimer = null;
+            }
+        }
+
+        function restartRecentTimer() {
+            stopRecentTimer();
+            recentSlideTimer = setInterval(function () {
+                goToRecentSlide(currentSlideIndex + 1);
+            }, 4500);
+        }
+
+        if (recentPrevBtn) {
+            recentPrevBtn.addEventListener('click', function () {
+                goToRecentSlide(currentSlideIndex - 1);
+                restartRecentTimer();
+            });
+        }
+
+        if (recentNextBtn) {
+            recentNextBtn.addEventListener('click', function () {
+                goToRecentSlide(currentSlideIndex + 1);
+                restartRecentTimer();
+            });
+        }
+
+        if (recentBannerBox) {
+            recentBannerBox.addEventListener('mouseenter', stopRecentTimer);
+            recentBannerBox.addEventListener('mouseleave', restartRecentTimer);
+            recentBannerBox.addEventListener('touchstart', stopRecentTimer, { passive: true });
+            recentBannerBox.addEventListener('touchend', restartRecentTimer, { passive: true });
+        }
+
+        function renderRecentSlider(recentProducts) {
+            if (!recentTrack || !recentProducts || recentProducts.length === 0) return;
+
+            recentTrack.innerHTML = '';
+            recentProducts.slice(0, 8).forEach((p, idx) => {
+                const priceFormatted = Number(p.price || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const tagLabel = idx % 2 === 0 ? '🔥 RECIÉN PUBLICADO' : '✨ NUEVO INGRESO';
+                let extraBadge = '';
+                if (p.is_last) {
+                    extraBadge = '<span class="recent-slide-pill pill-alert">⚡ ¡ÚLTIMA PIEZA!</span>';
+                } else if (p.discount) {
+                    extraBadge = `<span class="recent-slide-pill pill-discount">${p.discount} OFF</span>`;
+                }
+                const origHtml = (p.original_price && Number(p.original_price) > Number(p.price))
+                    ? `<span class="recent-orig-price">$${Number(p.original_price).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN</span>`
+                    : '';
+                const installmentsText = p.installments || 'Compra 100% Protegida';
+                const permalink = p.permalink || 'https://listado.mercadolibre.com.mx/_CustId_491131225';
+                const waMsg = encodeURIComponent(`Hola JIN.COM.MX, vi en Nuevos Ingresos el producto: ${p.title} (Ref: ${p.id}) de $${priceFormatted} MXN`);
+
+                const slideEl = document.createElement('div');
+                slideEl.className = `recent-slide ${idx === 0 ? 'is-active' : ''}`;
+                slideEl.setAttribute('data-slide-index', String(idx));
+                slideEl.innerHTML = `
+                    <div class="recent-slide-media">
+                        <img src="${p.image_url}"
+                             alt="${p.title}"
+                             loading="lazy"
+                             onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                    </div>
+                    <div class="recent-slide-content">
+                        <div class="recent-slide-badges">
+                            <span class="recent-slide-pill pill-new">${tagLabel}</span>
+                            ${extraBadge}
+                            <span class="recent-slide-ref">REF: ${p.id}</span>
+                        </div>
+                        <h3 class="recent-slide-title">${p.title}</h3>
+                        <div class="recent-slide-pricing">
+                            <div class="front-price recent-lcd-price">$${priceFormatted} MXN</div>
+                            ${origHtml}
+                            <span class="recent-slide-msi">💳 ${installmentsText}</span>
+                        </div>
+                        <div class="recent-slide-actions">
+                            <a href="${permalink}" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
+                                🛒 Ver / Comprar en Mercado Libre
+                            </a>
+                            <a href="https://wa.me/524771230000?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
+                                💬 Pedir por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                `;
+                recentTrack.appendChild(slideEl);
+            });
+
+            currentSlideIndex = 0;
+            initRecentSlider();
+        }
+
+        // Inicializar slider con los slides precargados
+        initRecentSlider();
+
+        // 7. Sincronización en Vivo de Publicaciones de Mercado Libre México (/api/productos-ml)
         async function fetchLiveMLProducts() {
             try {
                 const response = await fetch('/api/productos-ml');
@@ -223,6 +383,10 @@
                 }
                 if (data && data.products && data.products.length > 0) {
                     renderLiveProducts(data.products);
+                    const recents = (data.recent_products && data.recent_products.length > 0)
+                        ? data.recent_products
+                        : data.products.slice(0, 8);
+                    renderRecentSlider(recents);
                 }
             } catch (err) {
                 // Modo estático o fuera de línea: mantiene los productos precargados

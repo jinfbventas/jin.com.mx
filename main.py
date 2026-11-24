@@ -470,13 +470,17 @@ def normalize_ml_item(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     if any(bad.lower() in title_lower for bad in BLACKLIST_KEYWORDS):
         return None
 
-    # Fotografía en máxima resolución desde pictures[0]["url"] con fallback a thumbnail
+    # Fotografía en máxima resolución desde pictures[0]["url"] con fallback a thumbnail optimizado
     pictures = item.get("pictures") or []
-    if pictures and isinstance(pictures, list) and pictures[0].get("url"):
+    if pictures and isinstance(pictures, list) and (pictures[0].get("secure_url") or pictures[0].get("url")):
         high_res_img = pictures[0].get("secure_url") or pictures[0].get("url")
     else:
         raw_thumb = item.get("thumbnail") or ""
-        high_res_img = raw_thumb.replace("-I.jpg", "-O.jpg")
+        high_res_img = (
+            raw_thumb.replace("-I.jpg", "-O.jpg")
+            .replace("-V.jpg", "-O.jpg")
+            .replace("-S.jpg", "-O.jpg")
+        )
     high_res_img = high_res_img.replace("http://", "https://") if high_res_img else "static/img/logo_jin_3d.png"
 
     price = float(item.get("price") or 0)
@@ -504,6 +508,8 @@ def normalize_ml_item(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 
     classification = classify_category(title)
     is_battery = is_battery_product(title)
+    date_created = item.get("date_created") or item.get("start_time") or ""
+    last_updated = item.get("last_updated") or date_created or ""
 
     return {
         "id": item.get("id", ""),
@@ -520,8 +526,98 @@ def normalize_ml_item(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         "installments": installments_str,
         "image_url": high_res_img,
         "permalink": item.get("permalink") or f"https://listado.mercadolibre.com.mx/_CustId_{MELI_SELLER_ID}",
-        "description": "Publicación oficial en Mercado Libre México con garantía y envío protegido."
+        "description": "Publicación oficial en Mercado Libre México con garantía y envío protegido.",
+        "date_created": date_created,
+        "last_updated": last_updated
     }
+
+
+def get_recent_products(products: List[Dict[str, Any]], is_local: bool = False, max_items: int = 8) -> List[Dict[str, Any]]:
+    """
+    Selecciona entre 5 y 8 publicaciones más recientes ordenadas por fecha de creación/actualización.
+    """
+    eligible = [
+        p for p in products
+        if is_local or not (p.get("is_battery") or p.get("category") == "battery")
+    ]
+    if not eligible:
+        eligible = list(products)
+
+    has_timestamps = any(p.get("date_created") or p.get("last_updated") for p in eligible)
+    if has_timestamps:
+        eligible = sorted(
+            eligible,
+            key=lambda x: (x.get("date_created") or x.get("last_updated") or ""),
+            reverse=True
+        )
+
+    return eligible[:max_items]
+
+
+def build_recent_slider_html(recent_products: List[Dict[str, Any]], is_local: bool = False) -> str:
+    """
+    Construye los slides horizontales del Banner Carrusel de Publicaciones Más Recientes
+    manteniendo la estética Y2K 3D Glossy de JIN.COM.MX.
+    """
+    slides_html: List[str] = []
+    for idx, p in enumerate(recent_products):
+        item_id = p.get("id", "")
+        title = p.get("title", "Producto JIN.COM.MX")
+        price = float(p.get("price", 0))
+        original_price = p.get("original_price")
+        discount = p.get("discount", "")
+        is_last = bool(p.get("is_last"))
+        installments = p.get("installments") or "Compra 100% Protegida"
+        img_url = p.get("image_url") or "static/img/logo_jin_3d.png"
+        permalink = p.get("permalink") or f"https://listado.mercadolibre.com.mx/_CustId_{MELI_SELLER_ID}"
+
+        active_cls = "is-active" if idx == 0 else ""
+        tag_label = "🔥 RECIÉN PUBLICADO" if idx % 2 == 0 else "✨ NUEVO INGRESO"
+
+        extra_badge = ""
+        if is_last:
+            extra_badge = '<span class="recent-slide-pill pill-alert">⚡ ¡ÚLTIMA PIEZA!</span>'
+        elif discount:
+            extra_badge = f'<span class="recent-slide-pill pill-discount">{discount} OFF</span>'
+
+        orig_html = ""
+        if original_price and float(original_price) > price:
+            orig_html = f'<span class="recent-orig-price">${float(original_price):,.2f} MXN</span>'
+
+        wa_msg = quote(f"Hola JIN.COM.MX, vi en Nuevos Ingresos el producto: {title} (Ref: {item_id}) de ${price:,.2f} MXN")
+
+        slides_html.append(f"""
+                        <div class="recent-slide {active_cls}" data-slide-index="{idx}">
+                            <div class="recent-slide-media">
+                                <img src="{img_url}"
+                                     alt="{title}"
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                            </div>
+                            <div class="recent-slide-content">
+                                <div class="recent-slide-badges">
+                                    <span class="recent-slide-pill pill-new">{tag_label}</span>
+                                    {extra_badge}
+                                    <span class="recent-slide-ref">REF: {item_id}</span>
+                                </div>
+                                <h3 class="recent-slide-title">{title}</h3>
+                                <div class="recent-slide-pricing">
+                                    <div class="front-price recent-lcd-price">${price:,.2f} MXN</div>
+                                    {orig_html}
+                                    <span class="recent-slide-msi">💳 {installments}</span>
+                                </div>
+                                <div class="recent-slide-actions">
+                                    <a href="{permalink}" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
+                                        🛒 Ver / Comprar en Mercado Libre
+                                    </a>
+                                    <a href="https://wa.me/{WHATSAPP_NUMBER}?text={wa_msg}" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
+                                        💬 Pedir por WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        </div>""")
+
+    return "\n".join(slides_html)
 
 
 def fetch_mercadolibre_catalog(is_local: bool = False) -> Tuple[List[Dict[str, Any]], str]:
@@ -568,7 +664,7 @@ def fetch_mercadolibre_catalog(is_local: bool = False) -> Tuple[List[Dict[str, A
                 while True:
                     search_url = (
                         f"https://api.mercadolibre.com/users/{user_id}/items/search"
-                        f"?status=active&offset={offset}&limit={limit}"
+                        f"?status=active&orders=start_time_desc&offset={offset}&limit={limit}"
                     )
                     s_res = requests.get(search_url, headers=headers, timeout=8)
                     if s_res.status_code != 200:
@@ -589,7 +685,8 @@ def fetch_mercadolibre_catalog(is_local: bool = False) -> Tuple[List[Dict[str, A
                 chunk_size = 20
                 fields = (
                     "id,title,price,original_price,available_quantity,status,"
-                    "permalink,thumbnail,pictures,installments,shipping,attributes,accepts_mercadopago"
+                    "permalink,thumbnail,pictures,installments,shipping,attributes,"
+                    "accepts_mercadopago,date_created,last_updated,start_time"
                 )
 
                 for i in range(0, len(item_ids), chunk_size):
@@ -697,6 +794,18 @@ async def read_root(request: Request):
             body_class
         )
 
+        # Inyectar slider de recientes en <!-- SLIDER_RECIENTES_AQUI -->
+        recent_items = get_recent_products(products, is_local=is_local, max_items=8)
+        recent_slider_html = build_recent_slider_html(recent_items, is_local=is_local)
+        slider_start = "<!-- SLIDER_RECIENTES_AQUI -->"
+        slider_end = "<!-- FIN_SLIDER_RECIENTES_AQUI -->"
+        if slider_start in html_content and slider_end in html_content:
+            s_before = html_content.split(slider_start)[0]
+            s_after = html_content.split(slider_end)[1]
+            html_content = f"{s_before}{slider_start}\n{recent_slider_html}\n{slider_end}{s_after}"
+        elif slider_start in html_content:
+            html_content = html_content.replace(slider_start, recent_slider_html)
+
         # Inyectar tarjetas en <!-- PRODUCTOS_AQUI -->
         start_marker = "<!-- PRODUCTOS_AQUI -->"
         end_marker = "<!-- FIN_PRODUCTOS_AQUI -->"
@@ -715,7 +824,8 @@ async def read_root(request: Request):
             "request": request,
             "seller_id": MELI_SELLER_ID,
             "body_class": body_class,
-            "products": products
+            "products": products,
+            "recent_products": get_recent_products(products, is_local=is_local, max_items=8)
         }
     )
 
@@ -804,6 +914,7 @@ async def get_products_api(request: Request):
     is_local = detect_client_is_local(request)
     cache_key = "local" if is_local else "national"
     products, _ = fetch_mercadolibre_catalog(is_local=is_local)
+    recent_products = get_recent_products(products, is_local=is_local, max_items=8)
     return {
         "status": "success",
         "source": CACHE_PRODUCTS[cache_key].get("source", "cache"),
@@ -811,7 +922,8 @@ async def get_products_api(request: Request):
         "is_local": is_local,
         "seller_id": MELI_SELLER_ID,
         "count": len(products),
-        "products": products
+        "products": products,
+        "recent_products": recent_products
     }
 
 
