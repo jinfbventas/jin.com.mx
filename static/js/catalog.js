@@ -312,12 +312,12 @@
             if (!recentTrack || !recentProducts || recentProducts.length === 0) return;
 
             recentTrack.innerHTML = '';
-            recentProducts.slice(0, 8).forEach((p, idx) => {
+            recentProducts.slice(0, 5).forEach((p, idx) => {
                 const priceFormatted = Number(p.price || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                const tagLabel = idx % 2 === 0 ? '🔥 RECIÉN PUBLICADO' : '✨ NUEVO INGRESO';
+                const tagLabel = idx % 2 === 0 ? 'RECIÉN PUBLICADO' : 'NUEVO INGRESO';
                 let extraBadge = '';
                 if (p.is_last) {
-                    extraBadge = '<span class="recent-slide-pill pill-alert">⚡ ¡ÚLTIMA PIEZA!</span>';
+                    extraBadge = '<span class="recent-slide-pill pill-alert">¡ÚLTIMA PIEZA!</span>';
                 } else if (p.discount) {
                     extraBadge = `<span class="recent-slide-pill pill-discount">${p.discount} OFF</span>`;
                 }
@@ -326,36 +326,40 @@
                     : '';
                 const installmentsText = p.installments || 'Compra 100% Protegida';
                 const permalink = p.permalink || 'https://listado.mercadolibre.com.mx/_CustId_491131225';
-                const waMsg = encodeURIComponent(`Hola JIN.COM.MX, vi en Nuevos Ingresos el producto: ${p.title} (Ref: ${p.id}) de $${priceFormatted} MXN`);
+                const waMsg = encodeURIComponent(`Hola JIN.COM.MX, vi en Nuevos Artículos el producto: ${p.title} (Ref: ${p.id}) de $${priceFormatted} MXN`);
+                const thumbFallback = p.thumbnail_url || (p.image_url || '').replace('-O.jpg', '-I.jpg');
 
                 const slideEl = document.createElement('div');
                 slideEl.className = `recent-slide ${idx === 0 ? 'is-active' : ''}`;
                 slideEl.setAttribute('data-slide-index', String(idx));
                 slideEl.innerHTML = `
-                    <div class="recent-slide-media">
+                    <a href="${permalink}" target="_blank" rel="noopener noreferrer" class="recent-slide-media" title="Ver publicación en Mercado Libre">
                         <img src="${p.image_url}"
+                             data-fallback="${thumbFallback}"
                              alt="${p.title}"
                              loading="lazy"
-                             onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
-                    </div>
+                             onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null;this.src='static/img/logo_jin_3d.png';}">
+                    </a>
                     <div class="recent-slide-content">
                         <div class="recent-slide-badges">
                             <span class="recent-slide-pill pill-new">${tagLabel}</span>
                             ${extraBadge}
                             <span class="recent-slide-ref">REF: ${p.id}</span>
                         </div>
-                        <h3 class="recent-slide-title">${p.title}</h3>
+                        <h3 class="recent-slide-title">
+                            <a href="${permalink}" target="_blank" rel="noopener noreferrer" class="recent-title-link">${p.title}</a>
+                        </h3>
                         <div class="recent-slide-pricing">
                             <div class="front-price recent-lcd-price">$${priceFormatted} MXN</div>
                             ${origHtml}
-                            <span class="recent-slide-msi">💳 ${installmentsText}</span>
+                            <span class="recent-slide-msi">${installmentsText}</span>
                         </div>
                         <div class="recent-slide-actions">
                             <a href="${permalink}" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
-                                🛒 Ver / Comprar en Mercado Libre
+                                Ver / Comprar en Mercado Libre
                             </a>
                             <a href="https://wa.me/524771230000?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
-                                💬 Pedir por WhatsApp
+                                Pedir por WhatsApp
                             </a>
                         </div>
                     </div>
@@ -384,8 +388,8 @@
                 if (data && data.products && data.products.length > 0) {
                     renderLiveProducts(data.products);
                     const recents = (data.recent_products && data.recent_products.length > 0)
-                        ? data.recent_products
-                        : data.products.slice(0, 8);
+                        ? data.recent_products.slice(0, 5)
+                        : data.products.slice(0, 5);
                     renderRecentSlider(recents);
                 }
             } catch (err) {
@@ -429,6 +433,8 @@
                         💬 Pedir por WhatsApp
                     </a>`;
 
+                const thumbFallback = p.thumbnail_url || (p.image_url || '').replace('-O.jpg', '-I.jpg');
+
                 cardEl.innerHTML = `
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
@@ -436,9 +442,10 @@
                             ${discountBadge}
                             <div class="card-image-area">
                                 <img src="${p.image_url}" 
+                                     data-fallback="${thumbFallback}"
                                      alt="${p.title}" 
                                      loading="lazy"
-                                     onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                                     onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null;this.src='static/img/logo_jin_3d.png';}">
                             </div>
                             <div class="card-info-area">
                                 <h3 class="card-title">${p.title}</h3>

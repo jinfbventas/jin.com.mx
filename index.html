@@ -18,7 +18,7 @@
     <link rel="icon" href="static/img/favicon.png" type="image/png">
     
     <!-- Hojas de Estilos -->
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/style.css?v=2.3">
 </head>
 <body class="is-national <!-- BODY_CLASS -->">
 
@@ -29,15 +29,15 @@
         <div class="header-top">
             <a href="/" class="header-brand">
                 <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX Logo" class="brand-icon">
-                <span class="brand-text">jin<span class="rgb-split-text">.COM.MX</span></span>
+                <span class="brand-text">jin<span class="rgb-split-text">.com.mx</span></span>
             </a>
 
             <div class="header-actions">
-                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20deseo%20información%20del%20catálogo" target="_blank" rel="noopener" class="header-cta-btn">
-                    <span>💬 WhatsApp</span>
+                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20deseo%20información%20del%20catálogo" target="_blank" rel="noopener noreferrer" class="header-cta-btn">
+                    <span>WhatsApp</span>
                 </a>
-                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener" class="header-cta-btn" style="background: linear-gradient(135deg, #2d74e7, #1c5dc2);">
-                    <span>🛒 Mercado Libre</span>
+                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="header-cta-btn" style="background: linear-gradient(135deg, #2d74e7, #1c5dc2);">
+                    <span>Mercado Libre</span>
                 </a>
             </div>
         </div>
@@ -45,31 +45,31 @@
         <!-- Buscador y Control Dinámico de Tamaño de Tarjetas -->
         <div class="search-controls-bar">
             <div class="search-box-wrapper">
-                <svg class="search-icon-svg" viewBox="0 0 24 24">
+                <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" style="width:18px;height:18px;max-width:18px;max-height:18px;">
                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
                 <input type="text" id="searchInput" class="search-input" placeholder="Buscar productos intergalácticos (Nombre, Marca o Ref)...">
             </div>
 
             <div class="slider-controls">
-                <label for="cardSizeSlider">🔍 Escala Mosaico:</label>
+                <label for="cardSizeSlider">Escala Mosaico:</label>
                 <input type="range" id="cardSizeSlider" min="160" max="400" value="280">
             </div>
         </div>
 
-        <!-- Menú de Categorías y Marcas Profundas -->
+        <!-- Menú de Categorías, Marcas, Destacados y Contacto -->
         <nav class="glass-menu">
             <ul class="main-nav">
                 <li class="dropdown">
                     <a href="#catalogArea">Categorías Principales ▾</a>
                     <ul class="dropdown-menu">
-                        <li><a class="filter-btn active" data-type="category" data-val="all">🌟 Ver Todo el Catálogo</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="toy">🧸 Outlet Juguetes</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="colecciones">🏆 Juguetes Colecciones</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="refacciones">🔧 Refa en Línea</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="battery">🔋 Baterías para auto LTH</a></li>
-                        <li><a class="filter-btn" data-type="category" data-val="bazar">🛍️ Bazar</a></li>
-                        <li><a href="/acumuladores">⚡ Catálogo Acumuladores LTH</a></li>
+                        <li><a class="filter-btn active" data-type="category" data-val="all">Ver Todo el Catálogo</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="toy">Outlet Juguetes</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="colecciones">Juguetes Colecciones</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="refacciones">Refa en Línea</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="battery">Baterías para auto LTH</a></li>
+                        <li><a class="filter-btn" data-type="category" data-val="bazar">Bazar</a></li>
+                        <li><a href="/acumuladores">Catálogo Acumuladores LTH</a></li>
                     </ul>
                 </li>
 
@@ -92,9 +92,39 @@
                 <li class="dropdown">
                     <a href="#catalogArea">Destacados y Ofertas ▾</a>
                     <ul class="dropdown-menu">
-                        <li><a class="filter-btn" data-type="special" data-val="offer">🔥 En Oferta Especial</a></li>
-                        <li><a class="filter-btn" data-type="special" data-val="last">⚡ Últimas Piezas</a></li>
-                        <li><a class="filter-btn" data-type="special" data-val="installments">💳 Meses sin Intereses</a></li>
+                        <li><a class="filter-btn" data-type="special" data-val="offer">En Oferta Especial</a></li>
+                        <li><a class="filter-btn" data-type="special" data-val="last">Últimas Piezas</a></li>
+                        <li><a class="filter-btn" data-type="special" data-val="installments">Meses sin Intereses</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#socialCommunity">Contacto ▾</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="https://www.facebook.com/jin.com.mx" target="_blank" rel="noopener noreferrer">
+                                <svg class="nav-social-svg" width="16" height="16" viewBox="0 0 24 24" style="width:16px;height:16px;max-width:16px;max-height:16px;fill:#1877F2;vertical-align:middle;margin-right:6px;">
+                                    <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/>
+                                </svg>
+                                Facebook Oficial
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.instagram.com/jin.com.mx/" target="_blank" rel="noopener noreferrer">
+                                <svg class="nav-social-svg" width="16" height="16" viewBox="0 0 24 24" style="width:16px;height:16px;max-width:16px;max-height:16px;fill:#d62467;vertical-align:middle;margin-right:6px;">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                                </svg>
+                                Instagram Oficial
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20deseo%20información%20del%20catálogo" target="_blank" rel="noopener noreferrer">
+                                WhatsApp Directo
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#contactHub">Canales y Entregas en Arbide</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -228,11 +258,17 @@
     <section class="recent-slider-section" aria-label="Publicaciones más recientes de Mercado Libre">
         <div class="recent-banner-container" id="recentBannerContainer">
             <div class="recent-banner-header">
-                <div class="recent-banner-heading">
-                    <span class="recent-live-dot"></span>
-                    <span>Nuevos Ingresos <span class="rgb-split-text">Mercado Libre</span></span>
+                <div class="recent-gif-showcase">
+                    <img src="/images/nuevos_articulos.gif"
+                         alt="Nuevos Artículos Publicados"
+                         class="recent-gif-img"
+                         onerror="this.onerror=null; this.src='images/nuevos_articulos.gif';">
+                    <div class="recent-banner-heading">
+                        <span class="recent-live-dot"></span>
+                        <span>Top 5 Nuevos Artículos <span class="rgb-split-text">Mercado Libre</span></span>
+                    </div>
                 </div>
-                <span class="recent-banner-sub">⚡ Sincronización en Vivo • Recién Publicados</span>
+                <span class="recent-banner-sub">Sincronización en Vivo • 5 Publicaciones Más Recientes</span>
             </div>
 
             <button type="button" class="recent-slider-arrow prev" id="recentSliderPrev" aria-label="Publicación anterior">‹</button>
@@ -243,30 +279,33 @@
                     <!-- SLIDER_RECIENTES_AQUI -->
                     <!-- Slide 1 -->
                     <div class="recent-slide is-active" data-slide-index="0">
-                        <div class="recent-slide-media">
+                        <a href="https://www.mercadolibre.com.mx/capitan-america-15-cm-marvel-avengers/p/MLM21848544?pdp_filters=seller_id%3A491131225" target="_blank" rel="noopener noreferrer" class="recent-slide-media" title="Ver publicación en Mercado Libre">
                             <img src="https://http2.mlstatic.com/D_NQ_NP_2X_795646-MLM51761611099_092022-F.webp"
+                                 data-fallback="https://http2.mlstatic.com/D_NQ_NP_795646-MLM51761611099_092022-I.jpg"
                                  alt="Capitán América 15 Cm Marvel Avengers Hasbro"
                                  loading="lazy"
-                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
-                        </div>
+                                 onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null;this.src='static/img/logo_jin_3d.png';}">
+                        </a>
                         <div class="recent-slide-content">
                             <div class="recent-slide-badges">
-                                <span class="recent-slide-pill pill-new">🔥 RECIÉN PUBLICADO</span>
+                                <span class="recent-slide-pill pill-new">RECIÉN PUBLICADO</span>
                                 <span class="recent-slide-pill pill-discount">-18% OFF</span>
                                 <span class="recent-slide-ref">REF: MLM21848544</span>
                             </div>
-                            <h3 class="recent-slide-title">Capitán América 15 Cm Marvel Avengers Hasbro</h3>
+                            <h3 class="recent-slide-title">
+                                <a href="https://www.mercadolibre.com.mx/capitan-america-15-cm-marvel-avengers/p/MLM21848544?pdp_filters=seller_id%3A491131225" target="_blank" rel="noopener noreferrer" class="recent-title-link">Capitán América 15 Cm Marvel Avengers Hasbro</a>
+                            </h3>
                             <div class="recent-slide-pricing">
                                 <div class="front-price recent-lcd-price">$180.00 MXN</div>
                                 <span class="recent-orig-price">$220.00 MXN</span>
-                                <span class="recent-slide-msi">💳 Hasta 12 MSI</span>
+                                <span class="recent-slide-msi">Hasta 12 MSI</span>
                             </div>
                             <div class="recent-slide-actions">
                                 <a href="https://www.mercadolibre.com.mx/capitan-america-15-cm-marvel-avengers/p/MLM21848544?pdp_filters=seller_id%3A491131225" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
-                                    🛒 Ver / Comprar en Mercado Libre
+                                    Ver / Comprar en Mercado Libre
                                 </a>
-                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Ingresos%20Capitan%20America%2015%20Cm" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
-                                    💬 Pedir por WhatsApp
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Articulos%20Capitan%20America%2015%20Cm" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
+                                    Pedir por WhatsApp
                                 </a>
                             </div>
                         </div>
@@ -274,30 +313,33 @@
 
                     <!-- Slide 2 -->
                     <div class="recent-slide" data-slide-index="1">
-                        <div class="recent-slide-media">
+                        <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-slide-media" title="Ver publicación en Mercado Libre">
                             <img src="https://http2.mlstatic.com/D_NQ_NP_2X_616188-MLM43555364132_092020-F.webp"
+                                 data-fallback="https://http2.mlstatic.com/D_NQ_NP_616188-MLM43555364132_092020-I.jpg"
                                  alt="Batman Missions 15 Cm DC Comics Mattel"
                                  loading="lazy"
-                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
-                        </div>
+                                 onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null;this.src='static/img/logo_jin_3d.png';}">
+                        </a>
                         <div class="recent-slide-content">
                             <div class="recent-slide-badges">
-                                <span class="recent-slide-pill pill-new">✨ NUEVO INGRESO</span>
-                                <span class="recent-slide-pill pill-alert">⚡ ¡ÚLTIMA PIEZA!</span>
+                                <span class="recent-slide-pill pill-new">NUEVO INGRESO</span>
+                                <span class="recent-slide-pill pill-alert">¡ÚLTIMA PIEZA!</span>
                                 <span class="recent-slide-ref">REF: MLM-BATMAN-15</span>
                             </div>
-                            <h3 class="recent-slide-title">Batman Missions 15 Cm DC Comics Mattel</h3>
+                            <h3 class="recent-slide-title">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-title-link">Batman Missions 15 Cm DC Comics Mattel</a>
+                            </h3>
                             <div class="recent-slide-pricing">
                                 <div class="front-price recent-lcd-price">$150.00 MXN</div>
                                 <span class="recent-orig-price">$190.00 MXN</span>
-                                <span class="recent-slide-msi">💳 Hasta 3 MSI</span>
+                                <span class="recent-slide-msi">Hasta 3 MSI</span>
                             </div>
                             <div class="recent-slide-actions">
                                 <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
-                                    🛒 Ver / Comprar en Mercado Libre
+                                    Ver / Comprar en Mercado Libre
                                 </a>
-                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Ingresos%20Batman%20Missions%2015%20Cm" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
-                                    💬 Pedir por WhatsApp
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Articulos%20Batman%20Missions%2015%20Cm" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
+                                    Pedir por WhatsApp
                                 </a>
                             </div>
                         </div>
@@ -305,30 +347,33 @@
 
                     <!-- Slide 3 -->
                     <div class="recent-slide" data-slide-index="2">
-                        <div class="recent-slide-media">
+                        <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-slide-media" title="Ver publicación en Mercado Libre">
                             <img src="https://http2.mlstatic.com/D_NQ_NP_2X_792370-MLM46882672722_072021-F.webp"
+                                 data-fallback="https://http2.mlstatic.com/D_NQ_NP_792370-MLM46882672722_072021-I.jpg"
                                  alt="Spider-Man Titan Hero Series 30 Cm Marvel Hasbro"
                                  loading="lazy"
-                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
-                        </div>
+                                 onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null;this.src='static/img/logo_jin_3d.png';}">
+                        </a>
                         <div class="recent-slide-content">
                             <div class="recent-slide-badges">
-                                <span class="recent-slide-pill pill-new">🔥 RECIÉN PUBLICADO</span>
+                                <span class="recent-slide-pill pill-new">RECIÉN PUBLICADO</span>
                                 <span class="recent-slide-pill pill-discount">-17% OFF</span>
                                 <span class="recent-slide-ref">REF: MLM-SPIDER-30</span>
                             </div>
-                            <h3 class="recent-slide-title">Spider-Man Titan Hero Series 30 Cm Marvel Hasbro</h3>
+                            <h3 class="recent-slide-title">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-title-link">Spider-Man Titan Hero Series 30 Cm Marvel Hasbro</a>
+                            </h3>
                             <div class="recent-slide-pricing">
                                 <div class="front-price recent-lcd-price">$299.00 MXN</div>
                                 <span class="recent-orig-price">$360.00 MXN</span>
-                                <span class="recent-slide-msi">💳 Hasta 12 MSI</span>
+                                <span class="recent-slide-msi">Hasta 12 MSI</span>
                             </div>
                             <div class="recent-slide-actions">
                                 <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
-                                    🛒 Ver / Comprar en Mercado Libre
+                                    Ver / Comprar en Mercado Libre
                                 </a>
-                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Ingresos%20Spider-Man%20Titan%20Hero" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
-                                    💬 Pedir por WhatsApp
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Articulos%20Spider-Man%20Titan%20Hero" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
+                                    Pedir por WhatsApp
                                 </a>
                             </div>
                         </div>
@@ -336,30 +381,33 @@
 
                     <!-- Slide 4 -->
                     <div class="recent-slide" data-slide-index="3">
-                        <div class="recent-slide-media">
+                        <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-slide-media" title="Ver publicación en Mercado Libre">
                             <img src="https://http2.mlstatic.com/D_NQ_NP_2X_910776-MLM48384218765_112021-F.webp"
+                                 data-fallback="https://http2.mlstatic.com/D_NQ_NP_910776-MLM48384218765_112021-I.jpg"
                                  alt="Star Wars The Mandalorian & Grogu Figura Colección"
                                  loading="lazy"
-                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
-                        </div>
+                                 onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null;this.src='static/img/logo_jin_3d.png';}">
+                        </a>
                         <div class="recent-slide-content">
                             <div class="recent-slide-badges">
-                                <span class="recent-slide-pill pill-new">✨ NUEVO INGRESO</span>
+                                <span class="recent-slide-pill pill-new">NUEVO INGRESO</span>
                                 <span class="recent-slide-pill pill-discount">-19% OFF</span>
                                 <span class="recent-slide-ref">REF: MLM-MANDO-01</span>
                             </div>
-                            <h3 class="recent-slide-title">Star Wars The Mandalorian & Grogu Figura Colección</h3>
+                            <h3 class="recent-slide-title">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-title-link">Star Wars The Mandalorian & Grogu Figura Colección</a>
+                            </h3>
                             <div class="recent-slide-pricing">
                                 <div class="front-price recent-lcd-price">$340.00 MXN</div>
                                 <span class="recent-orig-price">$420.00 MXN</span>
-                                <span class="recent-slide-msi">💳 Hasta 12 MSI</span>
+                                <span class="recent-slide-msi">Hasta 12 MSI</span>
                             </div>
                             <div class="recent-slide-actions">
                                 <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
-                                    🛒 Ver / Comprar en Mercado Libre
+                                    Ver / Comprar en Mercado Libre
                                 </a>
-                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Ingresos%20The%20Mandalorian" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
-                                    💬 Pedir por WhatsApp
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Articulos%20The%20Mandalorian" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
+                                    Pedir por WhatsApp
                                 </a>
                             </div>
                         </div>
@@ -367,30 +415,33 @@
 
                     <!-- Slide 5 -->
                     <div class="recent-slide" data-slide-index="4">
-                        <div class="recent-slide-media">
+                        <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-slide-media" title="Ver publicación en Mercado Libre">
                             <img src="https://http2.mlstatic.com/D_NQ_NP_2X_985556-MLM51893322047_102022-F.webp"
+                                 data-fallback="https://http2.mlstatic.com/D_NQ_NP_985556-MLM51893322047_102022-I.jpg"
                                  alt="Hot Wheels 5-Pack Vehículos Escala 1:64 Mattel"
                                  loading="lazy"
-                                 onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
-                        </div>
+                                 onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null;this.src='static/img/logo_jin_3d.png';}">
+                        </a>
                         <div class="recent-slide-content">
                             <div class="recent-slide-badges">
-                                <span class="recent-slide-pill pill-new">🔥 RECIÉN PUBLICADO</span>
+                                <span class="recent-slide-pill pill-new">RECIÉN PUBLICADO</span>
                                 <span class="recent-slide-pill pill-discount">-18% OFF</span>
                                 <span class="recent-slide-ref">REF: MLM-HW-PACK5</span>
                             </div>
-                            <h3 class="recent-slide-title">Hot Wheels 5-Pack Vehículos Escala 1:64 Mattel</h3>
+                            <h3 class="recent-slide-title">
+                                <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="recent-title-link">Hot Wheels 5-Pack Vehículos Escala 1:64 Mattel</a>
+                            </h3>
                             <div class="recent-slide-pricing">
                                 <div class="front-price recent-lcd-price">$195.00 MXN</div>
                                 <span class="recent-orig-price">$240.00 MXN</span>
-                                <span class="recent-slide-msi">💳 Meses sin Intereses</span>
+                                <span class="recent-slide-msi">Meses sin Intereses</span>
                             </div>
                             <div class="recent-slide-actions">
                                 <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
-                                    🛒 Ver / Comprar en Mercado Libre
+                                    Ver / Comprar en Mercado Libre
                                 </a>
-                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Ingresos%20Hot%20Wheels%205-Pack" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
-                                    💬 Pedir por WhatsApp
+                                <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20vi%20en%20Nuevos%20Articulos%20Hot%20Wheels%205-Pack" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
+                                    Pedir por WhatsApp
                                 </a>
                             </div>
                         </div>
@@ -751,7 +802,7 @@
             <a href="https://www.facebook.com/jin.com.mx" target="_blank" rel="noopener noreferrer" class="social-card social-fb">
                 <div class="social-card-top">
                     <div class="social-icon-wrapper" aria-hidden="true">
-                        <svg class="social-icon-svg" viewBox="0 0 24 24">
+                        <svg class="social-icon-svg" width="22" height="22" viewBox="0 0 24 24" style="width:22px;height:22px;max-width:22px;max-height:22px;fill:currentColor;flex-shrink:0;">
                             <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/>
                         </svg>
                     </div>
@@ -773,7 +824,7 @@
             <a href="https://www.instagram.com/jin.com.mx/" target="_blank" rel="noopener noreferrer" class="social-card social-ig">
                 <div class="social-card-top">
                     <div class="social-icon-wrapper" aria-hidden="true">
-                        <svg class="social-icon-svg" viewBox="0 0 24 24">
+                        <svg class="social-icon-svg" width="22" height="22" viewBox="0 0 24 24" style="width:22px;height:22px;max-width:22px;max-height:22px;fill:currentColor;flex-shrink:0;">
                             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
                         </svg>
                     </div>
@@ -814,8 +865,8 @@
          7. SCRIPTS DEL MOTOR GRÁFICO Y COMPORTAMIENTO
          ======================================================== -->
     <script src="static/js/background3d.js"></script>
-    <script src="static/js/orbital.js"></script>
-    <script src="static/js/catalog.js"></script>
+    <script src="static/js/orbital.js?v=2.3"></script>
+    <script src="static/js/catalog.js?v=2.3"></script>
 
 </body>
 </html>

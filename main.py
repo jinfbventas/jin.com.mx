@@ -376,6 +376,7 @@ def build_card_html(p: Dict[str, Any], is_local: bool) -> str:
     stock_text = p.get("stock", "Disponible")
     installments = p.get("installments")
     img_url = p.get("image_url") or "static/img/logo_jin_3d.png"
+    thumb_url = p.get("thumbnail_url") or img_url
     permalink = p.get("permalink", "")
 
     battery_class = "battery-link" if is_battery else ""
@@ -422,9 +423,10 @@ def build_card_html(p: Dict[str, Any], is_local: bool) -> str:
                             {discount_badge_html}
                             <div class="card-image-area">
                                 <img src="{img_url}" 
+                                     data-fallback="{thumb_url}"
                                      alt="{title}" 
                                      loading="lazy"
-                                     onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
+                                     onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){{this.src=this.dataset.fallback;}}else{{this.onerror=null;this.src='static/img/logo_jin_3d.png';}}">
                             </div>
                             <div class="card-info-area">
                                 <h3 class="card-title">{title}</h3>
@@ -470,18 +472,19 @@ def normalize_ml_item(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     if any(bad.lower() in title_lower for bad in BLACKLIST_KEYWORDS):
         return None
 
-    # Fotografía en máxima resolución desde pictures[0]["url"] con fallback a thumbnail optimizado
+    # Fotografía en máxima resolución desde pictures[0]["url"] con fallback a thumbnail original HTTPS
+    raw_thumb = (item.get("thumbnail") or "").replace("http://", "https://")
     pictures = item.get("pictures") or []
     if pictures and isinstance(pictures, list) and (pictures[0].get("secure_url") or pictures[0].get("url")):
         high_res_img = pictures[0].get("secure_url") or pictures[0].get("url")
     else:
-        raw_thumb = item.get("thumbnail") or ""
         high_res_img = (
             raw_thumb.replace("-I.jpg", "-O.jpg")
             .replace("-V.jpg", "-O.jpg")
             .replace("-S.jpg", "-O.jpg")
         )
-    high_res_img = high_res_img.replace("http://", "https://") if high_res_img else "static/img/logo_jin_3d.png"
+    high_res_img = high_res_img.replace("http://", "https://") if high_res_img else (raw_thumb or "static/img/logo_jin_3d.png")
+    fallback_thumb = raw_thumb if raw_thumb else high_res_img
 
     price = float(item.get("price") or 0)
     orig_price = item.get("original_price")
@@ -525,6 +528,7 @@ def normalize_ml_item(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         "is_battery": is_battery,
         "installments": installments_str,
         "image_url": high_res_img,
+        "thumbnail_url": fallback_thumb,
         "permalink": item.get("permalink") or f"https://listado.mercadolibre.com.mx/_CustId_{MELI_SELLER_ID}",
         "description": "Publicación oficial en Mercado Libre México con garantía y envío protegido.",
         "date_created": date_created,
@@ -532,9 +536,10 @@ def normalize_ml_item(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     }
 
 
-def get_recent_products(products: List[Dict[str, Any]], is_local: bool = False, max_items: int = 8) -> List[Dict[str, Any]]:
+def get_recent_products(products: List[Dict[str, Any]], is_local: bool = False, max_items: int = 5) -> List[Dict[str, Any]]:
     """
-    Selecciona entre 5 y 8 publicaciones más recientes ordenadas por fecha de creación/actualización.
+    Selecciona los 5 artículos más recientes obtenidos del catálogo en vivo de Mercado Libre
+    ordenados por fecha de publicación más reciente.
     """
     eligible = [
         p for p in products
@@ -556,11 +561,11 @@ def get_recent_products(products: List[Dict[str, Any]], is_local: bool = False, 
 
 def build_recent_slider_html(recent_products: List[Dict[str, Any]], is_local: bool = False) -> str:
     """
-    Construye los slides horizontales del Banner Carrusel de Publicaciones Más Recientes
+    Construye los slides horizontales del Banner Carrusel de los 5 Artículos Más Recientes
     manteniendo la estética Y2K 3D Glossy de JIN.COM.MX.
     """
     slides_html: List[str] = []
-    for idx, p in enumerate(recent_products):
+    for idx, p in enumerate(recent_products[:5]):
         item_id = p.get("id", "")
         title = p.get("title", "Producto JIN.COM.MX")
         price = float(p.get("price", 0))
@@ -569,14 +574,15 @@ def build_recent_slider_html(recent_products: List[Dict[str, Any]], is_local: bo
         is_last = bool(p.get("is_last"))
         installments = p.get("installments") or "Compra 100% Protegida"
         img_url = p.get("image_url") or "static/img/logo_jin_3d.png"
+        thumb_url = p.get("thumbnail_url") or img_url
         permalink = p.get("permalink") or f"https://listado.mercadolibre.com.mx/_CustId_{MELI_SELLER_ID}"
 
         active_cls = "is-active" if idx == 0 else ""
-        tag_label = "🔥 RECIÉN PUBLICADO" if idx % 2 == 0 else "✨ NUEVO INGRESO"
+        tag_label = "RECIÉN PUBLICADO" if idx % 2 == 0 else "NUEVO INGRESO"
 
         extra_badge = ""
         if is_last:
-            extra_badge = '<span class="recent-slide-pill pill-alert">⚡ ¡ÚLTIMA PIEZA!</span>'
+            extra_badge = '<span class="recent-slide-pill pill-alert">¡ÚLTIMA PIEZA!</span>'
         elif discount:
             extra_badge = f'<span class="recent-slide-pill pill-discount">{discount} OFF</span>'
 
@@ -584,34 +590,37 @@ def build_recent_slider_html(recent_products: List[Dict[str, Any]], is_local: bo
         if original_price and float(original_price) > price:
             orig_html = f'<span class="recent-orig-price">${float(original_price):,.2f} MXN</span>'
 
-        wa_msg = quote(f"Hola JIN.COM.MX, vi en Nuevos Ingresos el producto: {title} (Ref: {item_id}) de ${price:,.2f} MXN")
+        wa_msg = quote(f"Hola JIN.COM.MX, vi en Nuevos Artículos el producto: {title} (Ref: {item_id}) de ${price:,.2f} MXN")
 
         slides_html.append(f"""
                         <div class="recent-slide {active_cls}" data-slide-index="{idx}">
-                            <div class="recent-slide-media">
+                            <a href="{permalink}" target="_blank" rel="noopener noreferrer" class="recent-slide-media" title="Ver publicación en Mercado Libre">
                                 <img src="{img_url}"
+                                     data-fallback="{thumb_url}"
                                      alt="{title}"
                                      loading="lazy"
-                                     onerror="this.onerror=null; this.src='static/img/logo_jin_3d.png';">
-                            </div>
+                                     onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){{this.src=this.dataset.fallback;}}else{{this.onerror=null;this.src='static/img/logo_jin_3d.png';}}">
+                            </a>
                             <div class="recent-slide-content">
                                 <div class="recent-slide-badges">
                                     <span class="recent-slide-pill pill-new">{tag_label}</span>
                                     {extra_badge}
                                     <span class="recent-slide-ref">REF: {item_id}</span>
                                 </div>
-                                <h3 class="recent-slide-title">{title}</h3>
+                                <h3 class="recent-slide-title">
+                                    <a href="{permalink}" target="_blank" rel="noopener noreferrer" class="recent-title-link">{title}</a>
+                                </h3>
                                 <div class="recent-slide-pricing">
                                     <div class="front-price recent-lcd-price">${price:,.2f} MXN</div>
                                     {orig_html}
-                                    <span class="recent-slide-msi">💳 {installments}</span>
+                                    <span class="recent-slide-msi">{installments}</span>
                                 </div>
                                 <div class="recent-slide-actions">
                                     <a href="{permalink}" target="_blank" rel="noopener noreferrer" class="glass-btn ml-btn recent-cta-btn">
-                                        🛒 Ver / Comprar en Mercado Libre
+                                        Ver / Comprar en Mercado Libre
                                     </a>
                                     <a href="https://wa.me/{WHATSAPP_NUMBER}?text={wa_msg}" target="_blank" rel="noopener noreferrer" class="glass-btn wa-btn recent-cta-btn">
-                                        💬 Pedir por WhatsApp
+                                        Pedir por WhatsApp
                                     </a>
                                 </div>
                             </div>
@@ -795,7 +804,7 @@ async def read_root(request: Request):
         )
 
         # Inyectar slider de recientes en <!-- SLIDER_RECIENTES_AQUI -->
-        recent_items = get_recent_products(products, is_local=is_local, max_items=8)
+        recent_items = get_recent_products(products, is_local=is_local, max_items=5)
         recent_slider_html = build_recent_slider_html(recent_items, is_local=is_local)
         slider_start = "<!-- SLIDER_RECIENTES_AQUI -->"
         slider_end = "<!-- FIN_SLIDER_RECIENTES_AQUI -->"
@@ -825,7 +834,7 @@ async def read_root(request: Request):
             "seller_id": MELI_SELLER_ID,
             "body_class": body_class,
             "products": products,
-            "recent_products": get_recent_products(products, is_local=is_local, max_items=8)
+            "recent_products": get_recent_products(products, is_local=is_local, max_items=5)
         }
     )
 
@@ -914,7 +923,7 @@ async def get_products_api(request: Request):
     is_local = detect_client_is_local(request)
     cache_key = "local" if is_local else "national"
     products, _ = fetch_mercadolibre_catalog(is_local=is_local)
-    recent_products = get_recent_products(products, is_local=is_local, max_items=8)
+    recent_products = get_recent_products(products, is_local=is_local, max_items=5)
     return {
         "status": "success",
         "source": CACHE_PRODUCTS[cache_key].get("source", "cache"),
@@ -1017,7 +1026,7 @@ async def acumuladores_page():
         <div class="header-top">
             <a href="/" class="header-brand">
                 <img src="static/img/logo_jin_3d.png" alt="JIN.COM.MX Logo" class="brand-icon">
-                <span class="brand-text">jin<span class="rgb-split-text">.COM.MX</span></span>
+                <span class="brand-text">jin<span class="rgb-split-text">.com.mx</span></span>
             </a>
             <div class="header-actions">
                 <a href="/" class="header-cta-btn">⬅ Volver al Catálogo Principal</a>
