@@ -19,7 +19,7 @@ from urllib.parse import quote
 from typing import Optional, List, Dict, Any, Tuple
 import requests
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 try:
@@ -1445,6 +1445,35 @@ async def send_corporate_contact_email(request: Request):
         )
 
 
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def robots_txt():
+    """Archivo robots.txt para motores de búsqueda."""
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /auth/\n"
+        "Disallow: /webhook/\n"
+        "Disallow: /privado\n"
+        "Disallow: /api/\n"
+        "Sitemap: https://www.jin.com.mx/sitemap.xml\n"
+    )
+    return PlainTextResponse(content=content, status_code=200)
+
+
+@app.get("/sitemap.xml")
+async def sitemap_xml():
+    """Mapa del sitio XML oficial para indexación SEO."""
+    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.jin.com.mx/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>"""
+    return Response(content=xml_content, media_type="application/xml", status_code=200)
+
+
 @app.get("/health", response_class=JSONResponse)
 @app.get("/ping", response_class=JSONResponse)
 @app.get("/healthz", response_class=JSONResponse)
@@ -1457,6 +1486,7 @@ async def health_check():
 
 
 @app.get("/logo_cabecera_jinfbventas.png")
+@app.get("/static/images/logo_cabecera_jinfbventas.png")
 async def legacy_logo():
     logo_path = os.path.join(STATIC_DIR, "img", "logo_jin_3d.png")
     if os.path.exists(logo_path):
