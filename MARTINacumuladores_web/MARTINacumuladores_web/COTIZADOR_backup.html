@@ -1,0 +1,2863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>MARTÍN ACUMULADORES - Cotizador Profesional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --bg-input: #ffffff;
+      --border-color: #e2e8f0;
+      --border-focus: #1a4480;
+      
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      
+      --primary-navy: #0f2e5c;
+      --primary: #1a4480;
+      --primary-hover: #0f2e5c;
+      --primary-light: #e8f0fe;
+      
+      --accent-red: #d32f2f;
+      --accent-red-hover: #b71c1c;
+      --accent-red-light: #fee2e2;
+      
+      --success: #059669;
+      --success-dark: #047857;
+      --success-bg: #ecfdf5;
+      
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      
+      --danger: #ef4444;
+      --whatsapp: #25d366;
+      --whatsapp-hover: #20bd5a;
+      --whatsapp-bg: #e8fbf0;
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* 1. REGLAS ESTRICTAS DE ANTI-DESBORDAMIENTO HORIZONTAL */
+    * {
+      box-sizing: border-box !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100% !important;
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+      margin: 0 !important;
+      padding: 4px !important;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.4;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .container, .wrapper, .card, .main-layout, .nav-container, .navbar, .control-card, .results-banner, .table-container, .sidebar-card, .content-col, .quote-sidebar {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Top Navigation Bar - Brand Navy Header */
+    .navbar {
+      background: linear-gradient(135deg, #0f2e5c, #1a4480);
+      border-bottom: 3px solid var(--accent-red);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 14px;
+      box-shadow: 0 4px 12px rgba(15, 46, 92, 0.2);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--accent-red), #b71c1c);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(211, 47, 47, 0.35);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.74rem;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 3px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-tab {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 34px;
+    }
+
+    .nav-tab.active {
+      color: #ffffff;
+      background: var(--accent-red);
+      box-shadow: 0 2px 6px rgba(211, 47, 47, 0.4);
+    }
+
+    .nav-tab:hover:not(.active) {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-ticket {
+      background: var(--accent-red);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+      min-height: 34px;
+      box-shadow: 0 2px 6px rgba(211, 47, 47, 0.35);
+    }
+
+    .btn-ticket:hover {
+      background: var(--accent-red-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-print {
+      background: #ffffff;
+      color: var(--primary-navy);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+      min-height: 34px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-print:hover {
+      background: #f1f5f9;
+    }
+
+    /* Main Container - Full Width Layout for clear visibility of characteristics */
+    .main-layout {
+      margin: 8px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .content-col {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Control Panel Card */
+    .control-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .control-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    /* Search & Select Box */
+    .bci-search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .bci-input-box {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 14px 10px 38px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      outline: none;
+      min-height: 44px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .bci-input-box:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(26, 68, 128, 0.15);
+    }
+
+    .bci-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .bci-dropdown-list {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: var(--shadow-xl);
+      display: none;
+    }
+
+    .bci-dropdown-list.show {
+      display: block;
+    }
+
+    .bci-dropdown-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.15s;
+      min-height: 40px;
+      color: var(--text-primary);
+    }
+
+    .bci-dropdown-item:hover, .bci-dropdown-item.selected {
+      background: var(--primary-light);
+      color: var(--primary-navy);
+      font-weight: 700;
+    }
+
+    .bci-dropdown-item .item-bci {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .bci-dropdown-item .item-count {
+      font-size: 0.75rem;
+      background: #e2e8f0;
+      color: var(--text-secondary);
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    /* Quick BCI Chips */
+    .quick-bci-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    .bci-chip {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: var(--text-secondary);
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bci-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary-navy);
+      background: var(--primary-light);
+    }
+
+    .bci-chip.active {
+      background: var(--primary-navy);
+      border-color: var(--primary-navy);
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(15, 46, 92, 0.2);
+    }
+
+    /* Discount Selector Buttons */
+    .discount-buttons-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .btn-discount {
+      flex: 1 1 calc(25% - 4px);
+      min-width: 54px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      color: var(--text-secondary);
+      padding: 7px 2px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-discount:hover {
+      border-color: var(--warning);
+      color: #92400e;
+      background: var(--warning-bg);
+    }
+
+    .btn-discount.active {
+      background: #fffbeb;
+      border-color: var(--warning);
+      color: #b45309;
+      box-shadow: 0 0 0 1px var(--warning);
+    }
+
+    .custom-discount-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .input-custom-disc {
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      color: var(--text-primary);
+      font-weight: 700;
+      width: 80px;
+      font-size: 0.85rem;
+      outline: none;
+      min-height: 34px;
+    }
+
+    .input-custom-disc:focus {
+      border-color: var(--warning);
+    }
+
+    /* Payment Mode Toggle Switch */
+    .payment-toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      margin-top: 8px;
+    }
+
+    .pay-mode-btn {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      min-height: 32px;
+    }
+
+    .pay-mode-btn.active {
+      background: #ffffff;
+      color: var(--primary-navy);
+      box-shadow: var(--shadow-sm);
+      font-weight: 800;
+    }
+
+    /* Results Header / Summary Banner */
+    .results-banner {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary-navy);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .banner-info-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .bci-badge-large {
+      background: var(--primary-navy);
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      letter-spacing: -0.02em;
+      box-shadow: 0 4px 10px rgba(15, 46, 92, 0.2);
+      flex-shrink: 0;
+    }
+
+    .banner-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+    }
+
+    .banner-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .banner-stats {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-pill-label {
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .stat-pill-value {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* 2. REGLA ESTRICTA PARA ENCAPSULAR LA TABLA COMPARATIVA */
+    .table-container {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-header-bar {
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .table-header-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mobile-scroll-cue {
+      font-size: 0.7rem;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .table-responsive {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      display: block !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .custom-table {
+      width: 100% !important;
+      min-width: 620px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.84rem;
+    }
+
+    .custom-table th {
+      background: #f1f5f9;
+      color: var(--primary-navy);
+      font-weight: 800;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .custom-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: var(--text-primary);
+    }
+
+    .custom-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* Brand Badge Colors (Tailored for Light Background) */
+    .badge-LTH { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .badge-AMERICA { background: #e0e7ff; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .badge-LTH-HITEC { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
+    .badge-LTH-EVOLUTION { background: #cffafe; color: #0e7490; border: 1px solid #67e8f9; }
+    .badge-OPTIMA { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+    .badge-POWER-CONNECTION { background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; }
+    .badge-CRONOS, .badge-DYNAMO, .badge-CALE, .badge-FULL-POWER { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .badge-LTH-PROTECT, .badge-LTH-TAXI, .badge-LTH-HEAVY-DUTY, .badge-LTH-ESPECIALES { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+    .tipo-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .price-with-trade {
+      color: var(--success-dark);
+      font-size: 1.1rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      white-space: nowrap;
+    }
+
+    .price-tag-sub {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--success);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .price-no-trade {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+
+    .btn-select-quote {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      color: var(--primary-navy);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      min-height: 30px;
+    }
+
+    .btn-select-quote:hover {
+      background: var(--primary-navy);
+      border-color: var(--primary-navy);
+      color: #ffffff;
+    }
+
+    /* Bottom Section: WhatsApp & Quote Panel */
+    .quote-sidebar {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 4px;
+      align-items: stretch;
+    }
+
+    .client-grid-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .client-grid-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .quote-sidebar {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .client-grid-inputs, .client-grid-actions {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    .sidebar-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .wa-icon-box {
+      width: 26px;
+      height: 26px;
+      background: var(--whatsapp);
+      color: #ffffff;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .client-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .client-input-group label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .client-input {
+      background: #ffffff;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      outline: none;
+      min-height: 38px;
+      width: 100%;
+    }
+
+    .client-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(26, 68, 128, 0.1);
+    }
+
+    .wa-preview-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid var(--whatsapp);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      color: #1e293b;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .btn-wa-copy {
+      width: 100%;
+      background: var(--whatsapp);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3);
+      min-height: 42px;
+    }
+
+    .btn-wa-copy:hover {
+      background: var(--whatsapp-hover);
+    }
+
+    .btn-wa-direct {
+      width: 100%;
+      background: #f8fafc;
+      border: 1.5px solid var(--border-color);
+      color: var(--primary-navy);
+      border-radius: var(--radius-md);
+      padding: 9px 12px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+      transition: all 0.2s;
+      min-height: 38px;
+    }
+
+    .btn-wa-direct:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .btn-ticket-sidebar {
+      width: 100%;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      transition: all 0.2s;
+      min-height: 40px;
+      box-shadow: 0 2px 8px rgba(15, 46, 92, 0.25);
+    }
+
+    .btn-ticket-sidebar:hover {
+      background: var(--primary);
+    }
+
+    /* Modal for Tech Specs & Ticket Preview */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      max-width: 520px;
+      width: 100%;
+      padding: 18px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.6rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      min-width: 36px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      color: var(--accent-red);
+    }
+
+    .tech-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .spec-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+
+    .spec-card-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .spec-card-val {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin-top: 3px;
+    }
+
+    /* Thermal Ticket Preview Styles */
+    .ticket-paper-preview {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 11px;
+      color: #000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-height: 60vh;
+      overflow-y: auto;
+      margin-bottom: 14px;
+      line-height: 1.35;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      left: 16px;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: #059669;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.35);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+      max-width: 380px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .empty-state {
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    /* 3. REGLAS RESPONSIVE PARA DISPOSITIVOS MÓVILES (< 768px) */
+    @media (max-width: 900px) {
+      .main-layout {
+        gap: 12px !important;
+      }
+      .quote-sidebar {
+        position: static !important;
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      html, body {
+        padding: 4px !important;
+      }
+      .navbar {
+        padding: 8px 10px !important;
+      }
+      .brand-title {
+        font-size: 1rem !important;
+      }
+      .brand-subtitle {
+        display: none !important;
+      }
+      .control-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+      .control-card, .results-banner, .table-container, .sidebar-card {
+        padding: 10px !important;
+      }
+      .results-banner {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+      }
+      .banner-info-left {
+        gap: 10px !important;
+      }
+      .banner-stats {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+      }
+      .stat-pill {
+        padding: 5px 6px !important;
+        text-align: center !important;
+      }
+      .stat-pill-label {
+        font-size: 0.62rem !important;
+      }
+      .stat-pill-value {
+        font-size: 0.82rem !important;
+      }
+      .quick-bci-chips {
+        gap: 4px !important;
+      }
+      .bci-chip {
+        padding: 5px 8px !important;
+        font-size: 0.76rem !important;
+        flex-grow: 1 !important;
+        text-align: center !important;
+      }
+      .discount-buttons-grid {
+        gap: 4px !important;
+      }
+      .btn-discount {
+        flex: 1 1 calc(25% - 4px) !important;
+        padding: 6px 2px !important;
+        font-size: 0.78rem !important;
+      }
+      .tech-specs-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .discount-buttons-grid .btn-discount {
+        flex: 1 1 calc(25% - 4px) !important;
+        font-size: 0.74rem !important;
+      }
+      .banner-stats {
+        grid-template-columns: 1fr 1fr !important;
+      }
+    }
+
+    /* 4. REGLAS FORMALES DE IMPRESIÓN (CARTA / PDF SIN DESCUENTOS) */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+      }
+      .navbar, .control-card, .quote-sidebar, .btn-select-quote, .bci-chip, .mobile-scroll-cue, .stat-pill:last-child, .modal-backdrop {
+        display: none !important;
+      }
+      .main-layout {
+        display: block !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .results-banner {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        border-left: 4px solid #0f2e5c !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        margin-bottom: 12px !important;
+      }
+      .bci-badge-large {
+        background: #0f2e5c !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .banner-title, .banner-subtitle {
+        color: #000 !important;
+      }
+      .stat-pill {
+        background: #fff !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      .stat-pill-label, .stat-pill-value {
+        color: #000 !important;
+      }
+      .table-container {
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        background: #fff !important;
+      }
+      .table-header-bar {
+        background: #f1f5f9 !important;
+        border-bottom: 1px solid #cbd5e1 !important;
+        color: #000 !important;
+      }
+      .custom-table {
+        min-width: 100% !important;
+      }
+      .custom-table th {
+        background: #f8fafc !important;
+        color: #0f2e5c !important;
+        border-bottom: 2px solid #cbd5e1 !important;
+      }
+      .custom-table td {
+        color: #0f172a !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+      .custom-table th:first-child, .custom-table td:first-child,
+      .custom-table th:last-child, .custom-table td:last-child {
+        display: none !important;
+      }
+      .brand-badge {
+        border: 1px solid #64748b !important;
+        color: #000 !important;
+        background: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .tipo-code {
+        color: #000 !important;
+      }
+      .price-with-trade {
+        color: #047857 !important;
+        font-weight: 800 !important;
+      }
+      .price-tag-sub {
+        color: #059669 !important;
+      }
+      .price-no-trade {
+        color: #475569 !important;
+      }
+    }
+  
+    /* --- Enhanced Control Card & Vehicle Applications Finder --- */
+    .control-top-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 16px;
+      margin-bottom: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .control-top-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+
+    .control-subcard {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .subcard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .subcard-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .subcard-icon {
+      font-size: 1.05rem;
+    }
+
+    .subcard-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 2px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    .car-search-box-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .car-dropdowns-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .car-select {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      outline: none;
+      min-height: 36px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .car-select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px rgba(26, 68, 128, 0.15);
+    }
+
+    .car-select:disabled {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .car-results-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .car-results-dropdown.show {
+      display: block;
+    }
+
+    .car-result-item {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .car-result-item:hover {
+      background: #eff6ff;
+    }
+
+    .car-item-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .car-item-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .car-item-bcis {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+      align-items: center;
+    }
+
+    .car-bci-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .car-bci-tag.rec {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    .car-bci-tag.alt {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .vehicle-selected-box {
+      background: #ffffff;
+      border: 1.5px solid #93c5fd;
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+      animation: fadeInV 0.2s ease-out;
+    }
+
+    @keyframes fadeInV {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .v-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .v-car-badge {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .v-car-year-text {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: #e2e8f0;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .v-btn-reset {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+
+    .v-btn-reset:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: var(--accent-red);
+    }
+
+    .v-pills-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .v-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border: 1.5px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .v-pill-btn.rec {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+
+    .v-pill-btn.rec.active {
+      background: #047857;
+      color: #ffffff;
+      border-color: #047857;
+      box-shadow: 0 2px 6px rgba(4, 120, 87, 0.35);
+    }
+
+    .v-pill-btn.alt {
+      background: #fef3c7;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+
+    .v-pill-btn.alt.active {
+      background: #b45309;
+      color: #ffffff;
+      border-color: #b45309;
+      box-shadow: 0 2px 6px rgba(180, 83, 9, 0.35);
+    }
+
+    .control-bottom-bar {
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+    }
+
+    .options-inner-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 800px) {
+      .options-inner-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand-logo">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1 class="brand-title">MARTÍN ACUMULADORES</h1>
+          <p class="brand-subtitle">Cotizador Profesional • Precios con IVA y Vigencia 7 días</p>
+        </div>
+      </div>
+
+      <div class="nav-tabs">
+        <button class="nav-tab active" id="tabAcumuladores" onclick="switchCategory('acumuladores')">
+          🚗 Acumuladores
+        </button>
+        <button class="nav-tab" id="tabMotobaterias" onclick="switchCategory('motobaterias')">
+          🏍️ Motobaterías
+        </button>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-ticket" onclick="openTicketModal()" title="Imprimir Ticket Térmico de 80mm">
+          🧾 Imprimir Ticket
+        </button>
+        <button class="btn-print" onclick="window.print()" title="Imprimir Cotización en Hoja Carta / PDF">
+          🖨️ Imprimir Carta
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <main class="main-layout">
+    
+    <!-- Left Section: Search & Comparison Table -->
+    <section class="content-col">
+      
+      <!-- Control Panel -->
+      <div class="control-card">
+        
+        <!-- Search Row: Car Model Application Finder & Direct BCI Selector -->
+        <div class="control-top-grid">
+          
+          <!-- Column 1: Buscador por Modelo de Auto (Visible for 'acumuladores') -->
+          <div class="control-subcard" id="carSearchSubcard">
+            <div class="subcard-header">
+              <div class="subcard-title">
+                <span class="subcard-icon">🚗</span>
+                <span>1. Buscar por Modelo de Auto</span>
+              </div>
+              <span class="subcard-badge" id="appsCountBadge">203 modelos</span>
+            </div>
+
+            <!-- Predictive text input -->
+            <div class="car-search-box-wrapper">
+              <span class="bci-search-icon">🔍</span>
+              <input type="text" id="carSearchInput" class="bci-input-box" placeholder="Escribe auto (ej. Versa, Jetta, Aveo, Tsuru, Hilux...)" autocomplete="off" oninput="handleCarSearchInput(this.value)" onfocus="handleCarSearchInput(this.value)">
+              <div id="carSearchResults" class="car-results-dropdown"></div>
+            </div>
+
+            <!-- Dropdowns Marca & Modelo -->
+            <div class="car-dropdowns-row">
+              <select id="carBrandSelect" class="car-select" onchange="onCarBrandChange(this.value)">
+                <option value="">🏢 Seleccionar Marca...</option>
+              </select>
+              <select id="carModelSelect" class="car-select" onchange="onCarModelChange(this.value)" disabled>
+                <option value="">🚘 Seleccionar Modelo...</option>
+              </select>
+            </div>
+
+            <!-- Selected Vehicle Match Box -->
+            <div id="vehicleSelectedCard" class="vehicle-selected-box" style="display: none;"></div>
+          </div>
+
+          <!-- Column 2: Búsqueda Directa por BCI (o Motobaterías) -->
+          <div class="control-subcard">
+            <div class="subcard-header">
+              <div class="subcard-title">
+                <span class="subcard-icon">⚡</span>
+                <span id="bciSubcardTitle">2. O Seleccionar por Grupo BCI</span>
+              </div>
+              <span id="groupCounterText" class="subcard-badge">Cargando grupos...</span>
+            </div>
+
+            <div class="bci-search-wrapper">
+              <span class="bci-search-icon">🔍</span>
+              <input type="text" id="bciSearchInput" class="bci-input-box" placeholder="Buscar BCI (ej. 47, 22F, 42, 24, 35, 58...)" autocomplete="off" onfocus="showDropdown()" oninput="handleSearchInput(event)">
+              <div id="bciDropdownList" class="bci-dropdown-list"></div>
+            </div>
+
+            <!-- Quick BCI Chips -->
+            <div class="quick-bci-chips" id="quickChipsContainer"></div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Options Bar: Discounts & Payment Mode -->
+        <div class="control-bottom-bar">
+          <div class="options-inner-grid">
+            
+            <!-- Discounts -->
+            <div class="discount-control-group">
+              <label class="control-label" style="margin-bottom: 4px;">
+                <span>⚙️ Porcentaje de Descuento:</span>
+                <span id="currentDiscountLabel" style="color: var(--warning); font-family: monospace; font-size: 0.85rem; font-weight: 800;">0%</span>
+              </label>
+              <div class="discount-buttons-grid">
+                <button class="btn-discount active" onclick="setDiscount(0, this)">0%</button>
+                <button class="btn-discount" onclick="setDiscount(10, this)">10%</button>
+                <button class="btn-discount" onclick="setDiscount(15, this)">15%</button>
+                <button class="btn-discount" onclick="setDiscount(20, this)">20%</button>
+                <button class="btn-discount" onclick="setDiscount(25, this)">25%</button>
+                <button class="btn-discount" onclick="setDiscount(30, this)">30%</button>
+                <button class="btn-discount" onclick="setDiscount(32, this)">32%</button>
+                <button class="btn-discount" onclick="activateCustomDiscount(this)">Otro</button>
+              </div>
+
+              <div class="custom-discount-row" id="customDiscountBox" style="display: none; margin-top: 6px;">
+                <span style="font-size: 0.78rem; color: var(--text-secondary);">Personalizado:</span>
+                <input type="number" id="customDiscountVal" class="input-custom-disc" min="0" max="100" step="0.5" placeholder="%" oninput="applyCustomDiscount()">
+                <span style="font-size: 0.78rem; color: var(--text-muted);">%</span>
+              </div>
+            </div>
+
+            <!-- Payment Toggle -->
+            <div class="payment-control-group">
+              <label class="control-label" style="margin-bottom: 4px;">
+                <span>💳 Forma de Pago:</span>
+              </label>
+              <div class="payment-toggle-wrapper" style="margin-top: 0;">
+                <button class="pay-mode-btn active" id="payModeCash" onclick="setPaymentMode('cash')">💵 Efectivo / Transf.</button>
+                <button class="pay-mode-btn" id="payModeCard" onclick="setPaymentMode('card')">💳 Tarjeta (+4%)</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Results Summary Header -->
+      <div class="results-banner">
+        <div class="banner-info-left">
+          <div class="bci-badge-large" id="bannerBciBadge">47</div>
+          <div>
+            <h2 class="banner-title" id="bannerTitle">Grupo BCI 47</h2>
+            <p class="banner-subtitle" id="bannerSubtitle">Opciones comparativas de acumuladores para este grupo</p>
+          </div>
+        </div>
+
+        <div class="banner-stats">
+          <div class="stat-pill">
+            <span class="stat-pill-label">Clasif. Usado</span>
+            <span class="stat-pill-value" id="statClasifUsado">Grupo 3</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-pill-label">Valor Casco</span>
+            <span class="stat-pill-value" id="statCostoUsado" style="color: var(--success-dark);">$580.00</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-pill-label">Descuento</span>
+            <span class="stat-pill-value" id="statDiscount" style="color: var(--warning);">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Section Encapsulated -->
+      <div class="table-container">
+        <div class="table-header-bar">
+          <div class="table-header-title">
+            <span>⚡ Comparativa de Marcas y Precios</span>
+            <span id="resultsCountBadge" style="background:#e2e8f0; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; color: var(--primary-navy); font-weight: 700;">4 marcas</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="mobile-scroll-cue">↔️ Desliza horizontal</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">IVA 16% inc.</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table" id="comparisonTable">
+            <thead>
+              <tr>
+                <th style="width: 50px; text-align: center;">
+                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" title="Seleccionar o deseleccionar todas" style="transform: scale(1.15); cursor: pointer; accent-color: var(--accent-red);">
+                  <div style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700; margin-top: 1px;">TODAS</div>
+                </th>
+                <th>Marca</th>
+                <th>Tipo / Modelo</th>
+                <th>CCA (-18°C)</th>
+                <th>Cap. Reserva</th>
+                <th>Dimensiones (mm)</th>
+                <th>PRECIO CON USADO</th>
+                <th>PRECIO SIN USADO</th>
+                <th style="text-align: right;">Ficha</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Section: Live WhatsApp Quote & Client Management -->
+    <aside class="quote-sidebar">
+      <!-- Left Card: Client Data, Action Buttons & Warranty -->
+      <div class="sidebar-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div class="sidebar-title">
+            <div class="wa-icon-box">💬</div>
+            <span>Datos de Cotización y Acciones</span>
+          </div>
+
+          <div class="client-grid-inputs">
+            <div class="client-input-group">
+              <label>Nombre del Cliente (Opcional):</label>
+              <input type="text" id="clientNameInput" class="client-input" placeholder="Ej. Juan Pérez / Taller Auto" oninput="updateWhatsAppPreview()">
+            </div>
+            <div class="client-input-group">
+              <label>Vehículo / Aplicación (Opcional):</label>
+              <input type="text" id="clientVehicleInput" class="client-input" placeholder="Ej. Nissan Versa 2020" oninput="updateWhatsAppPreview()">
+            </div>
+          </div>
+
+          <div class="client-input-group">
+            <label>Teléfono Cliente (WhatsApp - Opcional):</label>
+            <input type="tel" id="clientPhoneInput" class="client-input" placeholder="Ej. 5214771234567 (10 dígitos)">
+          </div>
+
+          <div class="client-grid-actions" style="margin-top: 6px;">
+            <button class="btn-wa-copy" onclick="copyWhatsAppQuote()" style="margin: 0;">
+              📋 Copiar Cotización
+            </button>
+            <button class="btn-wa-direct" onclick="sendDirectWhatsApp()" style="margin: 0;">
+              🚀 Enviar por WhatsApp
+            </button>
+          </div>
+
+          <button class="btn-ticket-sidebar" onclick="openTicketModal()" style="margin-top: 8px; width: 100%;">
+            🧾 Imprimir Ticket Térmico de Cotización (80mm)
+          </button>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 14px;">
+          <h4 style="font-size: 0.78rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 4px;">💡 Garantía y Entrega</h4>
+          <ul style="font-size: 0.73rem; color: var(--text-secondary); padding-left: 14px; margin: 0; line-height: 1.4;">
+            <li>Precios netos con 16% de IVA incluido.</li>
+            <li>Sujetos a entrega de acumulador usado de misma capacidad.</li>
+            <li>Garantía directa con fabricante según marca.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Card: Live WhatsApp Preview Box -->
+      <div class="sidebar-card" style="display: flex; flex-direction: column;">
+        <div class="sidebar-title" style="justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="wa-icon-box" style="background: #25d366;">📱</div>
+            <span>Vista Previa del Mensaje para WhatsApp</span>
+          </div>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;" id="validityDateNote">Vigencia 7 días</span>
+        </div>
+
+        <div class="wa-preview-box" id="waPreviewBox" style="flex: 1; min-height: 250px; max-height: 380px; margin-bottom: 0;">
+          Selecciona una o más marcas con las casillas de la tabla para generar la cotización.
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Technical Specs Modal -->
+  <div class="modal-backdrop" id="specsModal" onclick="closeSpecsModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span class="brand-badge" id="modalBrandBadge">LTH</span>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--primary-navy); margin-top: 4px;" id="modalTipo">L-47-550</h3>
+          <p style="font-size: 0.78rem; color: var(--text-secondary);" id="modalBci">Grupo BCI: 47</p>
+        </div>
+        <button class="modal-close" onclick="closeSpecsModal()">&times;</button>
+      </div>
+
+      <div class="tech-specs-grid" id="modalSpecsGrid"></div>
+
+      <div style="background: #f8fafc; border-radius: var(--radius-md); padding: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Precio Cotizado (Con Casco):</span>
+          <div style="font-size: 1.18rem; font-weight: 800; color: var(--success-dark); font-family: monospace;" id="modalPriceCon">$3,470.00</div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-ticket" onclick="printSingleItemTicket()">🧾 Ticket</button>
+          <button class="btn-print" onclick="closeSpecsModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thermal Ticket Preview Modal -->
+  <div class="modal-backdrop" id="ticketModal" onclick="closeTicketModal(event)">
+    <div class="modal-content" style="max-width: 440px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span class="brand-badge badge-LTH">TICKET TÉRMICO 80MM</span>
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-top: 4px;">Vista Previa de Ticket</h3>
+          <p style="font-size: 0.76rem; color: var(--text-secondary);">Formato compacto para impresoras POS / Térmicas</p>
+        </div>
+        <button class="modal-close" onclick="closeTicketModal()">&times;</button>
+      </div>
+
+      <!-- Ticket Paper Simulation -->
+      <div class="ticket-paper-preview" id="ticketPreviewContainer">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+        <button class="btn-print" onclick="closeTicketModal()">Cerrar</button>
+        <button class="btn-ticket" style="padding: 9px 18px; font-size: 0.88rem;" onclick="triggerTicketPrint()">
+          🖨️ Mandar a Imprimir Ticket
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container">
+    <div class="toast" id="toastBox">
+      ✅ ¡Cotización copiada al portapapeles con éxito!
+    </div>
+  </div>
+
+  <script>
+    // DATA INJECTION PLACEHOLDER - ACTUALIZADO AGOSTO 2026
+    const CATALOG_ACUMULADORES = [{"id":1,"bci":"22F","tipo":"L-22F-450","ca":562,"cca":450,"marca":"LTH","capacidadReserva":75,"largo":244,"ancho":174,"alto":207,"peso":14.1,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3914,"precioListaConUsado":3470,"claveLookup":"22F|LTH"},{"id":2,"bci":"42","tipo":"L-42-400","ca":500,"cca":400,"marca":"LTH","capacidadReserva":70,"largo":241,"ancho":174,"alto":175,"peso":12.9,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4024,"precioListaConUsado":3580,"claveLookup":"42|LTH"},{"id":3,"bci":"26R","tipo":"L-26R-500","ca":625,"cca":500,"marca":"LTH","capacidadReserva":85,"largo":220,"ancho":172,"alto":200,"peso":12.5,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4024,"precioListaConUsado":3580,"claveLookup":"26R|LTH"},{"id":4,"bci":"58","tipo":"L-58-575","ca":718,"cca":575,"marca":"LTH","capacidadReserva":100,"largo":254,"ancho":183,"alto":173,"peso":13.9,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4184,"precioListaConUsado":3740,"claveLookup":"58|LTH"},{"id":5,"bci":"NS40ZL","tipo":"L-NS40-320","ca":400,"cca":320,"marca":"LTH","capacidadReserva":55,"largo":187,"ancho":140,"alto":221,"peso":10.1,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":4092,"precioListaConUsado":3750,"claveLookup":"NS40ZL|LTH"},{"id":6,"bci":"NS40Z","tipo":"L-NS40Z-320","ca":400,"cca":320,"marca":"LTH","capacidadReserva":55,"largo":187,"ancho":127,"alto":221,"peso":10.1,"polaridad":"(+) / (-)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":4092,"precioListaConUsado":3750,"claveLookup":"NS40Z|LTH"},{"id":7,"bci":"NS40L","tipo":"L-NS40L-340","ca":425,"cca":340,"marca":"LTH","capacidadReserva":55,"largo":187,"ancho":127,"alto":221,"peso":10.1,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":4092,"precioListaConUsado":3750,"claveLookup":"NS40L|LTH"},{"id":8,"bci":"44B19","tipo":"L-44B19-335","ca":418,"cca":335,"marca":"LTH","capacidadReserva":55,"largo":187,"ancho":127,"alto":221,"peso":10.2,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":4092,"precioListaConUsado":3750,"claveLookup":"44B19|LTH"},{"id":9,"bci":"99","tipo":"L-99(LBN1)-400","ca":500,"cca":400,"marca":"LTH","capacidadReserva":65,"largo":206,"ancho":174,"alto":174,"peso":11.1,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":4202,"precioListaConUsado":3860,"claveLookup":"99|LTH"},{"id":10,"bci":"24","tipo":"L-24-530","ca":662,"cca":530,"marca":"LTH","capacidadReserva":90,"largo":278,"ancho":174,"alto":220,"peso":17.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4480,"precioListaConUsado":3900,"claveLookup":"24|LTH"},{"id":11,"bci":"42500","tipo":"L-42-500","ca":625,"cca":500,"marca":"LTH","capacidadReserva":90,"largo":241,"ancho":174,"alto":175,"peso":13.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4384,"precioListaConUsado":3940,"claveLookup":"42500|LTH"},{"id":12,"bci":"35","tipo":"L-35-575","ca":718,"cca":575,"marca":"LTH","capacidadReserva":100,"largo":245,"ancho":174,"alto":225,"peso":15.5,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4540,"precioListaConUsado":3960,"claveLookup":"35|LTH"},{"id":13,"bci":"24R","tipo":"L-24R-530","ca":662,"cca":530,"marca":"LTH","capacidadReserva":90,"largo":278,"ancho":174,"alto":220,"peso":17.4,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4640,"precioListaConUsado":4060,"claveLookup":"24R|LTH"},{"id":14,"bci":"75","tipo":"L-75-575","ca":718,"cca":575,"marca":"LTH","capacidadReserva":105,"largo":245,"ancho":185,"alto":185,"peso":14.0,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4670,"precioListaConUsado":4090,"claveLookup":"75|LTH"},{"id":15,"bci":"42R","tipo":"L-42R-500","ca":625,"cca":500,"marca":"LTH","capacidadReserva":90,"largo":241,"ancho":174,"alto":175,"peso":13.8,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4544,"precioListaConUsado":4100,"claveLookup":"42R|LTH"},{"id":16,"bci":"51R","tipo":"L-51R-500","ca":625,"cca":500,"marca":"LTH","capacidadReserva":85,"largo":236,"ancho":127,"alto":220,"peso":12.6,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4544,"precioListaConUsado":4100,"claveLookup":"51R|LTH"},{"id":17,"bci":"51RJIS","tipo":"L-51R JIS -480","ca":600,"cca":480,"marca":"LTH","capacidadReserva":85,"largo":236,"ancho":127,"alto":220,"peso":12.5,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4544,"precioListaConUsado":4100,"claveLookup":"51RJIS|LTH"},{"id":18,"bci":"51","tipo":"L-51-500","ca":625,"cca":500,"marca":"LTH","capacidadReserva":85,"largo":236,"ancho":127,"alto":220,"peso":12.6,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4754,"precioListaConUsado":4310,"claveLookup":"51|LTH"},{"id":19,"bci":"51JIS","tipo":"L-51 JIS -480","ca":600,"cca":480,"marca":"LTH","capacidadReserva":85,"largo":236,"ancho":127,"alto":220,"peso":12.5,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4754,"precioListaConUsado":4310,"claveLookup":"51JIS|LTH"},{"id":20,"bci":"65","tipo":"L-65-800","ca":1000,"cca":800,"marca":"LTH","capacidadReserva":150,"largo":305,"ancho":190,"alto":189,"peso":21.0,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5003,"precioListaConUsado":4320,"claveLookup":"65|LTH"},{"id":21,"bci":"75/86","tipo":"L-75/86-650","ca":812,"cca":650,"marca":"LTH","capacidadReserva":93,"largo":245,"ancho":186,"alto":203,"peso":15.7,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5040,"precioListaConUsado":4460,"claveLookup":"75/86|LTH"},{"id":22,"bci":"34","tipo":"L-34-600","ca":750,"cca":600,"marca":"LTH","capacidadReserva":110,"largo":278,"ancho":174,"alto":197,"peso":17.0,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5040,"precioListaConUsado":4460,"claveLookup":"34|LTH"},{"id":23,"bci":"41","tipo":"L-41-650","ca":812,"cca":650,"marca":"LTH","capacidadReserva":120,"largo":295,"ancho":174,"alto":174,"peso":16.3,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5040,"precioListaConUsado":4460,"claveLookup":"41|LTH"},{"id":24,"bci":"47","tipo":"L-47(LN2)-550","ca":687,"cca":550,"marca":"LTH","capacidadReserva":100,"largo":241,"ancho":174,"alto":189,"peso":14.4,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5060,"precioListaConUsado":4480,"claveLookup":"47|LTH"},{"id":25,"bci":"58R","tipo":"L-58R-575","ca":718,"cca":575,"marca":"LTH","capacidadReserva":95,"largo":253,"ancho":183,"alto":177,"peso":14.4,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":5034,"precioListaConUsado":4590,"claveLookup":"58R|LTH"},{"id":26,"bci":"27F","tipo":"L-27F-520","ca":650,"cca":520,"marca":"LTH","capacidadReserva":102,"largo":324,"ancho":174,"alto":223,"peso":18.8,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5333,"precioListaConUsado":4650,"claveLookup":"27F|LTH"},{"id":27,"bci":"34/78","tipo":"L-34/78-750","ca":937,"cca":750,"marca":"LTH","capacidadReserva":115,"largo":278,"ancho":186,"alto":203,"peso":18.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5250,"precioListaConUsado":4670,"claveLookup":"34/78|LTH"},{"id":28,"bci":"48/91","tipo":"L-48/91(LN3)-615","ca":768,"cca":615,"marca":"LTH","capacidadReserva":95,"largo":277,"ancho":174,"alto":190,"peso":17.6,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5610,"precioListaConUsado":5030,"claveLookup":"48/91|LTH"},{"id":29,"bci":"27","tipo":"L-27-700","ca":875,"cca":700,"marca":"LTH","capacidadReserva":160,"largo":324,"ancho":174,"alto":223,"peso":23.9,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5963,"precioListaConUsado":5280,"claveLookup":"27|LTH"},{"id":30,"bci":"94R","tipo":"L-94R-800","ca":1000,"cca":800,"marca":"LTH","capacidadReserva":140,"largo":314,"ancho":174,"alto":190,"peso":19.4,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5963,"precioListaConUsado":5280,"claveLookup":"94R|LTH"},{"id":31,"bci":"4","tipo":"L-4-950 AR**","ca":1187,"cca":950,"marca":"LTH","capacidadReserva":295,"largo":321,"ancho":177,"alto":238,"peso":22.7,"polaridad":"(-) / (+)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4523,"precioListaConUsado":3670,"claveLookup":"4|LTH"},{"id":32,"bci":"30H","tipo":"L-30H-670","ca":837,"cca":670,"marca":"LTH","capacidadReserva":160,"largo":330,"ancho":172,"alto":233,"peso":23.6,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5013,"precioListaConUsado":4160,"claveLookup":"30H|LTH"},{"id":33,"bci":"31P750","tipo":"L-31P-750 AR**","ca":937,"cca":750,"marca":"LTH","capacidadReserva":180,"largo":330,"ancho":172,"alto":239,"peso":25.9,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5163,"precioListaConUsado":4310,"claveLookup":"31P750|LTH"},{"id":34,"bci":"31T750","tipo":"L-31T-750 AR**","ca":937,"cca":750,"marca":"LTH","capacidadReserva":180,"largo":330,"ancho":172,"alto":238,"peso":25.9,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5163,"precioListaConUsado":4310,"claveLookup":"31T750|LTH"},{"id":35,"bci":"31P900","tipo":"L-31P-900 AR**","ca":1125,"cca":900,"marca":"LTH","capacidadReserva":195,"largo":330,"ancho":172,"alto":239,"peso":27.2,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5603,"precioListaConUsado":4750,"claveLookup":"31P900|LTH"},{"id":36,"bci":"31T900","tipo":"L-31T-900 AR**","ca":1125,"cca":900,"marca":"LTH","capacidadReserva":195,"largo":330,"ancho":172,"alto":238,"peso":27.2,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5603,"precioListaConUsado":4750,"claveLookup":"31T900|LTH"},{"id":37,"bci":"4DLT","tipo":"L-4DLT-1000","ca":1250,"cca":1000,"marca":"LTH","capacidadReserva":235,"largo":507,"ancho":220,"alto":208,"peso":36.2,"polaridad":"(+) / (-)","clasificacionUsado":6,"costoUsado":1706,"precioListaSinUsado":8646,"precioListaConUsado":6940,"claveLookup":"4DLT|LTH"},{"id":38,"bci":"4D","tipo":"L-4D-1000","ca":1250,"cca":1000,"marca":"LTH","capacidadReserva":295,"largo":531,"ancho":210,"alto":245,"peso":44.2,"polaridad":"(-) / (+)","clasificacionUsado":7,"costoUsado":1706,"precioListaSinUsado":9536,"precioListaConUsado":7830,"claveLookup":"4D|LTH"},{"id":39,"bci":"8D","tipo":"L-8D-1125 AR**","ca":1406,"cca":1125,"marca":"LTH","capacidadReserva":335,"largo":527,"ancho":279,"alto":250,"peso":58.7,"polaridad":"(-) / (+)","clasificacionUsado":7,"costoUsado":1706,"precioListaSinUsado":9956,"precioListaConUsado":8250,"claveLookup":"8D|LTH"},{"id":40,"bci":"22F","tipo":"AM-22F-450","ca":562,"cca":450,"marca":"AMERICA","capacidadReserva":75,"largo":245,"ancho":174,"alto":207,"peso":13.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3264,"precioListaConUsado":2820,"claveLookup":"22F|AMERICA"},{"id":41,"bci":"42","tipo":"AM-42-400","ca":500,"cca":400,"marca":"AMERICA","capacidadReserva":70,"largo":256,"ancho":174,"alto":174,"peso":12.9,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3344,"precioListaConUsado":2900,"claveLookup":"42|AMERICA"},{"id":42,"bci":"26R","tipo":"AM-26R-500","ca":625,"cca":500,"marca":"AMERICA","capacidadReserva":85,"largo":220,"ancho":172,"alto":200,"peso":12.5,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3344,"precioListaConUsado":2900,"claveLookup":"26R|AMERICA"},{"id":43,"bci":"58","tipo":"AM-58-575","ca":718,"cca":575,"marca":"AMERICA","capacidadReserva":100,"largo":253,"ancho":183,"alto":177,"peso":14.4,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3484,"precioListaConUsado":3040,"claveLookup":"58|AMERICA"},{"id":44,"bci":"NS40ZL","tipo":"AM-NS40-320","ca":400,"cca":320,"marca":"AMERICA","capacidadReserva":55,"largo":187,"ancho":140,"alto":221,"peso":10.1,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":3392,"precioListaConUsado":3050,"claveLookup":"NS40ZL|AMERICA"},{"id":45,"bci":"NS40Z","tipo":"AM-NS40Z-320","ca":400,"cca":320,"marca":"AMERICA","capacidadReserva":55,"largo":187,"ancho":127,"alto":221,"peso":10.1,"polaridad":"(+) / (-)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":3392,"precioListaConUsado":3050,"claveLookup":"NS40Z|AMERICA"},{"id":46,"bci":"44B19","tipo":"AM-44B19-335","ca":418,"cca":335,"marca":"AMERICA","capacidadReserva":55,"largo":187,"ancho":127,"alto":221,"peso":10.2,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":3392,"precioListaConUsado":3050,"claveLookup":"44B19|AMERICA"},{"id":47,"bci":"99","tipo":"AM-99-390","ca":487,"cca":390,"marca":"AMERICA","capacidadReserva":65,"largo":210,"ancho":176,"alto":174,"peso":10.8,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":3462,"precioListaConUsado":3120,"claveLookup":"99|AMERICA"},{"id":48,"bci":"24","tipo":"AM-24-420","ca":525,"cca":420,"marca":"AMERICA","capacidadReserva":70,"largo":278,"ancho":174,"alto":221,"peso":16.7,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3730,"precioListaConUsado":3150,"claveLookup":"24|AMERICA"},{"id":49,"bci":"42500","tipo":"AM-42-500","ca":625,"cca":500,"marca":"AMERICA","capacidadReserva":90,"largo":256,"ancho":174,"alto":174,"peso":13.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3644,"precioListaConUsado":3200,"claveLookup":"42500|AMERICA"},{"id":50,"bci":"35","tipo":"AM-35-550","ca":687,"cca":550,"marca":"AMERICA","capacidadReserva":100,"largo":245,"ancho":174,"alto":224,"peso":16.1,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3780,"precioListaConUsado":3200,"claveLookup":"35|AMERICA"},{"id":51,"bci":"24R","tipo":"AM-24R-530","ca":662,"cca":530,"marca":"AMERICA","capacidadReserva":90,"largo":278,"ancho":174,"alto":221,"peso":18.4,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3870,"precioListaConUsado":3290,"claveLookup":"24R|AMERICA"},{"id":52,"bci":"75","tipo":"AM-75-550","ca":687,"cca":550,"marca":"AMERICA","capacidadReserva":80,"largo":245,"ancho":184,"alto":186,"peso":13.6,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3900,"precioListaConUsado":3320,"claveLookup":"75|AMERICA"},{"id":53,"bci":"42R","tipo":"AM-42R-500","ca":625,"cca":500,"marca":"AMERICA","capacidadReserva":90,"largo":256,"ancho":174,"alto":174,"peso":13.8,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3784,"precioListaConUsado":3340,"claveLookup":"42R|AMERICA"},{"id":54,"bci":"51R","tipo":"AM-51R-500","ca":625,"cca":500,"marca":"AMERICA","capacidadReserva":85,"largo":236,"ancho":127,"alto":220,"peso":12.7,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3784,"precioListaConUsado":3340,"claveLookup":"51R|AMERICA"},{"id":55,"bci":"51","tipo":"AM-51-500","ca":625,"cca":500,"marca":"AMERICA","capacidadReserva":85,"largo":236,"ancho":127,"alto":220,"peso":12.7,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3924,"precioListaConUsado":3480,"claveLookup":"51|AMERICA"},{"id":56,"bci":"65","tipo":"AM-65-800","ca":1000,"cca":800,"marca":"AMERICA","capacidadReserva":150,"largo":305,"ancho":190,"alto":191,"peso":20.8,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":4183,"precioListaConUsado":3500,"claveLookup":"65|AMERICA"},{"id":57,"bci":"75/86","tipo":"AM-75/86-650","ca":812,"cca":650,"marca":"AMERICA","capacidadReserva":93,"largo":245,"ancho":186,"alto":203,"peso":15.7,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4190,"precioListaConUsado":3610,"claveLookup":"75/86|AMERICA"},{"id":58,"bci":"34","tipo":"AM-34-600","ca":750,"cca":600,"marca":"AMERICA","capacidadReserva":110,"largo":278,"ancho":174,"alto":198,"peso":17.2,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4190,"precioListaConUsado":3610,"claveLookup":"34|AMERICA"},{"id":59,"bci":"41","tipo":"AM-41-650","ca":812,"cca":650,"marca":"AMERICA","capacidadReserva":120,"largo":297,"ancho":175,"alto":174,"peso":16.3,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4190,"precioListaConUsado":3610,"claveLookup":"41|AMERICA"},{"id":60,"bci":"47","tipo":"AM-47(LN2)-550","ca":687,"cca":550,"marca":"AMERICA","capacidadReserva":85,"largo":241,"ancho":174,"alto":189,"peso":14.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4200,"precioListaConUsado":3620,"claveLookup":"47|AMERICA"},{"id":61,"bci":"58R","tipo":"AM-58R-575","ca":718,"cca":575,"marca":"AMERICA","capacidadReserva":95,"largo":253,"ancho":183,"alto":177,"peso":14.1,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4164,"precioListaConUsado":3720,"claveLookup":"58R|AMERICA"},{"id":62,"bci":"27F","tipo":"AM-27F-520","ca":650,"cca":520,"marca":"AMERICA","capacidadReserva":102,"largo":324,"ancho":174,"alto":223,"peso":20.2,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":4443,"precioListaConUsado":3760,"claveLookup":"27F|AMERICA"},{"id":63,"bci":"34/78","tipo":"AM-34/78-750","ca":937,"cca":750,"marca":"AMERICA","capacidadReserva":115,"largo":277,"ancho":185,"alto":204,"peso":18.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4360,"precioListaConUsado":3780,"claveLookup":"34/78|AMERICA"},{"id":64,"bci":"48/91","tipo":"AM-48/91(LN3)-615","ca":768,"cca":615,"marca":"AMERICA","capacidadReserva":95,"largo":277,"ancho":174,"alto":190,"peso":15.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4650,"precioListaConUsado":4070,"claveLookup":"48/91|AMERICA"},{"id":65,"bci":"27","tipo":"AM-27-700","ca":875,"cca":700,"marca":"AMERICA","capacidadReserva":135,"largo":324,"ancho":174,"alto":223,"peso":22.0,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":4963,"precioListaConUsado":4280,"claveLookup":"27|AMERICA"},{"id":66,"bci":"94R","tipo":"AM-94R-800","ca":1000,"cca":800,"marca":"AMERICA","capacidadReserva":140,"largo":314,"ancho":174,"alto":190,"peso":19.4,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":4963,"precioListaConUsado":4280,"claveLookup":"94R|AMERICA"},{"id":67,"bci":"30H","tipo":"AM-30H-670","ca":837,"cca":670,"marca":"AMERICA","capacidadReserva":160,"largo":330,"ancho":172,"alto":233,"peso":23.6,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4423,"precioListaConUsado":3570,"claveLookup":"30H|AMERICA"},{"id":68,"bci":"31P750","tipo":"AM-31T-750 AR**","ca":937,"cca":750,"marca":"AMERICA","capacidadReserva":180,"largo":330,"ancho":172,"alto":238,"peso":25.9,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4553,"precioListaConUsado":3700,"claveLookup":"31P750|AMERICA"},{"id":69,"bci":"31T750","tipo":"AM-31P-750 AR**","ca":937,"cca":750,"marca":"AMERICA","capacidadReserva":180,"largo":330,"ancho":172,"alto":239,"peso":25.9,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4553,"precioListaConUsado":3700,"claveLookup":"31T750|AMERICA"},{"id":70,"bci":"31P900","tipo":"AM-31T-900 AR**","ca":1125,"cca":900,"marca":"AMERICA","capacidadReserva":195,"largo":330,"ancho":172,"alto":238,"peso":27.2,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4923,"precioListaConUsado":4070,"claveLookup":"31P900|AMERICA"},{"id":71,"bci":"31T900","tipo":"AM-31P-900 AR**","ca":1125,"cca":900,"marca":"AMERICA","capacidadReserva":195,"largo":330,"ancho":172,"alto":239,"peso":27.2,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4923,"precioListaConUsado":4070,"claveLookup":"31T900|AMERICA"},{"id":72,"bci":"4DLT","tipo":"AM-4DLT-1000","ca":1250,"cca":1000,"marca":"AMERICA","capacidadReserva":235,"largo":507,"ancho":220,"alto":208,"peso":36.2,"polaridad":"(+) / (-)","clasificacionUsado":6,"costoUsado":1706,"precioListaSinUsado":7676,"precioListaConUsado":5970,"claveLookup":"4DLT|AMERICA"},{"id":73,"bci":"8D","tipo":"AM-8D-1125 AR**","ca":1406,"cca":1125,"marca":"AMERICA","capacidadReserva":335,"largo":527,"ancho":279,"alto":250,"peso":58.7,"polaridad":"(-) / (+)","clasificacionUsado":7,"costoUsado":1706,"precioListaSinUsado":8806,"precioListaConUsado":7100,"claveLookup":"8D|AMERICA"},{"id":74,"bci":"22F","tipo":"CL-22F-450","ca":562,"cca":450,"marca":"CALE","capacidadReserva":75,"largo":245,"ancho":174,"alto":207,"peso":13.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3374,"precioListaConUsado":2930,"claveLookup":"22F|CALE"},{"id":75,"bci":"42","tipo":"CL-42-400","ca":500,"cca":400,"marca":"CALE","capacidadReserva":70,"largo":256,"ancho":174,"alto":174,"peso":12.9,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3454,"precioListaConUsado":3010,"claveLookup":"42|CALE"},{"id":76,"bci":"26R","tipo":"CL-26R-500","ca":625,"cca":500,"marca":"CALE","capacidadReserva":85,"largo":220,"ancho":172,"alto":200,"peso":12.5,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3454,"precioListaConUsado":3010,"claveLookup":"26R|CALE"},{"id":77,"bci":"58","tipo":"CL-58-575","ca":718,"cca":575,"marca":"CALE","capacidadReserva":100,"largo":253,"ancho":183,"alto":177,"peso":14.4,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3594,"precioListaConUsado":3150,"claveLookup":"58|CALE"},{"id":78,"bci":"NS40ZL","tipo":"CL-NS40-320","ca":400,"cca":320,"marca":"CALE","capacidadReserva":55,"largo":187,"ancho":140,"alto":221,"peso":10.1,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":3502,"precioListaConUsado":3160,"claveLookup":"NS40ZL|CALE"},{"id":79,"bci":"NS40Z","tipo":"CL-NS40Z-320","ca":400,"cca":320,"marca":"CALE","capacidadReserva":55,"largo":187,"ancho":127,"alto":221,"peso":10.1,"polaridad":"(+) / (-)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":3502,"precioListaConUsado":3160,"claveLookup":"NS40Z|CALE"},{"id":80,"bci":"99","tipo":"CL-99-390","ca":487,"cca":390,"marca":"CALE","capacidadReserva":65,"largo":210,"ancho":176,"alto":174,"peso":10.8,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":3582,"precioListaConUsado":3240,"claveLookup":"99|CALE"},{"id":81,"bci":"24","tipo":"CL-24-420","ca":525,"cca":420,"marca":"CALE","capacidadReserva":70,"largo":278,"ancho":174,"alto":221,"peso":15.9,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3860,"precioListaConUsado":3280,"claveLookup":"24|CALE"},{"id":82,"bci":"42","tipo":"CL-42-500","ca":625,"cca":500,"marca":"CALE","capacidadReserva":90,"largo":256,"ancho":174,"alto":174,"peso":13.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3764,"precioListaConUsado":3320,"claveLookup":"42|CALE"},{"id":83,"bci":"35","tipo":"CL-35-550","ca":687,"cca":550,"marca":"CALE","capacidadReserva":100,"largo":245,"ancho":174,"alto":224,"peso":16.1,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3900,"precioListaConUsado":3320,"claveLookup":"35|CALE"},{"id":84,"bci":"24R","tipo":"CL-24R-530","ca":662,"cca":530,"marca":"CALE","capacidadReserva":90,"largo":278,"ancho":174,"alto":221,"peso":17.2,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4000,"precioListaConUsado":3420,"claveLookup":"24R|CALE"},{"id":85,"bci":"75","tipo":"CL-75-550","ca":687,"cca":550,"marca":"CALE","capacidadReserva":80,"largo":247,"ancho":186,"alto":184,"peso":14.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4030,"precioListaConUsado":3450,"claveLookup":"75|CALE"},{"id":86,"bci":"42R","tipo":"CL-42R-500","ca":625,"cca":500,"marca":"CALE","capacidadReserva":90,"largo":256,"ancho":174,"alto":174,"peso":13.8,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3904,"precioListaConUsado":3460,"claveLookup":"42R|CALE"},{"id":87,"bci":"51R","tipo":"CL-51R-500","ca":625,"cca":500,"marca":"CALE","capacidadReserva":85,"largo":236,"ancho":127,"alto":220,"peso":12.7,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":3904,"precioListaConUsado":3460,"claveLookup":"51R|CALE"},{"id":88,"bci":"65","tipo":"CL-65-800","ca":1000,"cca":800,"marca":"CALE","capacidadReserva":150,"largo":305,"ancho":190,"alto":191,"peso":20.8,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":4323,"precioListaConUsado":3640,"claveLookup":"65|CALE"},{"id":89,"bci":"34","tipo":"CL-34-600","ca":750,"cca":600,"marca":"CALE","capacidadReserva":110,"largo":278,"ancho":174,"alto":198,"peso":17.2,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4330,"precioListaConUsado":3750,"claveLookup":"34|CALE"},{"id":90,"bci":"75/86","tipo":"CL-75/86-650","ca":812,"cca":650,"marca":"CALE","capacidadReserva":93,"largo":245,"ancho":186,"alto":203,"peso":15.7,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4330,"precioListaConUsado":3750,"claveLookup":"75/86|CALE"},{"id":91,"bci":"41","tipo":"CL-41-650","ca":812,"cca":650,"marca":"CALE","capacidadReserva":120,"largo":297,"ancho":175,"alto":174,"peso":16.3,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4330,"precioListaConUsado":3750,"claveLookup":"41|CALE"},{"id":92,"bci":"47","tipo":"CL-47(LN2)-550","ca":687,"cca":550,"marca":"CALE","capacidadReserva":85,"largo":241,"ancho":174,"alto":189,"peso":14.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4350,"precioListaConUsado":3770,"claveLookup":"47|CALE"},{"id":93,"bci":"34/78","tipo":"CL-34/78-750","ca":937,"cca":750,"marca":"CALE","capacidadReserva":115,"largo":277,"ancho":185,"alto":204,"peso":18.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4520,"precioListaConUsado":3940,"claveLookup":"34/78|CALE"},{"id":94,"bci":"48/91","tipo":"CL-48/91(LN3)-615","ca":768,"cca":615,"marca":"CALE","capacidadReserva":95,"largo":277,"ancho":174,"alto":190,"peso":15.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4820,"precioListaConUsado":4240,"claveLookup":"48/91|CALE"},{"id":95,"bci":"31T750","tipo":"CL-31T-750","ca":937,"cca":750,"marca":"CALE","capacidadReserva":175,"largo":330,"ancho":172,"alto":238,"peso":25.9,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4273,"precioListaConUsado":3420,"claveLookup":"31T750|CALE"},{"id":96,"bci":"31P750","tipo":"CL-31P-750","ca":937,"cca":750,"marca":"CALE","capacidadReserva":175,"largo":330,"ancho":172,"alto":239,"peso":25.9,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":4273,"precioListaConUsado":3420,"claveLookup":"31P750|CALE"},{"id":97,"bci":"4DLT","tipo":"CL-4DLT-1000","ca":1250,"cca":1000,"marca":"CALE","capacidadReserva":235,"largo":507,"ancho":220,"alto":208,"peso":36.2,"polaridad":"(+) / (-)","clasificacionUsado":6,"costoUsado":1706,"precioListaSinUsado":7226,"precioListaConUsado":5520,"claveLookup":"4DLT|CALE"},{"id":98,"bci":"8D","tipo":"CL-8D-1125","ca":1406,"cca":1125,"marca":"CALE","capacidadReserva":335,"largo":527,"ancho":279,"alto":250,"peso":58.7,"polaridad":"(-) / (+)","clasificacionUsado":7,"costoUsado":1706,"precioListaSinUsado":8276,"precioListaConUsado":6570,"claveLookup":"8D|CALE"},{"id":99,"bci":"31T/S","tipo":"CL-31T/S-190M","ca":875,"cca":700,"marca":"CALE","capacidadReserva":190,"largo":330,"ancho":172,"alto":238,"peso":27.7,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5653,"precioListaConUsado":4800,"claveLookup":"31T/S|CALE"},{"id":100,"bci":"22F","tipo":"C-22F-350","ca":437,"cca":350,"marca":"CRONOS","capacidadReserva":55,"largo":245,"ancho":174,"alto":207,"peso":12.6,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2474,"precioListaConUsado":2030,"claveLookup":"22F|CRONOS"},{"id":101,"bci":"42","tipo":"C-42-330","ca":412,"cca":330,"marca":"CRONOS","capacidadReserva":60,"largo":256,"ancho":174,"alto":174,"peso":12.1,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2534,"precioListaConUsado":2090,"claveLookup":"42|CRONOS"},{"id":102,"bci":"58","tipo":"C-58-420","ca":525,"cca":420,"marca":"CRONOS","capacidadReserva":75,"largo":253,"ancho":183,"alto":177,"peso":12.4,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2634,"precioListaConUsado":2190,"claveLookup":"58|CRONOS"},{"id":103,"bci":"99","tipo":"C-99-350","ca":437,"cca":350,"marca":"CRONOS","capacidadReserva":55,"largo":210,"ancho":176,"alto":174,"peso":10.8,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":2602,"precioListaConUsado":2260,"claveLookup":"99|CRONOS"},{"id":104,"bci":"35","tipo":"C-35-450","ca":562,"cca":450,"marca":"CRONOS","capacidadReserva":80,"largo":245,"ancho":174,"alto":224,"peso":15.4,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":2890,"precioListaConUsado":2310,"claveLookup":"35|CRONOS"},{"id":105,"bci":"24R","tipo":"C-24R-420","ca":525,"cca":420,"marca":"CRONOS","capacidadReserva":75,"largo":278,"ancho":174,"alto":221,"peso":15.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":2960,"precioListaConUsado":2380,"claveLookup":"24R|CRONOS"},{"id":106,"bci":"65","tipo":"C-65-650","ca":812,"cca":650,"marca":"CRONOS","capacidadReserva":130,"largo":305,"ancho":190,"alto":191,"peso":18.9,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":3213,"precioListaConUsado":2530,"claveLookup":"65|CRONOS"},{"id":107,"bci":"75/86","tipo":"C-75/86-400","ca":500,"cca":400,"marca":"CRONOS","capacidadReserva":75,"largo":245,"ancho":186,"alto":203,"peso":13.9,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3190,"precioListaConUsado":2610,"claveLookup":"75/86|CRONOS"},{"id":108,"bci":"47","tipo":"C-47-525","ca":656,"cca":525,"marca":"CRONOS","capacidadReserva":80,"largo":244,"ancho":175,"alto":189,"peso":12.8,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3200,"precioListaConUsado":2620,"claveLookup":"47|CRONOS"},{"id":109,"bci":"22F","tipo":"DY-22F-350","ca":437,"cca":350,"marca":"DYNAMO","capacidadReserva":55,"largo":245,"ancho":174,"alto":207,"peso":12.6,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2474,"precioListaConUsado":2030,"claveLookup":"22F|DYNAMO"},{"id":110,"bci":"42","tipo":"DY-42-330","ca":412,"cca":330,"marca":"DYNAMO","capacidadReserva":60,"largo":256,"ancho":174,"alto":174,"peso":12.1,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2534,"precioListaConUsado":2090,"claveLookup":"42|DYNAMO"},{"id":111,"bci":"58","tipo":"DY-58-420","ca":525,"cca":420,"marca":"DYNAMO","capacidadReserva":75,"largo":253,"ancho":183,"alto":177,"peso":12.4,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2634,"precioListaConUsado":2190,"claveLookup":"58|DYNAMO"},{"id":112,"bci":"99","tipo":"DY-99-350","ca":437,"cca":350,"marca":"DYNAMO","capacidadReserva":55,"largo":210,"ancho":176,"alto":174,"peso":10.8,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":2602,"precioListaConUsado":2260,"claveLookup":"99|DYNAMO"},{"id":113,"bci":"65","tipo":"DY-65-650","ca":812,"cca":650,"marca":"DYNAMO","capacidadReserva":130,"largo":305,"ancho":190,"alto":191,"peso":18.9,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":3213,"precioListaConUsado":2530,"claveLookup":"65|DYNAMO"},{"id":114,"bci":"47","tipo":"DY-47-525","ca":656,"cca":525,"marca":"DYNAMO","capacidadReserva":80,"largo":244,"ancho":175,"alto":189,"peso":12.8,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3200,"precioListaConUsado":2620,"claveLookup":"47|DYNAMO"},{"id":115,"bci":"24M","tipo":"L-24M-500*","ca":55,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"95 @ 25A","largo":278,"ancho":174,"alto":228,"peso":17.6,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4140,"precioListaConUsado":3560,"claveLookup":"24M|LTH ESPECIALES"},{"id":116,"bci":"24MDC","tipo":"L-24MDC-140","ca":80,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"140 @ 25A","largo":278,"ancho":174,"alto":228,"peso":20.6,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":4613,"precioListaConUsado":3930,"claveLookup":"24MDC|LTH ESPECIALES"},{"id":117,"bci":"27MDC","tipo":"L-27MDC-160","ca":90,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"160 @ 25A","largo":324,"ancho":174,"alto":230,"peso":22.8,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5513,"precioListaConUsado":4660,"claveLookup":"27MDC|LTH ESPECIALES"},{"id":118,"bci":"29DC","tipo":"L-29DC-210","ca":115,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"210 @ 25A","largo":329,"ancho":172,"alto":240,"peso":27.1,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":6803,"precioListaConUsado":5950,"claveLookup":"29DC|LTH ESPECIALES"},{"id":119,"bci":"4DM","tipo":"L-4DM-390M","ca":205,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"390 @ 25A","largo":531,"ancho":210,"alto":246,"peso":53.1,"polaridad":"(+) / (-)","clasificacionUsado":7,"costoUsado":1706,"precioListaSinUsado":10506,"precioListaConUsado":8800,"claveLookup":"4DM|LTH ESPECIALES"},{"id":120,"bci":"31T/S","tipo":"L-31T/S-190M","ca":115,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"190 @ 25A","largo":330,"ancho":172,"alto":238,"peso":27.7,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":6153,"precioListaConUsado":5300,"claveLookup":"31T/S|LTH ESPECIALES"},{"id":121,"bci":"U1","tipo":"L-U1-340**","ca":28,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"41 @ 25A","largo":196,"ancho":132,"alto":183,"peso":8.4,"polaridad":"(+) / (-)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":2742,"precioListaConUsado":2400,"claveLookup":"U1|LTH ESPECIALES"},{"id":122,"bci":"GC2","tipo":"L-GC2-101","ca":190,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"101 @ 75A","largo":262,"ancho":181,"alto":271,"peso":26.3,"polaridad":"(-) / (+)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":7013,"precioListaConUsado":6160,"claveLookup":"GC2|LTH ESPECIALES"},{"id":123,"bci":"GC2","tipo":"L-GC2-115","ca":225,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"115 @ 75A","largo":262,"ancho":181,"alto":271,"peso":28.1,"polaridad":"(-) / (+)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":8743,"precioListaConUsado":7890,"claveLookup":"GC2|LTH ESPECIALES"},{"id":124,"bci":"GC8","tipo":"L-GC8-110","ca":160,"cca":null,"marca":"LTH ESPECIALES","capacidadReserva":"110 @ 56A","largo":261,"ancho":180,"alto":273,"peso":28.0,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":7723,"precioListaConUsado":6870,"claveLookup":"GC8|LTH ESPECIALES"},{"id":125,"bci":"35","tipo":"L-35-650 AGM","ca":812,"cca":650,"marca":"LTH EVOLUTION","capacidadReserva":100,"largo":245,"ancho":171,"alto":225,"peso":18.4,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":7100,"precioListaConUsado":6520,"claveLookup":"35|LTH EVOLUTION"},{"id":126,"bci":"24F","tipo":"L-24F-710 AGM","ca":888,"cca":710,"marca":"LTH EVOLUTION","capacidadReserva":120,"largo":278,"ancho":174,"alto":219,"peso":20.8,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":7290,"precioListaConUsado":6710,"claveLookup":"24F|LTH EVOLUTION"},{"id":127,"bci":"65","tipo":"L-65-750 AGM","ca":938,"cca":750,"marca":"LTH EVOLUTION","capacidadReserva":120,"largo":305,"ancho":189,"alto":188,"peso":19.3,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":7813,"precioListaConUsado":7130,"claveLookup":"65|LTH EVOLUTION"},{"id":128,"bci":"47","tipo":"L-47(LN2)-660 AGM","ca":825,"cca":660,"marca":"LTH EVOLUTION","capacidadReserva":100,"largo":242,"ancho":175,"alto":190,"peso":17.4,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":7970,"precioListaConUsado":7390,"claveLookup":"47|LTH EVOLUTION"},{"id":129,"bci":"94R","tipo":"L-94R-850 AGM","ca":1062,"cca":850,"marca":"LTH EVOLUTION","capacidadReserva":140,"largo":315,"ancho":175,"alto":190,"peso":24.3,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":8983,"precioListaConUsado":8300,"claveLookup":"94R|LTH EVOLUTION"},{"id":130,"bci":"48/91","tipo":"L-48/91-760 AGM","ca":950,"cca":760,"marca":"LTH EVOLUTION","capacidadReserva":120,"largo":278,"ancho":175,"alto":190,"peso":20.7,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":8880,"precioListaConUsado":8300,"claveLookup":"48/91|LTH EVOLUTION"},{"id":131,"bci":"49","tipo":"L-49-900 AGM","ca":1125,"cca":900,"marca":"LTH EVOLUTION","capacidadReserva":160,"largo":353,"ancho":175,"alto":190,"peso":26.7,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":8983,"precioListaConUsado":8300,"claveLookup":"49|LTH EVOLUTION"},{"id":132,"bci":"31T","tipo":"L-31T-825 AGM","ca":1031,"cca":825,"marca":"LTH EVOLUTION","capacidadReserva":200,"largo":330,"ancho":173,"alto":239,"peso":32.0,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":10593,"precioListaConUsado":9740,"claveLookup":"31T|LTH EVOLUTION"},{"id":133,"bci":"401","tipo":"AUX12","ca":225,"cca":180,"marca":"LTH EVOLUTION","capacidadReserva":null,"largo":150,"ancho":87,"alto":130,"peso":4.0,"polaridad":"(+) / (-)","clasificacionUsado":1,"costoUsado":0.0,"precioListaSinUsado":2137.93,"precioListaConUsado":2480.0,"claveLookup":"401|LTH EVOLUTION"},{"id":134,"bci":"400","tipo":"AUX14","ca":250,"cca":200,"marca":"LTH EVOLUTION","capacidadReserva":null,"largo":150,"ancho":87,"alto":145,"peso":4.5,"polaridad":"(+) / (-)","clasificacionUsado":1,"costoUsado":0.0,"precioListaSinUsado":2137.93,"precioListaConUsado":2480.0,"claveLookup":"400|LTH EVOLUTION"},{"id":135,"bci":"22F","tipo":"FP-22F-550","ca":687,"cca":550,"marca":"FULL POWER","capacidadReserva":100,"largo":245,"ancho":174,"alto":207,"peso":14.7,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4014,"precioListaConUsado":3570,"claveLookup":"22F|FULL POWER"},{"id":136,"bci":"26R","tipo":"FP-26R-500","ca":625,"cca":500,"marca":"FULL POWER","capacidadReserva":85,"largo":220,"ancho":172,"alto":200,"peso":12.5,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4124,"precioListaConUsado":3680,"claveLookup":"26R|FULL POWER"},{"id":137,"bci":"58","tipo":"FP-58-650","ca":812,"cca":650,"marca":"FULL POWER","capacidadReserva":110,"largo":253,"ancho":183,"alto":177,"peso":14.4,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4294,"precioListaConUsado":3850,"claveLookup":"58|FULL POWER"},{"id":138,"bci":"99","tipo":"FP-99-420","ca":525,"cca":420,"marca":"FULL POWER","capacidadReserva":65,"largo":210,"ancho":176,"alto":174,"peso":12.7,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":4312,"precioListaConUsado":3970,"claveLookup":"99|FULL POWER"},{"id":139,"bci":"24","tipo":"FP-24-600","ca":750,"cca":600,"marca":"FULL POWER","capacidadReserva":110,"largo":278,"ancho":174,"alto":221,"peso":17.8,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4590,"precioListaConUsado":4010,"claveLookup":"24|FULL POWER"},{"id":140,"bci":"42","tipo":"FP-42-550","ca":687,"cca":550,"marca":"FULL POWER","capacidadReserva":95,"largo":256,"ancho":174,"alto":174,"peso":13.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4504,"precioListaConUsado":4060,"claveLookup":"42|FULL POWER"},{"id":141,"bci":"35","tipo":"FP-35-575","ca":718,"cca":575,"marca":"FULL POWER","capacidadReserva":100,"largo":245,"ancho":174,"alto":224,"peso":16.5,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4650,"precioListaConUsado":4070,"claveLookup":"35|FULL POWER"},{"id":142,"bci":"24R","tipo":"FP-24R-600","ca":750,"cca":600,"marca":"FULL POWER","capacidadReserva":110,"largo":277,"ancho":172,"alto":224,"peso":18.6,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4770,"precioListaConUsado":4190,"claveLookup":"24R|FULL POWER"},{"id":143,"bci":"75","tipo":"FP-75-650","ca":812,"cca":650,"marca":"FULL POWER","capacidadReserva":95,"largo":245,"ancho":184,"alto":186,"peso":14.6,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4800,"precioListaConUsado":4220,"claveLookup":"75|FULL POWER"},{"id":144,"bci":"65","tipo":"FP-65-850","ca":1062,"cca":850,"marca":"FULL POWER","capacidadReserva":150,"largo":305,"ancho":190,"alto":191,"peso":20.8,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5133,"precioListaConUsado":4450,"claveLookup":"65|FULL POWER"},{"id":145,"bci":"75/86","tipo":"FP-75/86-700","ca":875,"cca":700,"marca":"FULL POWER","capacidadReserva":100,"largo":245,"ancho":186,"alto":203,"peso":15.5,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5160,"precioListaConUsado":4580,"claveLookup":"75/86|FULL POWER"},{"id":146,"bci":"34","tipo":"FP-34-650","ca":812,"cca":650,"marca":"FULL POWER","capacidadReserva":110,"largo":278,"ancho":174,"alto":198,"peso":16.8,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5160,"precioListaConUsado":4580,"claveLookup":"34|FULL POWER"},{"id":147,"bci":"41","tipo":"FP-41-750","ca":937,"cca":750,"marca":"FULL POWER","capacidadReserva":130,"largo":297,"ancho":175,"alto":174,"peso":17.5,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5160,"precioListaConUsado":4580,"claveLookup":"41|FULL POWER"},{"id":148,"bci":"47","tipo":"FP-47(LN2)-600","ca":750,"cca":600,"marca":"FULL POWER","capacidadReserva":102,"largo":241,"ancho":174,"alto":189,"peso":14.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5180,"precioListaConUsado":4600,"claveLookup":"47|FULL POWER"},{"id":149,"bci":"34/78","tipo":"FP-34/78-800","ca":1000,"cca":800,"marca":"FULL POWER","capacidadReserva":115,"largo":277,"ancho":185,"alto":204,"peso":18.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5390,"precioListaConUsado":4810,"claveLookup":"34/78|FULL POWER"},{"id":150,"bci":"78","tipo":"FP-78-800","ca":1000,"cca":800,"marca":"FULL POWER","capacidadReserva":110,"largo":278,"ancho":184,"alto":186,"peso":17.1,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5750,"precioListaConUsado":5170,"claveLookup":"78|FULL POWER"},{"id":151,"bci":"48/91","tipo":"FP-48/91(LN3)-730","ca":912,"cca":730,"marca":"FULL POWER","capacidadReserva":115,"largo":277,"ancho":174,"alto":190,"peso":17.6,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5750,"precioListaConUsado":5170,"claveLookup":"48/91|FULL POWER"},{"id":152,"bci":"49","tipo":"FP-49(LN5)-850","ca":1062,"cca":850,"marca":"FULL POWER","capacidadReserva":150,"largo":352,"ancho":174,"alto":190,"peso":21.5,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5853,"precioListaConUsado":5170,"claveLookup":"49|FULL POWER"},{"id":153,"bci":"27","tipo":"FP-27-750","ca":937,"cca":750,"marca":"FULL POWER","capacidadReserva":135,"largo":324,"ancho":174,"alto":223,"peso":22.0,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":6113,"precioListaConUsado":5430,"claveLookup":"27|FULL POWER"},{"id":154,"bci":"31","tipo":"FP-31P-900 AR*","ca":1125,"cca":900,"marca":"FULL POWER","capacidadReserva":195,"largo":330,"ancho":172,"alto":239,"peso":27.2,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5733,"precioListaConUsado":4880,"claveLookup":"31|FULL POWER"},{"id":155,"bci":"31","tipo":"FP-31T-900 AR*","ca":1125,"cca":900,"marca":"FULL POWER","capacidadReserva":195,"largo":330,"ancho":172,"alto":238,"peso":27.2,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5733,"precioListaConUsado":4880,"claveLookup":"31|FULL POWER"},{"id":156,"bci":"153R","tipo":"L-153R(LN0)-420 XEV","ca":525,"cca":420,"marca":"LTH PROTECT","capacidadReserva":60,"largo":175,"ancho":175,"alto":190,"peso":12.2,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":6474,"precioListaConUsado":6030,"claveLookup":"153R|LTH PROTECT"},{"id":157,"bci":"140R","tipo":"L-140R(LN1)-570 XEV","ca":712,"cca":570,"marca":"LTH PROTECT","capacidadReserva":80,"largo":207,"ancho":175,"alto":190,"peso":15.4,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":6610,"precioListaConUsado":6030,"claveLookup":"140R|LTH PROTECT"},{"id":158,"bci":"51R","tipo":"L-51R(B24L)-410 XEV","ca":512,"cca":410,"marca":"LTH PROTECT","capacidadReserva":75,"largo":238,"ancho":129,"alto":223,"peso":13.3,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":7064,"precioListaConUsado":6620,"claveLookup":"51R|LTH PROTECT"},{"id":159,"bci":"51","tipo":"L-51JIS(B24PP)-410 XEV","ca":512,"cca":410,"marca":"LTH PROTECT","capacidadReserva":75,"largo":238,"ancho":129,"alto":223,"peso":13.3,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":7354,"precioListaConUsado":6910,"claveLookup":"51|LTH PROTECT"},{"id":160,"bci":"47","tipo":"L-47(LN2)-660 XEV","ca":825,"cca":660,"marca":"LTH PROTECT","capacidadReserva":100,"largo":242,"ancho":175,"alto":190,"peso":17.8,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":8000,"precioListaConUsado":7420,"claveLookup":"47|LTH PROTECT"},{"id":161,"bci":"22F","tipo":"LTX-22F-600","ca":750,"cca":600,"marca":"LTH TAXI","capacidadReserva":100,"largo":244,"ancho":174,"alto":207,"peso":15.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4204,"precioListaConUsado":3760,"claveLookup":"22F|LTH TAXI"},{"id":162,"bci":"35","tipo":"LTX-35-600","ca":750,"cca":600,"marca":"LTH TAXI","capacidadReserva":105,"largo":224,"ancho":174,"alto":224,"peso":16.3,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4850,"precioListaConUsado":4270,"claveLookup":"35|LTH TAXI"},{"id":163,"bci":"47","tipo":"LTX-47(LN2)-625","ca":781,"cca":625,"marca":"LTH TAXI","capacidadReserva":98,"largo":241,"ancho":174,"alto":188,"peso":15.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5410,"precioListaConUsado":4830,"claveLookup":"47|LTH TAXI"},{"id":164,"bci":"31T750","tipo":"L-31T-700 HD","ca":875,"cca":700,"marca":"LTH HEAVY DUTY","capacidadReserva":190,"largo":330,"ancho":172,"alto":238,"peso":27.7,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5323,"precioListaConUsado":4470,"claveLookup":"31T750|LTH HEAVY DUTY"},{"id":165,"bci":"31T900","tipo":"L-31T-950 HD","ca":1187,"cca":950,"marca":"LTH HEAVY DUTY","capacidadReserva":195,"largo":330,"ancho":172,"alto":238,"peso":27.2,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":5773,"precioListaConUsado":4920,"claveLookup":"31T900|LTH HEAVY DUTY"},{"id":166,"bci":"4DM","tipo":"L-4DM-1300 HD","ca":1625,"cca":1300,"marca":"LTH HEAVY DUTY","capacidadReserva":390,"largo":531,"ancho":210,"alto":246,"peso":53.1,"polaridad":"(-) / (+)","clasificacionUsado":7,"costoUsado":1706,"precioListaSinUsado":9846,"precioListaConUsado":8140,"claveLookup":"4DM|LTH HEAVY DUTY"},{"id":167,"bci":"8D","tipo":"L-8D-1400 HD","ca":1750,"cca":1400,"marca":"LTH HEAVY DUTY","capacidadReserva":450,"largo":520,"ancho":278,"alto":245,"peso":60.0,"polaridad":"(-) / (+)","clasificacionUsado":7,"costoUsado":1706,"precioListaSinUsado":10276,"precioListaConUsado":8570,"claveLookup":"8D|LTH HEAVY DUTY"},{"id":168,"bci":"22F","tipo":"H-22F-550","ca":687,"cca":550,"marca":"LTH HITEC","capacidadReserva":100,"largo":244,"ancho":174,"alto":207,"peso":14.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4264,"precioListaConUsado":3820,"claveLookup":"22F|LTH HITEC"},{"id":169,"bci":"26R","tipo":"H-26R-500","ca":625,"cca":500,"marca":"LTH HITEC","capacidadReserva":85,"largo":220,"ancho":172,"alto":200,"peso":12.5,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4374,"precioListaConUsado":3930,"claveLookup":"26R|LTH HITEC"},{"id":170,"bci":"58","tipo":"H-58-650","ca":812,"cca":650,"marca":"LTH HITEC","capacidadReserva":110,"largo":253,"ancho":183,"alto":177,"peso":14.4,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4564,"precioListaConUsado":4120,"claveLookup":"58|LTH HITEC"},{"id":171,"bci":"99","tipo":"H-99(LBN1)-470","ca":587,"cca":470,"marca":"LTH HITEC","capacidadReserva":65,"largo":206,"ancho":174,"alto":174,"peso":13.4,"polaridad":"(-) / (+)","clasificacionUsado":1,"costoUsado":342,"precioListaSinUsado":4582,"precioListaConUsado":4240,"claveLookup":"99|LTH HITEC"},{"id":172,"bci":"24","tipo":"H-24-600","ca":750,"cca":600,"marca":"LTH HITEC","capacidadReserva":110,"largo":278,"ancho":174,"alto":221,"peso":18.1,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4870,"precioListaConUsado":4290,"claveLookup":"24|LTH HITEC"},{"id":173,"bci":"42","tipo":"H-42-550","ca":687,"cca":550,"marca":"LTH HITEC","capacidadReserva":95,"largo":241,"ancho":174,"alto":175,"peso":13.7,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":4784,"precioListaConUsado":4340,"claveLookup":"42|LTH HITEC"},{"id":174,"bci":"35","tipo":"H-35-585","ca":731,"cca":585,"marca":"LTH HITEC","capacidadReserva":100,"largo":245,"ancho":174,"alto":225,"peso":15.5,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":4930,"precioListaConUsado":4350,"claveLookup":"35|LTH HITEC"},{"id":175,"bci":"24R","tipo":"H-24R-600","ca":750,"cca":600,"marca":"LTH HITEC","capacidadReserva":110,"largo":278,"ancho":174,"alto":220,"peso":17.8,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5060,"precioListaConUsado":4480,"claveLookup":"24R|LTH HITEC"},{"id":176,"bci":"75","tipo":"H-75-650","ca":812,"cca":650,"marca":"LTH HITEC","capacidadReserva":95,"largo":245,"ancho":184,"alto":186,"peso":14.2,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5090,"precioListaConUsado":4510,"claveLookup":"75|LTH HITEC"},{"id":177,"bci":"65","tipo":"H-65-850","ca":1062,"cca":850,"marca":"LTH HITEC","capacidadReserva":150,"largo":305,"ancho":190,"alto":189,"peso":21.5,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5443,"precioListaConUsado":4760,"claveLookup":"65|LTH HITEC"},{"id":178,"bci":"34","tipo":"H-34-650","ca":812,"cca":650,"marca":"LTH HITEC","capacidadReserva":110,"largo":278,"ancho":174,"alto":197,"peso":17.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5480,"precioListaConUsado":4900,"claveLookup":"34|LTH HITEC"},{"id":179,"bci":"41","tipo":"H-41-750","ca":937,"cca":750,"marca":"LTH HITEC","capacidadReserva":130,"largo":297,"ancho":175,"alto":174,"peso":17.5,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5480,"precioListaConUsado":4900,"claveLookup":"41|LTH HITEC"},{"id":180,"bci":"75/86","tipo":"H-75/86-700","ca":875,"cca":700,"marca":"LTH HITEC","capacidadReserva":100,"largo":245,"ancho":186,"alto":203,"peso":15.5,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5480,"precioListaConUsado":4900,"claveLookup":"75/86|LTH HITEC"},{"id":181,"bci":"47","tipo":"H-47(LN2)-600","ca":750,"cca":600,"marca":"LTH HITEC","capacidadReserva":102,"largo":241,"ancho":174,"alto":189,"peso":15.9,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5500,"precioListaConUsado":4920,"claveLookup":"47|LTH HITEC"},{"id":182,"bci":"27F","tipo":"H-27F-810","ca":1012,"cca":810,"marca":"LTH HITEC","capacidadReserva":165,"largo":324,"ancho":174,"alto":223,"peso":23.9,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":5803,"precioListaConUsado":5120,"claveLookup":"27F|LTH HITEC"},{"id":183,"bci":"34/78","tipo":"H-34/78-800","ca":1000,"cca":800,"marca":"LTH HITEC","capacidadReserva":115,"largo":278,"ancho":186,"alto":203,"peso":18.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":5720,"precioListaConUsado":5140,"claveLookup":"34/78|LTH HITEC"},{"id":184,"bci":"48/91","tipo":"H-48/91(LN3)-730","ca":912,"cca":730,"marca":"LTH HITEC","capacidadReserva":115,"largo":277,"ancho":174,"alto":190,"peso":17.6,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":6110,"precioListaConUsado":5530,"claveLookup":"48/91|LTH HITEC"},{"id":185,"bci":"78","tipo":"H-78-800","ca":1000,"cca":800,"marca":"LTH HITEC","capacidadReserva":110,"largo":278,"ancho":184,"alto":186,"peso":17.0,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":6110,"precioListaConUsado":5530,"claveLookup":"78|LTH HITEC"},{"id":186,"bci":"49","tipo":"H-49(LN5)-850","ca":1062,"cca":850,"marca":"LTH HITEC","capacidadReserva":150,"largo":352,"ancho":174,"alto":190,"peso":21.5,"polaridad":"(-) / (+)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":6213,"precioListaConUsado":5530,"claveLookup":"49|LTH HITEC"},{"id":187,"bci":"27","tipo":"H-27-810","ca":1012,"cca":810,"marca":"LTH HITEC","capacidadReserva":165,"largo":324,"ancho":174,"alto":223,"peso":23.9,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":6483,"precioListaConUsado":5800,"claveLookup":"27|LTH HITEC"},{"id":188,"bci":"22F","tipo":"PC-22F-350","ca":437,"cca":350,"marca":"POWER CONNECTION","capacidadReserva":50,"largo":241,"ancho":175,"alto":211,"peso":11.7,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2544,"precioListaConUsado":2100,"claveLookup":"22F|POWER CONNECTION"},{"id":189,"bci":"42","tipo":"PC-42-330","ca":412,"cca":330,"marca":"POWER CONNECTION","capacidadReserva":50,"largo":242,"ancho":175,"alto":175,"peso":11.2,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2602,"precioListaConUsado":2158,"claveLookup":"42|POWER CONNECTION"},{"id":190,"bci":"58","tipo":"PC-58-330","ca":412,"cca":330,"marca":"POWER CONNECTION","capacidadReserva":50,"largo":254,"ancho":183,"alto":173,"peso":11.1,"polaridad":"(+) / (-)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":2702,"precioListaConUsado":2258,"claveLookup":"58|POWER CONNECTION"},{"id":191,"bci":"75","tipo":"PC-75-290","ca":362,"cca":290,"marca":"POWER CONNECTION","capacidadReserva":55,"largo":245,"ancho":184,"alto":186,"peso":10.5,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":3052,"precioListaConUsado":2472,"claveLookup":"75|POWER CONNECTION"},{"id":192,"bci":"65","tipo":"PC-65-530","ca":662,"cca":530,"marca":"POWER CONNECTION","capacidadReserva":80,"largo":305,"ancho":190,"alto":190,"peso":16.0,"polaridad":"(+) / (-)","clasificacionUsado":4,"costoUsado":683,"precioListaSinUsado":3298,"precioListaConUsado":2615,"claveLookup":"65|POWER CONNECTION"},{"id":193,"bci":"D51R","tipo":"OP-D51R-420","ca":575,"cca":420,"marca":"OPTIMA","capacidadReserva":66,"largo":236,"ancho":128,"alto":227,"peso":11.8,"polaridad":"(-) / (+)","clasificacionUsado":2,"costoUsado":444,"precioListaSinUsado":8814,"precioListaConUsado":8370,"claveLookup":"D51R|OPTIMA"},{"id":194,"bci":"34M","tipo":"OP-34M-800","ca":1000,"cca":800,"marca":"OPTIMA","capacidadReserva":110,"largo":254,"ancho":175,"alto":198,"peso":17.4,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":9620,"precioListaConUsado":9040,"claveLookup":"34M|OPTIMA"},{"id":195,"bci":"D75/25","tipo":"OP-D75/25-650","ca":810,"cca":650,"marca":"OPTIMA","capacidadReserva":98,"largo":236,"ancho":173,"alto":194,"peso":17.2,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":9620,"precioListaConUsado":9040,"claveLookup":"D75/25|OPTIMA"},{"id":196,"bci":"D35","tipo":"OP-D35-650","ca":810,"cca":650,"marca":"OPTIMA","capacidadReserva":98,"largo":237,"ancho":170,"alto":195,"peso":16.5,"polaridad":"(-) / (+)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":9890,"precioListaConUsado":9310,"claveLookup":"D35|OPTIMA"},{"id":197,"bci":"D34","tipo":"OP-D34-750","ca":870,"cca":750,"marca":"OPTIMA","capacidadReserva":120,"largo":254,"ancho":173,"alto":199,"peso":19.5,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":9940,"precioListaConUsado":9360,"claveLookup":"D34|OPTIMA"},{"id":198,"bci":"D34M","tipo":"OP-D34M-750","ca":870,"cca":750,"marca":"OPTIMA","capacidadReserva":120,"largo":254,"ancho":175,"alto":198,"peso":19.7,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":10270,"precioListaConUsado":9690,"claveLookup":"D34M|OPTIMA"},{"id":199,"bci":"D34/78","tipo":"OP-D34/78-750","ca":870,"cca":750,"marca":"OPTIMA","capacidadReserva":120,"largo":254,"ancho":175,"alto":198,"peso":19.7,"polaridad":"(+) / (-)","clasificacionUsado":3,"costoUsado":580,"precioListaSinUsado":10460,"precioListaConUsado":9880,"claveLookup":"D34/78|OPTIMA"},{"id":200,"bci":"D27M","tipo":"OP-D27M-800","ca":1000,"cca":800,"marca":"OPTIMA","capacidadReserva":140,"largo":310,"ancho":173,"alto":222,"peso":24.4,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":11883,"precioListaConUsado":11030,"claveLookup":"D27M|OPTIMA"},{"id":201,"bci":"D31T","tipo":"OP-D31T-900","ca":1125,"cca":900,"marca":"OPTIMA","capacidadReserva":155,"largo":325,"ancho":165,"alto":238,"peso":27.1,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":12583,"precioListaConUsado":11730,"claveLookup":"D31T|OPTIMA"},{"id":202,"bci":"D31M","tipo":"OP-D31M-900","ca":1125,"cca":900,"marca":"OPTIMA","capacidadReserva":155,"largo":325,"ancho":165,"alto":238,"peso":27.1,"polaridad":"(+) / (-)","clasificacionUsado":5,"costoUsado":853,"precioListaSinUsado":12893,"precioListaConUsado":12040,"claveLookup":"D31M|OPTIMA"}];
+
+    const CATALOG_MOTOS = [{"tipo":"12N5-3B","codigo":"12N5","marca":"LTH","capacidadAh":"5","cca":"35","largo":120,"ancho":60,"alto":130,"polaridad":"-   +","peso":1.4,"precioSin":630,"precioCon":630},{"tipo":"12N7B-3A","codigo":"12N7B","marca":"LTH","capacidadAh":"7","cca":"70","largo":150,"ancho":60,"alto":131,"polaridad":"-   +","peso":1.8,"precioSin":740,"precioCon":740},{"tipo":"12N7-3B","codigo":"12N7","marca":"LTH","capacidadAh":"7","cca":"70","largo":137,"ancho":76,"alto":133,"polaridad":"-   +","peso":2.1,"precioSin":750,"precioCon":750},{"tipo":"12N9-4B-1","codigo":"12N9","marca":"LTH","capacidadAh":"9","cca":"85","largo":137,"ancho":76,"alto":139,"polaridad":"+   -","peso":2.3,"precioSin":750,"precioCon":750},{"tipo":"12N10-3B","codigo":"12N10","marca":"LTH","capacidadAh":"10","cca":"100","largo":135,"ancho":90,"alto":145,"polaridad":"-   +","peso":3.0,"precioSin":870,"precioCon":870},{"tipo":"12N12A-4A-1","codigo":"12N12A","marca":"LTH","capacidadAh":"12","cca":"120","largo":134,"ancho":80,"alto":160,"polaridad":"+   -","peso":3.0,"precioSin":900,"precioCon":900},{"tipo":"12N14-3A","codigo":"12N14","marca":"LTH","capacidadAh":"14","cca":"125","largo":135,"ancho":91,"alto":166,"polaridad":"-   +","peso":3.2,"precioSin":1010,"precioCon":1010},{"tipo":"4L-B","codigo":"4L","marca":"LTH","capacidadAh":"4","cca":"45","largo":121,"ancho":71,"alto":92,"polaridad":"-   +","peso":1.4,"precioSin":560,"precioCon":560},{"tipo":"5L-B","codigo":"5L","marca":"LTH","capacidadAh":"5","cca":"60","largo":120,"ancho":60,"alto":130,"polaridad":"-   +","peso":1.7,"precioSin":630,"precioCon":630},{"tipo":"6.5L-B","codigo":"6.5L","marca":"LTH","capacidadAh":"6.5","cca":"65","largo":141,"ancho":71,"alto":110,"polaridad":"-   +","peso":1.8,"precioSin":690,"precioCon":690},{"tipo":"7-A","codigo":"7A","marca":"LTH","capacidadAh":"8","cca":"105","largo":137,"ancho":76,"alto":133,"polaridad":"+   -","peso":2.2,"precioSin":770,"precioCon":770},{"tipo":"9-B","codigo":"9B","marca":"LTH","capacidadAh":"9","cca":"115","largo":137,"ancho":76,"alto":139,"polaridad":"+   -","peso":2.6,"precioSin":820,"precioCon":820},{"tipo":"12A-A","codigo":"12A","marca":"LTH","capacidadAh":"12","cca":"150","largo":134,"ancho":80,"alto":160,"polaridad":"+   -","peso":3.2,"precioSin":990,"precioCon":990},{"tipo":"14L-A2","codigo":"14L","marca":"LTH","capacidadAh":"14","cca":"175","largo":135,"ancho":91,"alto":166,"polaridad":"-   +","peso":3.6,"precioSin":1030,"precioCon":1030},{"tipo":"16-CL-B","codigo":"16CL","marca":"LTH","capacidadAh":"19","cca":"240","largo":175,"ancho":100,"alto":175,"polaridad":"-   +","peso":5.2,"precioSin":1350,"precioCon":1350},{"tipo":"TX4L-BS","codigo":"TX4L","marca":"LTH","capacidadAh":"3","cca":"50","largo":113,"ancho":70,"alto":87,"polaridad":"-   +","peso":1.2,"precioSin":590,"precioCon":590},{"tipo":"TX5L-BS","codigo":"TX5L","marca":"LTH","capacidadAh":"4","cca":"75","largo":113,"ancho":70,"alto":105,"polaridad":"-   +","peso":1.6,"precioSin":660,"precioCon":660},{"tipo":"TX6.5L-BS","codigo":"TX6.5L","marca":"LTH","capacidadAh":"6.5","cca":"60","largo":139,"ancho":65,"alto":100,"polaridad":"-   +","peso":1.8,"precioSin":720,"precioCon":720},{"tipo":"TX7A-BS","codigo":"TX7A","marca":"LTH","capacidadAh":"6","cca":"90","largo":150,"ancho":87,"alto":95,"polaridad":"+   -","peso":2.0,"precioSin":820,"precioCon":820},{"tipo":"TX7L-BS","codigo":"TX7L","marca":"LTH","capacidadAh":"6","cca":"90","largo":113,"ancho":70,"alto":130,"polaridad":"-   +","peso":2.0,"precioSin":830,"precioCon":830},{"tipo":"TX9-BS","codigo":"TX9","marca":"LTH","capacidadAh":"8","cca":"120","largo":151,"ancho":87,"alto":106,"polaridad":"+   -","peso":2.3,"precioSin":990,"precioCon":990},{"tipo":"T7B-BS","codigo":"T7B","marca":"LTH","capacidadAh":"6.5","cca":"95","largo":151,"ancho":66,"alto":92,"polaridad":"+   -","peso":2.0,"precioSin":1040,"precioCon":1040},{"tipo":"T9B-BS","codigo":"T9B","marca":"LTH","capacidadAh":"8","cca":"115","largo":151,"ancho":69,"alto":105,"polaridad":"+   -","peso":2.3,"precioSin":1200,"precioCon":1200},{"tipo":"TX12-BS","codigo":"TX12","marca":"LTH","capacidadAh":"10","cca":"170","largo":150,"ancho":87,"alto":130,"polaridad":"+   -","peso":3.3,"precioSin":1250,"precioCon":1250},{"tipo":"TZ10S-BS","codigo":"TZ10S","marca":"LTH","capacidadAh":"8.6","cca":"160","largo":151,"ancho":87,"alto":92,"polaridad":"+   -","peso":2.5,"precioSin":1270,"precioCon":1270},{"tipo":"TX14L-BS","codigo":"TX14L","marca":"LTH","capacidadAh":"12","cca":"200","largo":150,"ancho":87,"alto":146,"polaridad":"-   +","peso":3.7,"precioSin":1310,"precioCon":1310},{"tipo":"TX14-BS","codigo":"TX14","marca":"LTH","capacidadAh":"12","cca":"200","largo":150,"ancho":87,"alto":146,"polaridad":"+   -","peso":3.7,"precioSin":1310,"precioCon":1310},{"tipo":"T12B-BS","codigo":"T12B","marca":"LTH","capacidadAh":"10","cca":"150","largo":151,"ancho":69,"alto":130,"polaridad":"+   -","peso":3.1,"precioSin":1320,"precioCon":1320},{"tipo":"TX14AH-BS","codigo":"TX14AH","marca":"LTH","capacidadAh":"12","cca":"210","largo":134,"ancho":89,"alto":166,"polaridad":"+   -","peso":4.0,"precioSin":1440,"precioCon":1440},{"tipo":"TX14AHL-BS","codigo":"TX14AHL","marca":"LTH","capacidadAh":"12","cca":"210","largo":134,"ancho":89,"alto":166,"polaridad":"-   +","peso":4.0,"precioSin":1440,"precioCon":1440},{"tipo":"T14B-BS","codigo":"T14B","marca":"LTH","capacidadAh":"12","cca":"170","largo":151,"ancho":69,"alto":144,"polaridad":"+   -","peso":3.5,"precioSin":1440,"precioCon":1440},{"tipo":"TX20HL-BS","codigo":"TX20HL","marca":"LTH","capacidadAh":"18","cca":"320","largo":175,"ancho":87,"alto":154,"polaridad":"-   +","peso":5.1,"precioSin":1660,"precioCon":1660},{"tipo":"TX20CH-BS","codigo":"TX20CH","marca":"LTH","capacidadAh":"18","cca":"270","largo":150,"ancho":87,"alto":161,"polaridad":"+   -","peso":4.7,"precioSin":1680,"precioCon":1680},{"tipo":"TX24HL-BS","codigo":"TX24HL","marca":"LTH","capacidadAh":"21","cca":"340","largo":205,"ancho":90,"alto":164,"polaridad":"-   +","peso":5.9,"precioSin":1970,"precioCon":1970},{"tipo":"TX30L-BS","codigo":"TX30L","marca":"LTH","capacidadAh":"30","cca":"450","largo":166,"ancho":127,"alto":175,"polaridad":"-   +","peso":8.2,"precioSin":2500,"precioCon":2500},{"tipo":"12N14-3A","codigo":"12N14AMERICA","marca":"AMERICA","capacidadAh":"14","cca":"125","largo":135,"ancho":91,"alto":166,"polaridad":"-   +","peso":3.2,"precioSin":1010,"precioCon":1010},{"tipo":"12N9-4B-1","codigo":"12N9AMERICA","marca":"AMERICA","capacidadAh":"9","cca":"85","largo":137,"ancho":76,"alto":139,"polaridad":"+   -","peso":2.3,"precioSin":750,"precioCon":750},{"tipo":"TX9-BS","codigo":"TX9AMERICA","marca":"AMERICA","capacidadAh":"8","cca":"120","largo":151,"ancho":87,"alto":106,"polaridad":"+   -","peso":2.3,"precioSin":990,"precioCon":990},{"tipo":"12N7-3B","codigo":"12N7AMERICA","marca":"AMERICA","capacidadAh":"7","cca":"70","largo":137,"ancho":76,"alto":133,"polaridad":"-   +","peso":2.1,"precioSin":750,"precioCon":750},{"tipo":"TX5L-FA","codigo":"TX5L-FA","marca":"LTH FA","capacidadAh":"4","cca":"70","largo":113,"ancho":70,"alto":105,"polaridad":"","peso":1.8,"precioSin":670,"precioCon":670},{"tipo":"TX6.5L-B-FA","codigo":"TX6.5L-B-FA","marca":"LTH FA","capacidadAh":"6.5","cca":"85","largo":139,"ancho":66,"alto":102,"polaridad":"","peso":2.3,"precioSin":740,"precioCon":740},{"tipo":"TX7A-FA","codigo":"TX7A-FA","marca":"LTH FA","capacidadAh":"6","cca":"100","largo":150,"ancho":87,"alto":93,"polaridad":"","peso":2.3,"precioSin":840,"precioCon":840},{"tipo":"TX7L-FA","codigo":"TX7L-FA","marca":"LTH FA","capacidadAh":"6","cca":"85","largo":113,"ancho":70,"alto":130,"polaridad":"","peso":2.3,"precioSin":840,"precioCon":840},{"tipo":"TX9-FA","codigo":"TX9-FA","marca":"LTH FA","capacidadAh":"8","cca":"120","largo":150,"ancho":87,"alto":105,"polaridad":"","peso":3.0,"precioSin":1020,"precioCon":1020},{"tipo":"TX20HL-B-FA","codigo":"TX20HL-B-FA","marca":"LTH FA","capacidadAh":"18","cca":"320","largo":176,"ancho":89,"alto":154,"polaridad":"","peso":6.5,"precioSin":1690,"precioCon":1690},{"tipo":"TX14-FA","codigo":"TX14-FA","marca":"LTH FA","capacidadAh":"12","cca":"200","largo":150,"ancho":87,"alto":145,"polaridad":"","peso":4.3,"precioSin":1350,"precioCon":1350}];
+
+    const CATALOG_APLICACIONES = [{"marca": "ACURA", "modelo": "ILX", "anio": "2013-2015", "recomendada": "51R", "alternativa": ""}, {"marca": "ACURA", "modelo": "LEGEND", "anio": "1989-1995", "recomendada": "24", "alternativa": "34"}, {"marca": "ACURA", "modelo": "MDX", "anio": "2004-2015", "recomendada": "24R", "alternativa": "35"}, {"marca": "ACURA", "modelo": "RDX", "anio": "2007-2015", "recomendada": "35", "alternativa": "24R"}, {"marca": "ACURA", "modelo": "RL", "anio": "2004-2012", "recomendada": "24", "alternativa": "34"}, {"marca": "ACURA", "modelo": "RLX", "anio": "2014-2015", "recomendada": "35", "alternativa": "24R"}, {"marca": "ACURA", "modelo": "TL", "anio": "2004-2014", "recomendada": "24R", "alternativa": "35"}, {"marca": "ACURA", "modelo": "TLX", "anio": "2014-2015", "recomendada": "35", "alternativa": "48/91"}, {"marca": "ACURA", "modelo": "TSX", "anio": "2004-2014", "recomendada": "51R", "alternativa": ""}, {"marca": "ALFA ROMEO", "modelo": "147", "anio": "2003-2010", "recomendada": "47", "alternativa": "42"}, {"marca": "ALFA ROMEO", "modelo": "156", "anio": "1997-2006", "recomendada": "47", "alternativa": "42"}, {"marca": "AUDI", "modelo": "A1", "anio": "2013-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "AUDI", "modelo": "A3", "anio": "1996-2015", "recomendada": "47", "alternativa": "48/91"}, {"marca": "AUDI", "modelo": "A4", "anio": "2005-2015", "recomendada": "94R", "alternativa": ""}, {"marca": "AUDI", "modelo": "A5", "anio": "2005-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "AUDI", "modelo": "A6", "anio": "1997-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "AUDI", "modelo": "Q3", "anio": "2013-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "AUDI", "modelo": "Q5", "anio": "2009-2015", "recomendada": "48/91", "alternativa": "94R"}, {"marca": "AUDI", "modelo": "Q7", "anio": "1999-2015", "recomendada": "94R", "alternativa": ""}, {"marca": "AUDI", "modelo": "R8", "anio": "2005-2015", "recomendada": "94R", "alternativa": ""}, {"marca": "BAIC", "modelo": "BJ20", "anio": "2019-2020", "recomendada": "35", "alternativa": ""}, {"marca": "BAIC", "modelo": "BJ40", "anio": "2019-2022", "recomendada": "58", "alternativa": ""}, {"marca": "BAIC", "modelo": "X25", "anio": "2018-2020", "recomendada": "35", "alternativa": ""}, {"marca": "BMW", "modelo": "528I", "anio": "1997-2015", "recomendada": "41", "alternativa": "48/91"}, {"marca": "BMW", "modelo": "M3", "anio": "1998-2015", "recomendada": "94R", "alternativa": ""}, {"marca": "BMW", "modelo": "SERIE 1", "anio": "2004-2010", "recomendada": "47", "alternativa": "42"}, {"marca": "BMW", "modelo": "SERIE 3", "anio": "1998-2015", "recomendada": "94R", "alternativa": "48/91"}, {"marca": "BMW", "modelo": "SERIE 5", "anio": "1997-2015", "recomendada": "47", "alternativa": "94R"}, {"marca": "BMW", "modelo": "X1", "anio": "2013-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "BMW", "modelo": "X3", "anio": "1998-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "BMW", "modelo": "X6", "anio": "2001-2015", "recomendada": "47", "alternativa": "94R"}, {"marca": "BMW", "modelo": "Z3", "anio": "1998-2012", "recomendada": "48/91", "alternativa": "41"}, {"marca": "BMW", "modelo": "Z4", "anio": "2001-2015", "recomendada": "47", "alternativa": "42"}, {"marca": "BUICK", "modelo": "ENCLAVE", "anio": "2013-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "BUICK", "modelo": "ENCORE", "anio": "2014-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "BUICK", "modelo": "REGAL", "anio": "1980-2015", "recomendada": "75", "alternativa": "34/78"}, {"marca": "BUICK", "modelo": "VERANO", "anio": "2013-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CADILLAC", "modelo": "ATS", "anio": "2013-2015", "recomendada": "94R", "alternativa": "48/91"}, {"marca": "CADILLAC", "modelo": "CTS", "anio": "2007-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CADILLAC", "modelo": "ESCALADE", "anio": "2013-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CADILLAC", "modelo": "SRX", "anio": "1999-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CHEVROLET", "modelo": "ASTRA", "anio": "1999-2010", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CHEVROLET", "modelo": "AVALANCHE", "anio": "2002-2014", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CHEVROLET", "modelo": "AVEO", "anio": "2008-2022", "recomendada": "47", "alternativa": "42"}, {"marca": "CHEVROLET", "modelo": "BEAT", "anio": "2017-2021", "recomendada": "99", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "CAMARO", "anio": "1992-2022", "recomendada": "75", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "CAPTIVA", "anio": "2008-2022", "recomendada": "48/91", "alternativa": "47"}, {"marca": "CHEVROLET", "modelo": "CAVALIER", "anio": "1987-2006", "recomendada": "75", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "CHEVY", "anio": "1994-2012", "recomendada": "99", "alternativa": "42"}, {"marca": "CHEVROLET", "modelo": "CHEYENNE", "anio": "1995-2021", "recomendada": "34/78", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "COLORADO", "anio": "2009-2022", "recomendada": "75/86", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "CORSA", "anio": "1994-2012", "recomendada": "42", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "CORVETTE", "anio": "1991-2022", "recomendada": "75", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "CRUZE", "anio": "2011-2020", "recomendada": "94R", "alternativa": "47"}, {"marca": "CHEVROLET", "modelo": "EQUINOX", "anio": "2005-2018", "recomendada": "75", "alternativa": "42"}, {"marca": "CHEVROLET", "modelo": "EXPRESS VAN", "anio": "1992-2021", "recomendada": "34/78", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "IMPALA", "anio": "1994-2013", "recomendada": "34", "alternativa": "34/78"}, {"marca": "CHEVROLET", "modelo": "MALIBU", "anio": "1997-2020", "recomendada": "75", "alternativa": "42"}, {"marca": "CHEVROLET", "modelo": "ONIX", "anio": "2021-2022", "recomendada": "47", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "S-10", "anio": "1982-2019", "recomendada": "75", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "SILVERADO", "anio": "1996-2022", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CHEVROLET", "modelo": "SONIC", "anio": "2013-2019", "recomendada": "47", "alternativa": "42"}, {"marca": "CHEVROLET", "modelo": "SPARK", "anio": "2010-2021", "recomendada": "99", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "SUBURBAN", "anio": "1990-2022", "recomendada": "34/78", "alternativa": "48/91"}, {"marca": "CHEVROLET", "modelo": "TAHOE", "anio": "2007-2022", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CHEVROLET", "modelo": "TORNADO", "anio": "2003-2022", "recomendada": "47", "alternativa": "42"}, {"marca": "CHEVROLET", "modelo": "TRACKER", "anio": "1989-2022", "recomendada": "22F", "alternativa": ""}, {"marca": "CHEVROLET", "modelo": "TRAX", "anio": "2013-2020", "recomendada": "47", "alternativa": "42"}, {"marca": "CHRYSLER", "modelo": "300", "anio": "2006-2021", "recomendada": "48/91", "alternativa": "41"}, {"marca": "CHRYSLER", "modelo": "CIRRUS", "anio": "1995-2012", "recomendada": "75", "alternativa": ""}, {"marca": "CHRYSLER", "modelo": "PACIFICA", "anio": "2004-2017", "recomendada": "34", "alternativa": "34/78"}, {"marca": "CHRYSLER", "modelo": "PT CRUISER", "anio": "2000-2010", "recomendada": "26R", "alternativa": ""}, {"marca": "CHRYSLER", "modelo": "TOWN & COUNTRY", "anio": "1991-2016", "recomendada": "34", "alternativa": "34/78"}, {"marca": "DODGE", "modelo": "ATTITUDE", "anio": "2006-2021", "recomendada": "35", "alternativa": ""}, {"marca": "DODGE", "modelo": "AVENGER", "anio": "2006-2015", "recomendada": "75/86", "alternativa": ""}, {"marca": "DODGE", "modelo": "CARAVAN", "anio": "1993-2011", "recomendada": "34", "alternativa": "34/78"}, {"marca": "DODGE", "modelo": "CHARGER", "anio": "2006-2022", "recomendada": "94R", "alternativa": "48/91"}, {"marca": "DODGE", "modelo": "DURANGO", "anio": "1998-2014", "recomendada": "65", "alternativa": ""}, {"marca": "DODGE", "modelo": "GRAND CARAVAN", "anio": "1993-2020", "recomendada": "34", "alternativa": "34/78"}, {"marca": "DODGE", "modelo": "JOURNEY", "anio": "2009-2020", "recomendada": "34", "alternativa": "75/86"}, {"marca": "DODGE", "modelo": "NEON", "anio": "1994-2020", "recomendada": "58", "alternativa": "42R"}, {"marca": "DODGE", "modelo": "RAM 1500/2500/3500", "anio": "1994-2015", "recomendada": "27", "alternativa": "65"}, {"marca": "DODGE", "modelo": "RAM 700", "anio": "2016-2019", "recomendada": "99", "alternativa": ""}, {"marca": "DODGE", "modelo": "STRATUS", "anio": "1996-2006", "recomendada": "75", "alternativa": ""}, {"marca": "FIAT", "modelo": "500", "anio": "2007-2020", "recomendada": "47", "alternativa": "42"}, {"marca": "FIAT", "modelo": "MOBI", "anio": "2020-2022", "recomendada": "47", "alternativa": ""}, {"marca": "FIAT", "modelo": "PALIO", "anio": "2004-2020", "recomendada": "47", "alternativa": "42"}, {"marca": "FIAT", "modelo": "PANDA", "anio": "2007-2012", "recomendada": "99", "alternativa": "42"}, {"marca": "FIAT", "modelo": "UNO", "anio": "2013-2020", "recomendada": "47", "alternativa": "42"}, {"marca": "FORD", "modelo": "ECOSPORT", "anio": "2003-2020", "recomendada": "42", "alternativa": "47"}, {"marca": "FORD", "modelo": "EDGE", "anio": "2007-2019", "recomendada": "58", "alternativa": "42R"}, {"marca": "FORD", "modelo": "ESCAPE", "anio": "2001-2016", "recomendada": "41", "alternativa": "48/91"}, {"marca": "FORD", "modelo": "EXPEDITION", "anio": "1997-2020", "recomendada": "65", "alternativa": "94R"}, {"marca": "FORD", "modelo": "EXPLORER", "anio": "2013-2019", "recomendada": "65", "alternativa": "94R"}, {"marca": "FORD", "modelo": "F-250/F-350", "anio": "2020-2022", "recomendada": "65", "alternativa": ""}, {"marca": "FORD", "modelo": "FIESTA", "anio": "1995-2019", "recomendada": "99", "alternativa": "42"}, {"marca": "FORD", "modelo": "FIGO", "anio": "2016-2021", "recomendada": "99", "alternativa": "42"}, {"marca": "FORD", "modelo": "FOCUS", "anio": "1998-2019", "recomendada": "48/91", "alternativa": "41"}, {"marca": "FORD", "modelo": "FUSION", "anio": "2006-2020", "recomendada": "47", "alternativa": "42"}, {"marca": "FORD", "modelo": "LOBO", "anio": "1991-2016", "recomendada": "65", "alternativa": "94R"}, {"marca": "FORD", "modelo": "MUSTANG", "anio": "1975-2022", "recomendada": "24R", "alternativa": "35"}, {"marca": "FORD", "modelo": "RANGER", "anio": "1983-2022", "recomendada": "58", "alternativa": "42R"}, {"marca": "GMC", "modelo": "ACADIA", "anio": "2007-2015", "recomendada": "48/91", "alternativa": "94R"}, {"marca": "GMC", "modelo": "SIERRA", "anio": "1992-2015", "recomendada": "34/78", "alternativa": "94R"}, {"marca": "GMC", "modelo": "TERRAIN", "anio": "2013-2015", "recomendada": "48/91", "alternativa": "41"}, {"marca": "GMC", "modelo": "YUKON", "anio": "1992-2015", "recomendada": "34/78", "alternativa": "94R"}, {"marca": "HONDA", "modelo": "ACCORD", "anio": "1992-2022", "recomendada": "24", "alternativa": "34"}, {"marca": "HONDA", "modelo": "CITY", "anio": "2013-2022", "recomendada": "47", "alternativa": "42"}, {"marca": "HONDA", "modelo": "CIVIC", "anio": "1992-2022", "recomendada": "51R", "alternativa": ""}, {"marca": "HONDA", "modelo": "CR-V", "anio": "2002-2022", "recomendada": "51R", "alternativa": ""}, {"marca": "HONDA", "modelo": "FIT", "anio": "2009-2020", "recomendada": "NS40Z", "alternativa": ""}, {"marca": "HONDA", "modelo": "HR-V", "anio": "2015-2020", "recomendada": "51R", "alternativa": ""}, {"marca": "HONDA", "modelo": "ODYSSEY", "anio": "1995-2022", "recomendada": "24R", "alternativa": "35"}, {"marca": "HYUNDAI", "modelo": "ACCENT", "anio": "2017-2022", "recomendada": "47", "alternativa": "99"}, {"marca": "HYUNDAI", "modelo": "CRETA", "anio": "2016-2022", "recomendada": "35", "alternativa": "47"}, {"marca": "HYUNDAI", "modelo": "ELANTRA", "anio": "2016-2021", "recomendada": "47", "alternativa": ""}, {"marca": "HYUNDAI", "modelo": "GRAND I10", "anio": "2016-2023", "recomendada": "NS40Z", "alternativa": ""}, {"marca": "HYUNDAI", "modelo": "TUCSON", "anio": "2016-2022", "recomendada": "47", "alternativa": "48/91"}, {"marca": "INFINITI", "modelo": "Q45", "anio": "1997-2011", "recomendada": "24", "alternativa": "34"}, {"marca": "JEEP", "modelo": "CHEROKEE", "anio": "1991-2018", "recomendada": "34", "alternativa": "34/78"}, {"marca": "JEEP", "modelo": "COMPASS", "anio": "2007-2020", "recomendada": "75/86", "alternativa": "47"}, {"marca": "JEEP", "modelo": "GRAND CHEROKEE", "anio": "1993-2019", "recomendada": "34", "alternativa": "34/78"}, {"marca": "JEEP", "modelo": "LIBERTY", "anio": "2000-2013", "recomendada": "75/86", "alternativa": "34"}, {"marca": "JEEP", "modelo": "PATRIOT", "anio": "2006-2019", "recomendada": "75/86", "alternativa": ""}, {"marca": "JEEP", "modelo": "RENEGADE", "anio": "2015-2022", "recomendada": "48/91", "alternativa": "47"}, {"marca": "JEEP", "modelo": "WRANGLER", "anio": "1991-2019", "recomendada": "48/91", "alternativa": "94R"}, {"marca": "KIA", "modelo": "FORTE", "anio": "2016-2022", "recomendada": "47", "alternativa": ""}, {"marca": "KIA", "modelo": "RIO", "anio": "2015-2022", "recomendada": "47", "alternativa": "99"}, {"marca": "KIA", "modelo": "SELTOS", "anio": "2020-2022", "recomendada": "48/91", "alternativa": "47"}, {"marca": "KIA", "modelo": "SORENTO", "anio": "2017-2022", "recomendada": "94R", "alternativa": "48/91"}, {"marca": "KIA", "modelo": "SPORTAGE", "anio": "2016-2022", "recomendada": "47", "alternativa": "48/91"}, {"marca": "MAZDA", "modelo": "MAZDA 2", "anio": "2009-2021", "recomendada": "35", "alternativa": "24R"}, {"marca": "MAZDA", "modelo": "MAZDA 3", "anio": "2004-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "MAZDA", "modelo": "MAZDA 6", "anio": "2003-2021", "recomendada": "47", "alternativa": "42"}, {"marca": "MAZDA", "modelo": "CX-3", "anio": "2016-2022", "recomendada": "35", "alternativa": ""}, {"marca": "MAZDA", "modelo": "CX-5", "anio": "2013-2021", "recomendada": "35", "alternativa": "24R"}, {"marca": "MITSUBISHI", "modelo": "L200", "anio": "2008-2022", "recomendada": "27F", "alternativa": "35"}, {"marca": "MITSUBISHI", "modelo": "LANCER", "anio": "2003-2016", "recomendada": "35", "alternativa": "24R"}, {"marca": "MITSUBISHI", "modelo": "MIRAGE", "anio": "2015-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "MITSUBISHI", "modelo": "MONTERO", "anio": "1995-2022", "recomendada": "24", "alternativa": "34"}, {"marca": "MITSUBISHI", "modelo": "OUTLANDER", "anio": "2007-2021", "recomendada": "35", "alternativa": "24R"}, {"marca": "NISSAN", "modelo": "ALTIMA", "anio": "1993-2022", "recomendada": "24R", "alternativa": "35"}, {"marca": "NISSAN", "modelo": "FRONTIER", "anio": "1998-2022", "recomendada": "24", "alternativa": "34"}, {"marca": "NISSAN", "modelo": "KICKS", "anio": "2016-2022", "recomendada": "99", "alternativa": ""}, {"marca": "NISSAN", "modelo": "MARCH", "anio": "2011-2022", "recomendada": "99", "alternativa": "47"}, {"marca": "NISSAN", "modelo": "MAXIMA", "anio": "1993-2020", "recomendada": "24R", "alternativa": "35"}, {"marca": "NISSAN", "modelo": "NP300", "anio": "2011-2022", "recomendada": "26R", "alternativa": "35"}, {"marca": "NISSAN", "modelo": "PATHFINDER", "anio": "1999-2016", "recomendada": "34", "alternativa": "24"}, {"marca": "NISSAN", "modelo": "PICK UP", "anio": "1980-2010", "recomendada": "42", "alternativa": "22F"}, {"marca": "NISSAN", "modelo": "ROGUE", "anio": "2008-2019", "recomendada": "24R", "alternativa": "35"}, {"marca": "NISSAN", "modelo": "SENTRA", "anio": "1996-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "NISSAN", "modelo": "TIIDA", "anio": "2007-2019", "recomendada": "47", "alternativa": "99"}, {"marca": "NISSAN", "modelo": "TSURU", "anio": "1984-2018", "recomendada": "22F", "alternativa": "42"}, {"marca": "NISSAN", "modelo": "URVAN", "anio": "2000-2019", "recomendada": "34/78", "alternativa": "34"}, {"marca": "NISSAN", "modelo": "VERSA", "anio": "2007-2022", "recomendada": "51R", "alternativa": "99"}, {"marca": "NISSAN", "modelo": "X-TRAIL", "anio": "2002-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "PEUGEOT", "modelo": "206", "anio": "1998-2007", "recomendada": "47", "alternativa": "42"}, {"marca": "PEUGEOT", "modelo": "207", "anio": "2006-2013", "recomendada": "47", "alternativa": "42"}, {"marca": "PEUGEOT", "modelo": "301", "anio": "2015-2023", "recomendada": "47", "alternativa": "42"}, {"marca": "PEUGEOT", "modelo": "PARTNER", "anio": "2004-2023", "recomendada": "47", "alternativa": "42"}, {"marca": "PORSCHE", "modelo": "CAYENNE", "anio": "2004-2015", "recomendada": "94R", "alternativa": ""}, {"marca": "RAM", "modelo": "1500", "anio": "2015-2022", "recomendada": "41", "alternativa": "48/91"}, {"marca": "RAM", "modelo": "2500", "anio": "2015-2022", "recomendada": "41", "alternativa": "48/91"}, {"marca": "RAM", "modelo": "PROMASTER", "anio": "2017-2021", "recomendada": "99", "alternativa": "94R"}, {"marca": "RENAULT", "modelo": "CLIO", "anio": "2002-2007", "recomendada": "42", "alternativa": "47"}, {"marca": "RENAULT", "modelo": "DUSTER", "anio": "2013-2019", "recomendada": "24R", "alternativa": "35"}, {"marca": "RENAULT", "modelo": "KANGOO", "anio": "2004-2022", "recomendada": "42", "alternativa": "47"}, {"marca": "RENAULT", "modelo": "KOLEOS", "anio": "2009-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "RENAULT", "modelo": "KWID", "anio": "2019-2022", "recomendada": "99", "alternativa": ""}, {"marca": "RENAULT", "modelo": "SANDERO", "anio": "2009-2021", "recomendada": "42", "alternativa": "47"}, {"marca": "SEAT", "modelo": "IBIZA", "anio": "2000-2022", "recomendada": "99", "alternativa": "47"}, {"marca": "SEAT", "modelo": "LEON", "anio": "2000-2022", "recomendada": "47", "alternativa": "42"}, {"marca": "SEAT", "modelo": "TOLEDO", "anio": "2000-2019", "recomendada": "47", "alternativa": "42"}, {"marca": "SUBARU", "modelo": "FORESTER", "anio": "1994-2019", "recomendada": "35", "alternativa": ""}, {"marca": "SUBARU", "modelo": "IMPREZA", "anio": "1994-2019", "recomendada": "35", "alternativa": "24R"}, {"marca": "SUZUKI", "modelo": "GRAND VITARA", "anio": "2001-2019", "recomendada": "24R", "alternativa": "35"}, {"marca": "SUZUKI", "modelo": "SWIFT", "anio": "1989-2022", "recomendada": "51", "alternativa": "NS40L"}, {"marca": "SUZUKI", "modelo": "VITARA", "anio": "2020-2022", "recomendada": "99", "alternativa": ""}, {"marca": "TOYOTA", "modelo": "AVANZA", "anio": "2007-2021", "recomendada": "NS40Z", "alternativa": ""}, {"marca": "TOYOTA", "modelo": "CAMRY", "anio": "2000-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "TOYOTA", "modelo": "COROLLA", "anio": "2000-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "TOYOTA", "modelo": "HIACE", "anio": "2005-2022", "recomendada": "24", "alternativa": "34"}, {"marca": "TOYOTA", "modelo": "HIGHLANDER", "anio": "2009-2022", "recomendada": "24R", "alternativa": "35"}, {"marca": "TOYOTA", "modelo": "HILUX", "anio": "2000-2022", "recomendada": "24R", "alternativa": "35"}, {"marca": "TOYOTA", "modelo": "PRIUS HIBRIDO", "anio": "2013-2022", "recomendada": "99", "alternativa": ""}, {"marca": "TOYOTA", "modelo": "RAV4", "anio": "1994-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "TOYOTA", "modelo": "SIENNA", "anio": "2000-2019", "recomendada": "24R", "alternativa": "35"}, {"marca": "TOYOTA", "modelo": "TACOMA", "anio": "1995-2022", "recomendada": "24R", "alternativa": "35"}, {"marca": "TOYOTA", "modelo": "YARIS", "anio": "2004-2022", "recomendada": "35", "alternativa": "24R"}, {"marca": "VOLKSWAGEN", "modelo": "BEETLE", "anio": "1998-2019", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLKSWAGEN", "modelo": "BORA", "anio": "2005-2012", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLKSWAGEN", "modelo": "CLASICO", "anio": "2010-2014", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLKSWAGEN", "modelo": "GOL", "anio": "2007-2020", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLKSWAGEN", "modelo": "GOLF", "anio": "1993-2021", "recomendada": "41", "alternativa": "48/91"}, {"marca": "VOLKSWAGEN", "modelo": "JETTA", "anio": "1992-2022", "recomendada": "42", "alternativa": "47"}, {"marca": "VOLKSWAGEN", "modelo": "PASSAT", "anio": "1993-2019", "recomendada": "41", "alternativa": "48/91"}, {"marca": "VOLKSWAGEN", "modelo": "POLO", "anio": "2003-2021", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLKSWAGEN", "modelo": "SAVEIRO", "anio": "2010-2022", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLKSWAGEN", "modelo": "TIGUAN", "anio": "2007-2022", "recomendada": "47", "alternativa": "48/91"}, {"marca": "VOLKSWAGEN", "modelo": "VENTO", "anio": "2012-2022", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLKSWAGEN", "modelo": "VIRTUS", "anio": "2019-2022", "recomendada": "47", "alternativa": "42"}, {"marca": "VOLVO", "modelo": "S40", "anio": "2000-2014", "recomendada": "48/91", "alternativa": "41"}, {"marca": "VOLVO", "modelo": "XC90", "anio": "2003-2015", "recomendada": "41", "alternativa": "48/91"}];
+
+    // Application State
+    let currentCategory = 'acumuladores';
+    let currentBci = '47';
+    let currentDiscount = 0;
+    let paymentMode = 'cash';
+    let selectedQuotes = new Set();
+    let currentModalItem = null;
+
+    const POPULAR_BCI = ['47', '22F', '42', '24', '35', '58', 'NS40', '51R', '26R', '75', '94R', '48/91', '49', '31T', '34/78', '99'];
+
+    function formatMoney(amount) {
+      if (amount === null || amount === undefined || isNaN(amount)) return '-';
+      return new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    }
+
+    function getValidityDateText() {
+      const now = new Date();
+      const validityDate = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
+      const days = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+      const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+      
+      const dayName = days[validityDate.getDay()];
+      const dayNum = validityDate.getDate();
+      const monthName = months[validityDate.getMonth()];
+      const year = validityDate.getFullYear();
+      
+      return `${dayName}, ${dayNum} de ${monthName} de ${year}`;
+    }
+
+    function getBrandWarranty(item) {
+      if (currentCategory === 'motobaterias') return '6 meses de garantía';
+      const brand = String(item.marca || '').toUpperCase();
+      const tipo = String(item.tipo || '').toUpperCase();
+      if (brand.includes('HI-TEC') || brand.includes('HITEC')) return '60 meses (18m reemplazo directo)';
+      if (brand.includes('EVOLUTION') || tipo.includes('AGM')) return '60 meses (24m reemplazo directo)';
+      if (brand.includes('OPTIMA')) return '36 meses (36m reemplazo directo)';
+      if (brand.includes('LTH')) return '48 meses (12m reemplazo directo)';
+      if (brand.includes('AMERICA')) return '36 meses (12m reemplazo directo)';
+      if (brand.includes('POWER CONNECTION')) return '24 meses (6m reemplazo directo)';
+      return '24 meses de garantía de fábrica';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initCarApplicationFilters();
+      renderQuickChips();
+      selectBciGroup('47');
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.bci-search-wrapper')) {
+          const list = document.getElementById('bciDropdownList');
+          if (list) list.classList.remove('show');
+        }
+        if (!e.target.closest('.car-search-box-wrapper')) {
+          const carList = document.getElementById('carSearchResults');
+          if (carList) carList.classList.remove('show');
+        }
+      });
+    });
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      document.getElementById('tabAcumuladores').classList.toggle('active', cat === 'acumuladores');
+      document.getElementById('tabMotobaterias').classList.toggle('active', cat === 'motobaterias');
+
+      const carSubcard = document.getElementById('carSearchSubcard');
+      const bciTitle = document.getElementById('bciSubcardTitle');
+
+      if (cat === 'acumuladores') {
+        if (carSubcard) carSubcard.style.display = 'flex';
+        if (bciTitle) bciTitle.textContent = '2. O Seleccionar por Grupo BCI';
+        renderQuickChips();
+        selectBciGroup('47');
+      } else {
+        if (carSubcard) carSubcard.style.display = 'none';
+        if (bciTitle) bciTitle.textContent = '1. Seleccionar Tipo de Motobatería';
+        renderMotoQuickChips();
+        const firstType = (CATALOG_MOTOS && CATALOG_MOTOS.length > 0) ? CATALOG_MOTOS[0].tipo : '7-A';
+        selectBciGroup(firstType);
+      }
+    }
+
+    function getDistinctBciList() {
+      if (currentCategory === 'acumuladores') {
+        const groupsMap = new Map();
+        CATALOG_ACUMULADORES.forEach(item => {
+          if (!item.bci) return;
+          let key = String(item.bci).trim();
+          groupsMap.set(key, (groupsMap.get(key) || 0) + 1);
+        });
+        return Array.from(groupsMap.entries()).sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
+      } else {
+        const typesMap = new Map();
+        CATALOG_MOTOS.forEach(item => {
+          if (!item.tipo) return;
+          let key = String(item.tipo).trim();
+          typesMap.set(key, (typesMap.get(key) || 0) + 1);
+        });
+        return Array.from(typesMap.entries()).sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
+      }
+    }
+
+    
+    // ==========================================
+    // VEHICLE APPLICATIONS LOGIC
+    // ==========================================
+    let currentSelectedApp = null;
+    let matchingBrandApps = [];
+
+    function initCarApplicationFilters() {
+      const selectBrand = document.getElementById('carBrandSelect');
+      if (!selectBrand) return;
+
+      const brands = Array.from(new Set(CATALOG_APLICACIONES.map(a => a.marca))).sort();
+      selectBrand.innerHTML = '<option value="">🏢 Seleccionar Marca...</option>';
+      brands.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b;
+        opt.textContent = b;
+        selectBrand.appendChild(opt);
+      });
+
+      const badge = document.getElementById('appsCountBadge');
+      if (badge) badge.textContent = `${CATALOG_APLICACIONES.length} modelos`;
+    }
+
+    function onCarBrandChange(brand) {
+      const selectModel = document.getElementById('carModelSelect');
+      if (!selectModel) return;
+
+      if (!brand) {
+        selectModel.innerHTML = '<option value="">🚘 Seleccionar Modelo...</option>';
+        selectModel.disabled = true;
+        return;
+      }
+
+      matchingBrandApps = CATALOG_APLICACIONES.filter(a => a.marca === brand);
+      selectModel.innerHTML = '<option value="">🚘 Seleccionar Modelo...</option>';
+      matchingBrandApps.forEach((a, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = `${a.modelo} (${a.anio}) → BCI ${a.recomendada}`;
+        selectModel.appendChild(opt);
+      });
+      selectModel.disabled = false;
+    }
+
+    function onCarModelChange(idxStr) {
+      if (idxStr === '') return;
+      const idx = parseInt(idxStr, 10);
+      const app = matchingBrandApps[idx];
+      if (app) {
+        selectVehicleApplication(app);
+      }
+    }
+
+    function handleCarSearchInput(query) {
+      const dropdown = document.getElementById('carSearchResults');
+      if (!dropdown) return;
+
+      const q = String(query || '').trim().toUpperCase();
+      if (!q) {
+        dropdown.classList.remove('show');
+        dropdown.innerHTML = '';
+        return;
+      }
+
+      const qParts = q.split(/\s+/);
+      const matches = CATALOG_APLICACIONES.filter(a => {
+        const text = `${a.marca} ${a.modelo} ${a.anio} ${a.recomendada}`.toUpperCase();
+        return qParts.every(part => text.includes(part));
+      }).slice(0, 18);
+
+      if (matches.length === 0) {
+        dropdown.innerHTML = `
+          <div style="padding: 10px; font-size: 0.78rem; color: var(--text-muted); text-align: center;">
+            No se encontraron vehículos para "${query}".
+          </div>
+        `;
+        dropdown.classList.add('show');
+        return;
+      }
+
+      dropdown.innerHTML = '';
+      matches.forEach(app => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'car-result-item';
+        itemDiv.innerHTML = `
+          <div>
+            <div class="car-item-title">🚗 ${app.marca} ${app.modelo}</div>
+            <div class="car-item-sub">Años: ${app.anio}</div>
+          </div>
+          <div class="car-item-bcis">
+            <span class="car-bci-tag rec" title="BCI Recomendada">BCI ${app.recomendada}</span>
+            ${app.alternativa ? `<span class="car-bci-tag alt" title="También le queda">Alt: ${app.alternativa}</span>` : ''}
+          </div>
+        `;
+        itemDiv.onclick = () => {
+          selectVehicleApplication(app);
+        };
+        dropdown.appendChild(itemDiv);
+      });
+
+      dropdown.classList.add('show');
+    }
+
+    function selectVehicleApplication(app, targetBci = null) {
+      currentSelectedApp = app;
+
+      // Close dropdown
+      const dropdown = document.getElementById('carSearchResults');
+      if (dropdown) {
+        dropdown.classList.remove('show');
+      }
+
+      // Sync input
+      const carInput = document.getElementById('carSearchInput');
+      if (carInput) carInput.value = `${app.marca} ${app.modelo} (${app.anio})`;
+
+      // Sync brand dropdown
+      const brandSelect = document.getElementById('carBrandSelect');
+      if (brandSelect && brandSelect.value !== app.marca) {
+        brandSelect.value = app.marca;
+        onCarBrandChange(app.marca);
+      }
+
+      const chosenBci = targetBci || app.recomendada;
+      renderSelectedVehicleCard(chosenBci);
+
+      // Auto-populate quote vehicle in bottom panel
+      const quoteVehicleInput = document.getElementById('clientVehicleInput');
+      if (quoteVehicleInput) {
+        quoteVehicleInput.value = `${app.marca} ${app.modelo} ${app.anio}`;
+        updateWhatsAppPreview();
+      }
+
+      // Select corresponding BCI group
+      selectBciGroup(chosenBci);
+    }
+
+    function renderSelectedVehicleCard(activeBci) {
+      const box = document.getElementById('vehicleSelectedCard');
+      if (!box || !currentSelectedApp) return;
+
+      const app = currentSelectedApp;
+      const isRecActive = String(activeBci).toUpperCase() === String(app.recomendada).toUpperCase();
+      const isAltActive = app.alternativa && String(activeBci).toUpperCase() === String(app.alternativa).toUpperCase();
+
+      box.innerHTML = `
+        <div class="v-header-row">
+          <div class="v-car-badge">
+            <span>🚗</span>
+            <span>${app.marca} ${app.modelo}</span>
+            <span class="v-car-year-text">${app.anio}</span>
+          </div>
+          <button class="v-btn-reset" onclick="clearSelectedVehicle()" title="Quitar selección">✕ Quitar</button>
+        </div>
+        <div class="v-pills-row">
+          <button class="v-pill-btn rec ${isRecActive ? 'active' : ''}" onclick="applyVehicleBci('${app.recomendada}', true)">
+            <span>⭐ RECOMENDADA:</span>
+            <span style="font-size: 0.88rem; font-weight: 800;">BCI ${app.recomendada}</span>
+          </button>
+          ${app.alternativa ? `
+          <button class="v-pill-btn alt ${isAltActive ? 'active' : ''}" onclick="applyVehicleBci('${app.alternativa}', false)">
+            <span>⚡ TAMBIÉN LE QUEDA:</span>
+            <span style="font-size: 0.88rem; font-weight: 800;">BCI ${app.alternativa}</span>
+          </button>` : ''}
+        </div>
+      `;
+      box.style.display = 'flex';
+    }
+
+    function applyVehicleBci(bci, isRec) {
+      if (!bci) return;
+      renderSelectedVehicleCard(bci);
+      selectBciGroup(bci);
+    }
+
+    function clearSelectedVehicle() {
+      currentSelectedApp = null;
+      const box = document.getElementById('vehicleSelectedCard');
+      if (box) box.style.display = 'none';
+
+      const carInput = document.getElementById('carSearchInput');
+      if (carInput) carInput.value = '';
+
+      const brandSelect = document.getElementById('carBrandSelect');
+      if (brandSelect) brandSelect.value = '';
+
+      const modelSelect = document.getElementById('carModelSelect');
+      if (modelSelect) {
+        modelSelect.innerHTML = '<option value="">🚘 Seleccionar Modelo...</option>';
+        modelSelect.disabled = true;
+      }
+    }
+
+    function renderQuickChips() {
+      const container = document.getElementById('quickChipsContainer');
+      container.innerHTML = '';
+      POPULAR_BCI.forEach(bci => {
+        const chip = document.createElement('button');
+        chip.className = `bci-chip ${bci === currentBci ? 'active' : ''}`;
+        chip.textContent = bci;
+        chip.onclick = () => selectBciGroup(bci);
+        container.appendChild(chip);
+      });
+      const distinctCount = getDistinctBciList().length;
+      document.getElementById('groupCounterText').textContent = `${distinctCount} grupos disponibles`;
+    }
+
+    function renderMotoQuickChips() {
+      const container = document.getElementById('quickChipsContainer');
+      container.innerHTML = '';
+      const topMotos = ['7-A', '9-BS', '12-BS', '14-BS', '4L-BS', '5L-BS', '7L-BS', 'TX20L-BS', 'YTZ10S'];
+      topMotos.forEach(tipo => {
+        const chip = document.createElement('button');
+        chip.className = `bci-chip ${tipo === currentBci ? 'active' : ''}`;
+        chip.textContent = tipo;
+        chip.onclick = () => selectBciGroup(tipo);
+        container.appendChild(chip);
+      });
+      const distinctCount = getDistinctBciList().length;
+      document.getElementById('groupCounterText').textContent = `${distinctCount} motobaterías disponibles`;
+    }
+
+    function showDropdown() {
+      filterDropdown();
+      document.getElementById('bciDropdownList').classList.add('show');
+    }
+
+    function filterDropdown() {
+      const query = document.getElementById('bciSearchInput').value.trim().toUpperCase();
+      const listContainer = document.getElementById('bciDropdownList');
+      const list = getDistinctBciList();
+
+      const filtered = list.filter(([key]) => key.toUpperCase().includes(query));
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = '<div style="padding:10px; color:var(--text-muted); text-align:center;">No se encontraron resultados</div>';
+      } else {
+        listContainer.innerHTML = filtered.map(([key, count]) => `
+          <div class="bci-dropdown-item ${key === currentBci ? 'selected' : ''}" onclick="selectBciGroup('${key}')">
+            <span class="item-bci">${currentCategory === 'acumuladores' ? 'Grupo ' : 'Tipo '} ${key}</span>
+            <span class="item-count">${count} opción(es)</span>
+          </div>
+        `).join('');
+      }
+      listContainer.classList.add('show');
+    }
+
+    function handleSearchInput(event) {
+      filterDropdown();
+      const val = event.target.value.trim().toUpperCase();
+      if (val) {
+        const exactMatch = getDistinctBciList().find(([key]) => key.toUpperCase() === val);
+        if (exactMatch) {
+          currentBci = exactMatch[0];
+          document.querySelectorAll('.bci-chip').forEach(c => {
+            c.classList.toggle('active', c.textContent.trim().toUpperCase() === currentBci.toUpperCase());
+          });
+          selectedQuotes.clear();
+          renderComparisonTable();
+        } else {
+          currentBci = val;
+          selectedQuotes.clear();
+          renderComparisonTable();
+        }
+      }
+    }
+
+    function selectBciGroup(bci) {
+      currentBci = String(bci).trim();
+      document.getElementById('bciSearchInput').value = currentBci;
+      const bciList = document.getElementById('bciDropdownList');
+      if (bciList) bciList.classList.remove('show');
+      if (currentSelectedApp) {
+        renderSelectedVehicleCard(currentBci);
+      }
+
+      document.querySelectorAll('.bci-chip').forEach(c => {
+        c.classList.toggle('active', c.textContent.trim().toUpperCase() === currentBci.toUpperCase());
+      });
+
+      selectedQuotes.clear();
+      renderComparisonTable();
+    }
+
+    function setDiscount(perc, btnElement) {
+      currentDiscount = perc;
+      document.querySelectorAll('.btn-discount').forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+      document.getElementById('customDiscountBox').style.display = 'none';
+      document.getElementById('currentDiscountLabel').textContent = `${perc}%`;
+      document.getElementById('statDiscount').textContent = `${perc}%`;
+      renderComparisonTable();
+    }
+
+    function activateCustomDiscount(btnElement) {
+      document.querySelectorAll('.btn-discount').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active');
+      const box = document.getElementById('customDiscountBox');
+      box.style.display = 'flex';
+      document.getElementById('customDiscountVal').focus();
+    }
+
+    function applyCustomDiscount() {
+      const val = parseFloat(document.getElementById('customDiscountVal').value) || 0;
+      currentDiscount = Math.min(100, Math.max(0, val));
+      document.getElementById('currentDiscountLabel').textContent = `${currentDiscount}%`;
+      document.getElementById('statDiscount').textContent = `${currentDiscount}%`;
+      renderComparisonTable();
+    }
+
+    function setPaymentMode(mode) {
+      paymentMode = mode;
+      document.getElementById('payModeCash').classList.toggle('active', mode === 'cash');
+      document.getElementById('payModeCard').classList.toggle('active', mode === 'card');
+      renderComparisonTable();
+    }
+
+    function calculatePrices(item) {
+      const baseDiscountFactor = (1 - (currentDiscount / 100));
+      const cardMultiplier = (paymentMode === 'card') ? 1.04 : 1.0;
+
+      if (currentCategory === 'acumuladores') {
+        const rawListaCon = parseFloat(item.precioListaConUsado) || 0;
+        const costoUsado = parseFloat(item.costoUsado) || 0;
+        
+        const precioConUsado = Math.round(rawListaCon * baseDiscountFactor * cardMultiplier * 100) / 100;
+        const precioSinUsado = Math.round((precioConUsado + costoUsado) * 100) / 100;
+        const ahorroDescuento = Math.round((rawListaCon - (rawListaCon * baseDiscountFactor)) * 100) / 100;
+
+        return {
+          precioListaCon: rawListaCon,
+          precioConUsado,
+          precioSinUsado,
+          costoUsado,
+          ahorroDescuento,
+          clasificacionUsado: item.clasificacionUsado || 1
+        };
+      } else {
+        const rawListaCon = parseFloat(item.precioCon) || 0;
+        const rawListaSin = parseFloat(item.precioSin) || 0;
+        const precioConUsado = Math.round(rawListaCon * baseDiscountFactor * cardMultiplier * 100) / 100;
+        const precioSinUsado = Math.round(rawListaSin * baseDiscountFactor * cardMultiplier * 100) / 100;
+        const costoUsado = Math.max(0, precioSinUsado - precioConUsado);
+
+        return {
+          precioListaCon: rawListaCon,
+          precioConUsado,
+          precioSinUsado,
+          costoUsado,
+          ahorroDescuento: 0,
+          clasificacionUsado: 'Moto'
+        };
+      }
+    }
+
+    function getMatchingCurrentItems() {
+      const target = String(currentBci || '').trim().toUpperCase();
+      if (!target) return [];
+
+      if (currentCategory === 'acumuladores') {
+        return CATALOG_ACUMULADORES.filter(item => {
+          const bci = String(item.bci || '').trim().toUpperCase();
+          const tipo = String(item.tipo || '').trim().toUpperCase();
+          const marca = String(item.marca || '').trim().toUpperCase();
+          
+          if (bci === target) return true;
+          if (tipo === target || tipo.includes(target)) return true;
+          
+          // Smart alias matching
+          if (target === '42' && (bci === '42500' || bci === '42R' || tipo.includes('-42-') || tipo.includes('-42R-'))) return true;
+          if (target === 'NS40' && (bci.startsWith('NS40') || tipo.includes('NS40'))) return true;
+          if (target === '31' && (bci.startsWith('31') || tipo.includes('-31-') || tipo.includes('-31P-') || tipo.includes('-31T-'))) return true;
+          if (target === '51' && (bci.startsWith('51') || tipo.includes('-51-'))) return true;
+          if (target === '58' && (bci === '58R' || tipo.includes('-58-') || tipo.includes('-58R-'))) return true;
+          if (target === '24' && (bci === '24R' || bci === '24F' || bci === '24M' || bci === '24MDC')) return true;
+          if (target === '27' && (bci === '27F' || bci === '27MDC' || bci === 'D27M')) return true;
+          if (target === '34' && (bci === '34/78' || bci === '34M' || bci === 'D34' || bci === 'D34/78')) return true;
+          if (target === '75' && (bci === '75/86' || bci === 'D75/25')) return true;
+          
+          return false;
+        });
+      } else {
+        return CATALOG_MOTOS.filter(item => {
+          const tipo = String(item.tipo || '').trim().toUpperCase();
+          return tipo === target || tipo.includes(target);
+        });
+      }
+    }
+
+    function renderComparisonTable() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      let matchingItems = getMatchingCurrentItems();
+
+      if (currentCategory === 'acumuladores') {
+        const brandPriority = {
+          'LTH': 1,
+          'AMERICA': 2,
+          'LTH HITEC': 3,
+          'POWER CONNECTION': 4,
+          'LTH EVOLUTION': 5,
+          'OPTIMA': 6,
+          'CRONOS': 7,
+          'DYNAMO': 8,
+          'CALE': 9,
+          'FULL POWER': 10,
+          'LTH PROTECT': 11,
+          'LTH TAXI': 12,
+          'LTH HEAVY DUTY': 13,
+          'LTH ESPECIALES': 14
+        };
+        matchingItems.sort((a, b) => {
+          const prioA = brandPriority[String(a.marca || '').trim().toUpperCase()] || 99;
+          const prioB = brandPriority[String(b.marca || '').trim().toUpperCase()] || 99;
+          return prioA - prioB;
+        });
+      }
+
+      document.getElementById('bannerBciBadge').textContent = currentBci;
+      document.getElementById('bannerTitle').textContent = `${currentCategory === 'acumuladores' ? 'Grupo BCI ' : 'Motobatería Tipo '} ${currentBci}`;
+      document.getElementById('resultsCountBadge').textContent = `${matchingItems.length} marca(s)`;
+
+      if (matchingItems.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="empty-state">
+              <h3 style="color: var(--primary-navy); margin-bottom:6px; font-size:1rem;">No se encontraron registros para "${currentBci}"</h3>
+              <p style="font-size:0.8rem;">Selecciona otro grupo BCI o utiliza el buscador arriba.</p>
+            </td>
+          </tr>
+        `;
+        document.getElementById('statClasifUsado').textContent = '-';
+        document.getElementById('statCostoUsado').textContent = '-';
+        updateWhatsAppPreview([]);
+        return;
+      }
+
+      const firstPrices = calculatePrices(matchingItems[0]);
+      document.getElementById('statClasifUsado').textContent = `Grupo ${firstPrices.clasificacionUsado}`;
+      document.getElementById('statCostoUsado').textContent = formatMoney(firstPrices.costoUsado);
+
+      matchingItems.forEach((item, idx) => {
+        const prices = calculatePrices(item);
+        const itemKey = `${item.marca}-${item.tipo}`;
+        const brandBadgeClass = `badge-${String(item.marca || '').trim().replace(/\s+/g, '-')}`;
+        const isChecked = selectedQuotes.has(itemKey);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="text-align: center;">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleItemQuote('${itemKey}', this.checked)" style="transform: scale(1.15); cursor: pointer; accent-color: var(--accent-red);">
+          </td>
+          <td>
+            <span class="brand-badge ${brandBadgeClass}">${item.marca || 'GENÉRICO'}</span>
+          </td>
+          <td>
+            <div class="tipo-code">${item.tipo}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted);">${item.polaridad || ''}</div>
+          </td>
+          <td>
+            <span style="font-weight: 700; color: var(--primary-navy);">${item.cca ? item.cca + ' A' : '-'}</span>
+          </td>
+          <td>
+            <span style="color: var(--text-secondary); font-weight: 600;">${item.capacidadReserva ? item.capacidadReserva + ' min' : (item.capacidadAh ? item.capacidadAh + ' Ah' : '-')}</span>
+          </td>
+          <td>
+            <span style="font-family: monospace; font-size: 0.76rem; color: var(--text-secondary);">
+              ${item.largo || '-'} × ${item.ancho || '-'} × ${item.alto || '-'}
+            </span>
+          </td>
+          <td>
+            <div class="price-with-trade">
+              ${formatMoney(prices.precioConUsado)}
+              <span class="price-tag-sub">Entregando Usado</span>
+            </div>
+          </td>
+          <td>
+            <div class="price-no-trade">
+              ${formatMoney(prices.precioSinUsado)}
+            </div>
+            <span style="font-size: 0.66rem; color: var(--text-muted);">Sin Usado (+${formatMoney(prices.costoUsado)})</span>
+          </td>
+          <td style="text-align: right;">
+            <button class="btn-select-quote" onclick='openSpecsModal(${JSON.stringify(item)})' title="Ver Ficha Técnica">
+              🔍 Ficha
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      syncSelectAllCheckbox();
+      updateWhatsAppPreview(matchingItems);
+    }
+
+    function toggleItemQuote(itemKey, isChecked) {
+      if (isChecked) {
+        selectedQuotes.add(itemKey);
+      } else {
+        selectedQuotes.delete(itemKey);
+      }
+      syncSelectAllCheckbox();
+      updateWhatsAppPreview(getMatchingCurrentItems());
+    }
+
+    function toggleSelectAll(checked) {
+      const items = getMatchingCurrentItems();
+      if (checked) {
+        items.forEach(it => selectedQuotes.add(`${it.marca}-${it.tipo}`));
+      } else {
+        selectedQuotes.clear();
+      }
+      renderComparisonTable();
+    }
+
+    function syncSelectAllCheckbox() {
+      const selectAll = document.getElementById('selectAllCheckbox');
+      if (!selectAll) return;
+      const items = getMatchingCurrentItems();
+      if (!items || items.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+        return;
+      }
+      const selectedCount = items.filter(it => selectedQuotes.has(`${it.marca}-${it.tipo}`)).length;
+      if (selectedCount === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+      } else if (selectedCount === items.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+      } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+      }
+    }
+
+    // WhatsApp text generator: Brand header "MARTÍN ACUMULADORES" & 100% clean of any discount percentage mentions
+    function updateWhatsAppPreview(items = null) {
+      if (!items) items = getMatchingCurrentItems();
+
+      const clientName = document.getElementById('clientNameInput').value.trim();
+      const clientVehicle = document.getElementById('clientVehicleInput').value.trim();
+      const validityDate = getValidityDateText();
+
+      if (!items || items.length === 0) {
+        document.getElementById('waPreviewBox').textContent = 'No hay opciones disponibles para cotizar.';
+        return;
+      }
+
+      let selectedItems = items.filter(it => selectedQuotes.has(`${it.marca}-${it.tipo}`));
+      if (selectedItems.length === 0) {
+        document.getElementById('waPreviewBox').innerHTML = `<div style="color: #64748b; font-style: italic; line-height: 1.6; padding: 6px 0;">
+          ⚠️ <strong>Ninguna batería seleccionada.</strong><br>
+          Marca la casilla <strong>[ ☑️ ]</strong> de las marcas que deseas agregar a la cotización en la tabla de arriba.
+        </div>`;
+        return;
+      }
+
+      const firstPrice = calculatePrices(selectedItems[0]);
+
+      let text = `🔋 *COTIZACIÓN - MARTÍN ACUMULADORES*\n`;
+      if (clientName) text += `👤 *Cliente:* ${clientName}\n`;
+      if (clientVehicle) text += `🚗 *Aplicación / Vehículo:* ${clientVehicle}\n`;
+      text += `📌 *Grupo BCI:* ${currentBci}\n`;
+      // Leyenda de pago con tarjeta eliminada según requerimiento
+      text += `------------------------------------\n`;
+
+      selectedItems.forEach(item => {
+        const prices = calculatePrices(item);
+        const warranty = getBrandWarranty(item);
+        text += `🔹 *Marca: ${item.marca}*\n`;
+        text += `   • *Modelo:* ${item.tipo}\n`;
+        if (item.cca) text += `   • *Capacidad de Arranque (CCA):* ${item.cca} Amperes\n`;
+        if (item.capacidadReserva) text += `   • *Capacidad de Reserva:* ${item.capacidadReserva} min\n`;
+        if (item.largo && item.ancho && item.alto) text += `   • *Medidas (L×A×A):* ${item.largo} × ${item.ancho} × ${item.alto} mm\n`;
+        text += `   • *Garantía:* ${warranty}\n`;
+        text += `   ✅ *PRECIO ENTREGANDO USADO:* *${formatMoney(prices.precioConUsado)}*\n`;
+        text += `   ❌ *Precio sin entregar usado:* ${formatMoney(prices.precioSinUsado)}\n\n`;
+      });
+
+      text += `------------------------------------\n`;
+      text += `📅 *Vigencia de cotización al:* ${validityDate}.\n`;
+      text += `♻️ *El costo por no entregar acumulador usado (Grupo ${firstPrice.clasificacionUsado}) es de ${formatMoney(firstPrice.costoUsado)}.*\n`;
+      text += `✨ *Todos los precios incluyen 16% de IVA y garantía de fábrica.*`;
+
+      document.getElementById('waPreviewBox').textContent = text;
+      document.getElementById('validityDateNote').textContent = `Vigencia: ${validityDate}`;
+    }
+
+    function copyWhatsAppQuote() {
+      if (selectedQuotes.size === 0) {
+        alert('Por favor selecciona al menos una marca con la casilla de la tabla para cotizar.');
+        return;
+      }
+      const text = document.getElementById('waPreviewBox').textContent;
+      if (!text || text.startsWith('No hay') || text.includes('Ninguna batería seleccionada')) return;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast();
+        }).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast();
+      } catch (err) {
+        alert('Copia el texto directamente de la caja.');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toastBox');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    function sendDirectWhatsApp() {
+      if (selectedQuotes.size === 0) {
+        alert('Por favor selecciona al menos una marca con la casilla de la tabla para enviar la cotización.');
+        return;
+      }
+      const text = encodeURIComponent(document.getElementById('waPreviewBox').textContent);
+      const phone = document.getElementById('clientPhoneInput').value.replace(/\D/g, '');
+      let url = `https://api.whatsapp.com/send?text=${text}`;
+      if (phone) {
+        url = `https://api.whatsapp.com/send?phone=${phone}&text=${text}`;
+      }
+      window.open(url, '_blank');
+    }
+
+    function openSpecsModal(item) {
+      currentModalItem = item;
+      const prices = calculatePrices(item);
+      document.getElementById('modalBrandBadge').textContent = item.marca || 'BATERÍA';
+      document.getElementById('modalBrandBadge').className = `brand-badge badge-${String(item.marca || '').trim().replace(/\s+/g, '-')}`;
+      document.getElementById('modalTipo').textContent = item.tipo;
+      document.getElementById('modalBci').textContent = `Grupo BCI / Tipo: ${item.bci || currentBci}`;
+      document.getElementById('modalPriceCon').textContent = formatMoney(prices.precioConUsado);
+
+      const grid = document.getElementById('modalSpecsGrid');
+      grid.innerHTML = `
+        <div class="spec-card">
+          <div class="spec-card-label">CCA (-18°C)</div>
+          <div class="spec-card-val" style="color: var(--primary);">${item.cca ? item.cca + ' A' : 'N/A'}</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">CA (0°C)</div>
+          <div class="spec-card-val" style="color: var(--primary-navy);">${item.ca ? item.ca + ' A' : 'N/A'}</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Capacidad de Reserva</div>
+          <div class="spec-card-val">${item.capacidadReserva ? item.capacidadReserva + ' min' : (item.capacidadAh ? item.capacidadAh + ' Ah' : 'N/A')}</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Polaridad</div>
+          <div class="spec-card-val" style="font-size: 0.88rem;">${item.polaridad || 'N/A'}</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Dimensiones (L × A × A)</div>
+          <div class="spec-card-val" style="font-size: 0.88rem;">${item.largo || '-'} × ${item.ancho || '-'} × ${item.alto || '-'} mm</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Peso Húmedo</div>
+          <div class="spec-card-val">${item.peso ? item.peso + ' kg' : 'N/A'}</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Garantía de Fábrica</div>
+          <div class="spec-card-val" style="font-size: 0.82rem; color: #1e293b;">${getBrandWarranty(item)}</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Valor Rescate Casco</div>
+          <div class="spec-card-val" style="color: var(--success-dark);">${formatMoney(prices.costoUsado)}</div>
+        </div>
+      `;
+
+      document.getElementById('specsModal').classList.add('show');
+    }
+
+    function closeSpecsModal(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('specsModal').classList.remove('show');
+    }
+
+    /* ========================================================
+       5. FORMATO Y GENERADOR DE TICKET TÉRMICO (80MM / 58MM)
+       ======================================================== */
+    function buildTicketContent(itemsToPrint) {
+      const clientName = document.getElementById('clientNameInput').value.trim() || 'PÚBLICO EN GENERAL';
+      const clientVehicle = document.getElementById('clientVehicleInput').value.trim() || 'NO ESPECIFICADO';
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+      const folio = 'MA-' + Math.floor(100000 + Math.random() * 900000);
+      const validityDate = getValidityDateText();
+      const payText = paymentMode === 'card' ? 'TARJETA' : 'EFECTIVO / TRANSFERENCIA';
+
+      let itemsHtml = '';
+      itemsToPrint.forEach(item => {
+        const prices = calculatePrices(item);
+        const warranty = getBrandWarranty(item);
+        itemsHtml += `
+          <div style="margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px dotted #666;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 11px;">
+              <span>${item.marca}</span>
+              <span>${item.tipo}</span>
+            </div>
+            <div style="font-size: 10px; color: #333;">
+              CCA: ${item.cca ? item.cca + ' A' : 'N/A'} | Reserva: ${item.capacidadReserva ? item.capacidadReserva + ' min' : (item.capacidadAh ? item.capacidadAh + ' Ah' : 'N/A')}
+            </div>
+            <div style="font-size: 9.5px; color: #444;">
+              Polaridad: ${item.polaridad || 'N/A'} | Medidas: ${item.largo || '-'}×${item.ancho || '-'}×${item.alto || '-'} mm
+            </div>
+            <div style="font-size: 9.5px; font-weight: 600; color: #111;">
+              Garantía: ${warranty}
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: bold; margin-top: 3px;">
+              <span>PRECIO CON USADO:</span>
+              <span>${formatMoney(prices.precioConUsado)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #444;">
+              <span>Precio sin usado:</span>
+              <span>${formatMoney(prices.precioSinUsado)}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      const firstPrice = calculatePrices(itemsToPrint[0]);
+
+      return `
+        <div style="text-align: center; margin-bottom: 4px;">
+          <div style="font-size: 14px; font-weight: 900; letter-spacing: -0.5px;">MARTÍN ACUMULADORES</div>
+          <div style="font-size: 9.5px; font-weight: 600;">Centro de Servicio & Diagnóstico</div>
+        </div>
+        <div style="border-top: 2px solid #000; margin: 4px 0;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px;">
+          <span>Fecha: ${dateStr}</span>
+          <span>Hora: ${timeStr}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: bold;">
+          <span>Folio: ${folio}</span>
+          <span>COTIZACIÓN EXPRESS</span>
+        </div>
+        <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
+        <div style="font-size: 10px;"><span style="font-weight: bold;">CLIENTE:</span> ${clientName}</div>
+        <div style="font-size: 10px;"><span style="font-weight: bold;">VEHÍCULO:</span> ${clientVehicle}</div>
+        <div style="font-size: 10px;"><span style="font-weight: bold;">GRUPO BCI:</span> ${currentBci}</div>
+        <div style="font-size: 10px;"><span style="font-weight: bold;">PAGO:</span> ${payText}</div>
+        <div style="border-top: 2px solid #000; margin: 4px 0;"></div>
+        <div style="text-align: center; font-weight: bold; font-size: 10.5px; margin: 2px 0;">DETALLE DE COTIZACIÓN</div>
+        <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
+        ${itemsHtml}
+        <div style="border-top: 2px solid #000; margin: 4px 0;"></div>
+        <div style="font-size: 9px; line-height: 1.3;">
+          <div>• Precios netos con 16% IVA incluido.</div>
+          <div>• Precios sujetos a entrega de acumulador usado.</div>
+          <div>• Diagnóstico e instalación sin costo en sucursal.</div>
+          <div>• Vigencia de cotización: 15 días (${validityDate}).</div>
+          <div>• Conserve este comprobante para respetar su precio.</div>
+        </div>
+        <div style="border-top: 2px solid #000; margin: 4px 0;"></div>
+        <div style="text-align: center; font-weight: bold; font-size: 11px; margin-top: 4px;">
+          ¡GRACIAS POR SU PREFERENCIA!
+        </div>
+      `;
+    }
+
+    function openTicketModal() {
+      const items = getMatchingCurrentItems();
+      if (!items || items.length === 0) {
+        alert('No hay acumuladores disponibles para imprimir el ticket.');
+        return;
+      }
+      let selectedItems = items.filter(it => selectedQuotes.has(`${it.marca}-${it.tipo}`));
+      if (selectedItems.length === 0) {
+        alert('Por favor selecciona al menos una marca con la casilla de la tabla para imprimir la cotización.');
+        return;
+      }
+
+      const ticketHtml = buildTicketContent(selectedItems);
+      document.getElementById('ticketPreviewContainer').innerHTML = ticketHtml;
+      document.getElementById('ticketModal').classList.add('show');
+    }
+
+    function closeTicketModal(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('ticketModal').classList.remove('show');
+    }
+
+    function triggerTicketPrint() {
+      const items = getMatchingCurrentItems();
+      let selectedItems = items.filter(it => selectedQuotes.has(`${it.marca}-${it.tipo}`));
+      if (selectedItems.length === 0) {
+        alert('Por favor selecciona al menos una marca con la casilla de la tabla para imprimir la cotización.');
+        return;
+      }
+      printThermalTicketDirect(selectedItems);
+    }
+
+    function printSingleItemTicket() {
+      if (!currentModalItem) return;
+      printThermalTicketDirect([currentModalItem]);
+    }
+
+    function printThermalTicketDirect(itemsToPrint) {
+      const ticketBody = buildTicketContent(itemsToPrint);
+      const fullHtml = `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <title>Ticket - MARTÍN ACUMULADORES</title>
+          <style>
+            @page {
+              size: 80mm auto;
+              margin: 2mm;
+            }
+            * {
+              box-sizing: border-box;
+              margin: 0;
+              padding: 0;
+            }
+            body {
+              font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+              font-size: 10.5px;
+              line-height: 1.35;
+              color: #000000;
+              background: #ffffff;
+              width: 76mm;
+              max-width: 76mm;
+              margin: 0 auto;
+              padding: 2mm;
+            }
+          </style>
+        </head>
+        <body>
+          ${ticketBody}
+        </body>
+        </html>
+      `;
+
+      let printIframe = document.getElementById('ticketPrintIframe');
+      if (!printIframe) {
+        printIframe = document.createElement('iframe');
+        printIframe.id = 'ticketPrintIframe';
+        printIframe.style.position = 'fixed';
+        printIframe.style.right = '0';
+        printIframe.style.bottom = '0';
+        printIframe.style.width = '0';
+        printIframe.style.height = '0';
+        printIframe.style.border = '0';
+        document.body.appendChild(printIframe);
+      }
+
+      const doc = printIframe.contentWindow.document;
+      doc.open();
+      doc.write(fullHtml);
+      doc.close();
+
+      setTimeout(() => {
+        printIframe.contentWindow.focus();
+        printIframe.contentWindow.print();
+      }, 250);
+    }
+  </script>
+</body>
+</html>

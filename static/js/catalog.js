@@ -879,6 +879,118 @@
             });
         }
 
+        // 9. Correos Corporativos: Copiado Rápido y Envío Asíncrono (/api/contact)
+        const copyEmailBtns = document.querySelectorAll('[data-copy-email]');
+        copyEmailBtns.forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const emailToCopy = this.getAttribute('data-copy-email') || '';
+                if (!emailToCopy) return;
+                const origText = this.textContent;
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(emailToCopy);
+                    } else {
+                        const tmp = document.createElement('textarea');
+                        tmp.value = emailToCopy;
+                        document.body.appendChild(tmp);
+                        tmp.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tmp);
+                    }
+                    this.classList.add('copied');
+                    this.textContent = '¡Copiado!';
+                    setTimeout(() => {
+                        this.classList.remove('copied');
+                        this.textContent = origText;
+                    }, 2200);
+                } catch (e) {
+                    console.warn('No se pudo copiar al portapapeles:', e);
+                }
+            });
+        });
+
+        const selectRecipientBtns = document.querySelectorAll('[data-select-recipient]');
+        const recipientSelect = document.getElementById('contactRecipient');
+        const directEmailBox = document.getElementById('directEmailBox');
+        const contactNameInput = document.getElementById('contactName');
+
+        selectRecipientBtns.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                const targetEmail = this.getAttribute('data-select-recipient');
+                if (recipientSelect && targetEmail) {
+                    recipientSelect.value = targetEmail;
+                }
+                if (directEmailBox) {
+                    e.preventDefault();
+                    directEmailBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        if (contactNameInput) contactNameInput.focus();
+                    }, 450);
+                }
+            });
+        });
+
+        const directContactForm = document.getElementById('directContactForm');
+        const directContactStatus = document.getElementById('directContactStatus');
+        const directSubmitBtn = document.getElementById('directContactSubmitBtn');
+
+        if (directContactForm && directContactStatus) {
+            directContactForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const payload = {
+                    destinatario: (document.getElementById('contactRecipient') || {}).value || 'contacto@jin.com.mx',
+                    nombre: ((document.getElementById('contactName') || {}).value || '').trim(),
+                    email_cliente: ((document.getElementById('contactClientEmail') || {}).value || '').trim(),
+                    asunto: ((document.getElementById('contactSubject') || {}).value || '').trim() || 'Consulta desde JIN.COM.MX',
+                    mensaje: ((document.getElementById('contactMessage') || {}).value || '').trim()
+                };
+
+                if (!payload.nombre || !payload.email_cliente || !payload.mensaje) {
+                    directContactStatus.className = 'direct-form-status is-error';
+                    directContactStatus.textContent = 'Por favor completa tu nombre, tu correo electrónico y el mensaje.';
+                    return;
+                }
+
+                const origBtnText = directSubmitBtn ? directSubmitBtn.textContent : 'Enviar Mensaje Directo';
+                if (directSubmitBtn) {
+                    directSubmitBtn.disabled = true;
+                    directSubmitBtn.textContent = 'Enviando mensaje...';
+                }
+                directContactStatus.className = 'direct-form-status';
+                directContactStatus.style.display = 'none';
+
+                try {
+                    const res = await fetch('/api/contact', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+
+                    if (res.ok && data && data.ok) {
+                        directContactStatus.className = 'direct-form-status is-success';
+                        directContactStatus.textContent = data.message || `¡Mensaje enviado con éxito a ${payload.destinatario}!`;
+                        directContactForm.reset();
+                        if (recipientSelect) recipientSelect.value = payload.destinatario;
+                    } else {
+                        directContactStatus.className = 'direct-form-status is-error';
+                        directContactStatus.textContent = (data && data.message)
+                            ? data.message
+                            : `No se pudo enviar automáticamente. Por favor escríbenos directo a ${payload.destinatario}.`;
+                    }
+                } catch (err) {
+                    directContactStatus.className = 'direct-form-status is-error';
+                    directContactStatus.textContent = `Para enviar en modo local sin servidor activo, usa el botón "Abrir Correo" hacia ${payload.destinatario}.`;
+                } finally {
+                    if (directSubmitBtn) {
+                        directSubmitBtn.disabled = false;
+                        directSubmitBtn.textContent = origBtnText;
+                    }
+                }
+            });
+        }
+
         // Ejecución inicial de filtros
         applyFilters();
     });

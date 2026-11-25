@@ -11,7 +11,9 @@ import json
 import time
 import asyncio
 import logging
+import smtplib
 import urllib.request
+from email.message import EmailMessage
 from contextlib import asynccontextmanager
 from urllib.parse import quote
 from typing import Optional, List, Dict, Any, Tuple
@@ -1326,6 +1328,121 @@ async def acumuladores_page():
 </body>
 </html>"""
     return HTMLResponse(content=html_page, status_code=200)
+
+
+@app.post("/api/contact", response_class=JSONResponse)
+async def send_corporate_contact_email(request: Request):
+    """
+    Recibe mensajes dirigidos a ale@jin.com.mx o contacto@jin.com.mx (vía JSON o Form)
+    y los envía mediante SMTP_SSL de Gmail hacia casillas.alejo@gmail.com con Reply-To al cliente.
+    """
+    content_type = (request.headers.get("content-type") or "").lower()
+    payload: Dict[str, Any] = {}
+
+    try:
+        if "application/json" in content_type:
+            payload = await request.json()
+        else:
+            form_data = await request.form()
+            payload = dict(form_data)
+    except Exception:
+        try:
+            payload = await request.json()
+        except Exception:
+            payload = {}
+
+    nombre = str(payload.get("nombre") or "").strip()
+    email_cliente = str(payload.get("email_cliente") or "").strip()
+    destinatario_raw = str(payload.get("destinatario") or "contacto@jin.com.mx").strip().lower()
+    asunto = str(payload.get("asunto") or "Consulta desde JIN.COM.MX").strip()
+    mensaje = str(payload.get("mensaje") or "").strip()
+
+    allowed_recipients = ("ale@jin.com.mx", "contacto@jin.com.mx")
+    destinatario = destinatario_raw if destinatario_raw in allowed_recipients else "contacto@jin.com.mx"
+
+    if not nombre or not email_cliente or not mensaje:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "status": "error",
+                "ok": False,
+                "message": "Por favor completa tu nombre, correo electrónico y mensaje."
+            }
+        )
+
+    gmail_user = os.environ.get("GMAIL_USER", "casillas.alejo@gmail.com").strip()
+    gmail_app_password = os.environ.get("GMAIL_APP_PASSWORD", "").strip()
+    target_inbox = "casillas.alejo@gmail.com"
+
+    if not gmail_app_password:
+        logger.warning("Intento de envío en /api/contact sin GMAIL_APP_PASSWORD configurado en variables de entorno.")
+        return JSONResponse(
+            status_code=200,
+            content={
+                "status": "missing_config",
+                "ok": False,
+                "destinatario": destinatario,
+                "message": (
+                    "Falta configurar la variable de entorno GMAIL_APP_PASSWORD en Render para el envío SMTP automático. "
+                    f"Puedes escribir directamente a {destinatario}."
+                )
+            }
+        )
+
+    dept_label = (
+        "Atención Directa / Cotizaciones Especiales (ale@jin.com.mx)"
+        if destinatario == "ale@jin.com.mx"
+        else "Atención General y Ventas (contacto@jin.com.mx)"
+    )
+
+    msg = EmailMessage()
+    msg["From"] = f"JIN.COM.MX Web <{gmail_user}>"
+    msg["To"] = target_inbox
+    msg["Reply-To"] = email_cliente
+    msg["Subject"] = f"[JIN.COM.MX -> {destinatario}] {asunto} - de {nombre}"
+
+    email_body = (
+        f"Nuevo mensaje recibido desde el formulario oficial de JIN.COM.MX\n"
+        f"{'=' * 64}\n"
+        f"• Dirigido a: {destinatario} ({dept_label})\n"
+        f"• Nombre del cliente: {nombre}\n"
+        f"• Correo del cliente (Reply-To): {email_cliente}\n"
+        f"• Asunto: {asunto}\n"
+        f"{'=' * 64}\n\n"
+        f"Mensaje:\n{mensaje}\n\n"
+        f"{'-' * 64}\n"
+        f"Tip: Al presionar 'Responder' en Gmail, contestarás directamente a {email_cliente}."
+    )
+    msg.set_content(email_body)
+
+    def _send_smtp() -> None:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=12) as server:
+            server.login(gmail_user, gmail_app_password)
+            server.send_message(msg)
+
+    try:
+        await asyncio.to_thread(_send_smtp)
+        logger.info(f"Correo enviado con éxito desde /api/contact hacia {target_inbox} (destinatario: {destinatario})")
+        return JSONResponse(
+            status_code=200,
+            content={
+                "status": "sent",
+                "ok": True,
+                "destinatario": destinatario,
+                "message": f"¡Mensaje enviado con éxito a {destinatario}! Te responderemos a {email_cliente} a la brevedad."
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error SMTP al enviar correo desde /api/contact: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "smtp_error",
+                "ok": False,
+                "destinatario": destinatario,
+                "message": f"No se pudo enviar el correo vía SMTP ({str(e)}). Por favor contáctanos en {destinatario}."
+            }
+        )
 
 
 @app.get("/health", response_class=JSONResponse)

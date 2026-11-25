@@ -14,11 +14,52 @@
     <meta property="og:type" content="website">
     <link rel="canonical" href="https://www.jin.com.mx/">
 
+    <!-- Datos Estructurados SEO (JSON-LD Store & ContactPoint) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "JIN.COM.MX",
+      "url": "https://www.jin.com.mx/",
+      "logo": "https://www.jin.com.mx/static/img/logo_jin_3d.png",
+      "image": "https://www.jin.com.mx/static/img/logo_jin_3d.png",
+      "description": "Catálogo oficial de Juguetes, Coleccionables Marvel, DC, Star Wars, Refacciones y Acumuladores LTH.",
+      "email": "contacto@jin.com.mx",
+      "telephone": "+52-477-123-0000",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "León",
+        "addressRegion": "Guanajuato",
+        "addressCountry": "MX"
+      },
+      "sameAs": [
+        "https://www.facebook.com/jin.com.mx",
+        "https://www.instagram.com/jin.com.mx/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "email": "contacto@jin.com.mx",
+          "contactType": "customer service",
+          "areaServed": "MX",
+          "availableLanguage": "Spanish"
+        },
+        {
+          "@type": "ContactPoint",
+          "email": "ale@jin.com.mx",
+          "contactType": "sales",
+          "areaServed": "MX",
+          "availableLanguage": "Spanish"
+        }
+      ]
+    }
+    </script>
+
     <!-- Favicon -->
     <link rel="icon" href="static/img/favicon.png" type="image/png">
     
     <!-- Hojas de Estilos -->
-    <link rel="stylesheet" href="static/css/style.css?v=2.3">
+    <link rel="stylesheet" href="static/css/style.css?v=2.5">
 </head>
 <body class="is-national <!-- BODY_CLASS -->">
 
@@ -155,6 +196,16 @@
                         <li>
                             <a href="https://wa.me/524771230000?text=Hola%20JIN.COM.MX,%20deseo%20información%20del%20catálogo" target="_blank" rel="noopener noreferrer">
                                 WhatsApp Directo
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#directEmailBox" data-select-recipient="contacto@jin.com.mx">
+                                Correo: contacto@jin.com.mx
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#directEmailBox" data-select-recipient="ale@jin.com.mx">
+                                Correo: ale@jin.com.mx
                             </a>
                         </li>
                         <li>
@@ -893,6 +944,118 @@
                 </div>
             </a>
         </div>
+
+        <!-- Tarjetas de Correo Corporativo Directo con Copiado Rápido -->
+        <div class="corporate-email-grid">
+            <!-- Tarjeta 1: Atención General y Ventas (contacto@jin.com.mx) -->
+            <div class="corp-email-card corp-contacto">
+                <div class="corp-email-header">
+                    <div class="corp-email-icon-box" aria-hidden="true">
+                        <svg class="social-icon-svg" width="22" height="22" viewBox="0 0 24 24" style="width:22px;height:22px;max-width:22px;max-height:22px;fill:currentColor;flex-shrink:0;">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 16.5px; font-weight: 900;">Atención General y Ventas</h3>
+                        <a href="mailto:contacto@jin.com.mx" class="corp-email-address">contacto@jin.com.mx</a>
+                    </div>
+                </div>
+                <p class="social-card-text">
+                    Dudas sobre el catálogo, seguimiento de pedidos, soporte general y atención a clientes en toda la República Mexicana.
+                </p>
+                <div class="corp-email-actions">
+                    <a href="mailto:contacto@jin.com.mx" class="corp-action-btn corp-mailto-btn">
+                        Abrir Correo
+                    </a>
+                    <button type="button" class="corp-action-btn corp-copy-btn" data-copy-email="contacto@jin.com.mx">
+                        Copiar Correo
+                    </button>
+                    <button type="button" class="corp-action-btn corp-copy-btn" data-select-recipient="contacto@jin.com.mx">
+                        Escribir Aquí ↓
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2: Atención Directa / Cotizaciones Especiales (ale@jin.com.mx) -->
+            <div class="corp-email-card corp-ale">
+                <div class="corp-email-header">
+                    <div class="corp-email-icon-box" aria-hidden="true">
+                        <svg class="social-icon-svg" width="22" height="22" viewBox="0 0 24 24" style="width:22px;height:22px;max-width:22px;max-height:22px;fill:currentColor;flex-shrink:0;">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 16.5px; font-weight: 900;">Atención Directa / Cotizaciones Especiales</h3>
+                        <a href="mailto:ale@jin.com.mx" class="corp-email-address">ale@jin.com.mx</a>
+                    </div>
+                </div>
+                <p class="social-card-text">
+                    Trato directo para cotizaciones especiales, compras por lote, coleccionables específicos o acuerdos de entrega personalizada.
+                </p>
+                <div class="corp-email-actions">
+                    <a href="mailto:ale@jin.com.mx" class="corp-action-btn corp-mailto-btn">
+                        Abrir Correo
+                    </a>
+                    <button type="button" class="corp-action-btn corp-copy-btn" data-copy-email="ale@jin.com.mx">
+                        Copiar Correo
+                    </button>
+                    <button type="button" class="corp-action-btn corp-copy-btn" data-select-recipient="ale@jin.com.mx">
+                        Escribir Aquí ↓
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario Rápido "Envíanos un mensaje directo" -->
+        <div class="direct-contact-form-box" id="directEmailBox">
+            <div class="direct-form-header">
+                <h3>Envíanos un mensaje directo</h3>
+                <p>Tu mensaje llegará de inmediato a nuestro buzón oficial y te responderemos directamente a tu correo.</p>
+            </div>
+
+            <form id="directContactForm" novalidate>
+                <div class="direct-form-grid">
+                    <div class="direct-form-group">
+                        <label for="contactRecipient">Departamento Destinatario</label>
+                        <select id="contactRecipient" name="destinatario" class="direct-form-control" required>
+                            <option value="contacto@jin.com.mx">contacto@jin.com.mx (Ventas y Atención)</option>
+                            <option value="ale@jin.com.mx">ale@jin.com.mx (Trato Directo / Cotizaciones Especiales)</option>
+                        </select>
+                    </div>
+
+                    <div class="direct-form-group">
+                        <label for="contactName">Tu Nombre</label>
+                        <input type="text" id="contactName" name="nombre" class="direct-form-control" placeholder="Ej. Alejandro García" required>
+                    </div>
+
+                    <div class="direct-form-group">
+                        <label for="contactClientEmail">Tu Correo Electrónico</label>
+                        <input type="email" id="contactClientEmail" name="email_cliente" class="direct-form-control" placeholder="tucorreo@ejemplo.com" required>
+                    </div>
+
+                    <div class="direct-form-group">
+                        <label for="contactSubject">Asunto</label>
+                        <input type="text" id="contactSubject" name="asunto" class="direct-form-control" placeholder="Ej. Cotización o consulta de producto" required>
+                    </div>
+                </div>
+
+                <div class="direct-form-group">
+                    <label for="contactMessage">Mensaje</label>
+                    <textarea id="contactMessage" name="mensaje" class="direct-form-control" placeholder="Escribe aquí tu consulta, número de referencia (REF) o solicitud de cotización..." required></textarea>
+                </div>
+
+                <div class="direct-form-footer">
+                    <button type="submit" id="directContactSubmitBtn" class="glass-btn direct-submit-btn">
+                        Enviar Mensaje Directo
+                    </button>
+                    <span style="font-size: 12px; color: #5b5e72; font-weight: 700;">
+                        Respuesta directa a tu correo electrónico
+                    </span>
+                </div>
+
+                <div id="directContactStatus" class="direct-form-status" role="status" aria-live="polite"></div>
+            </form>
+        </div>
     </section>
 
     <!-- ========================================================
@@ -909,6 +1072,8 @@
             <a href="https://listado.mercadolibre.com.mx/_CustId_491131225" target="_blank" rel="noopener noreferrer">Mercado Libre</a>
             <a href="https://www.facebook.com/jin.com.mx" target="_blank" rel="noopener noreferrer">Facebook</a>
             <a href="https://www.instagram.com/jin.com.mx/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="mailto:contacto@jin.com.mx">contacto@jin.com.mx</a>
+            <a href="mailto:ale@jin.com.mx">ale@jin.com.mx</a>
         </div>
     </footer>
 
@@ -916,8 +1081,8 @@
          7. SCRIPTS DEL MOTOR GRÁFICO Y COMPORTAMIENTO
          ======================================================== -->
     <script src="static/js/background3d.js"></script>
-    <script src="static/js/orbital.js?v=2.3"></script>
-    <script src="static/js/catalog.js?v=2.3"></script>
+    <script src="static/js/orbital.js?v=2.5"></script>
+    <script src="static/js/catalog.js?v=2.5"></script>
 
 </body>
 </html>
