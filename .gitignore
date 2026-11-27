@@ -7,6 +7,7 @@ env/
 venv/
 live_index.html
 tokens.json
+posted_fb_items.json
 *(1)*
 desktop.ini
 .DS_Store

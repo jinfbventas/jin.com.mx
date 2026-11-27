@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Privado | jin.com.mx</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="/static/img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/static/css/style.css?v=2.5">
+    <style>
+        .private-wrap {
+            max-width: 980px;
+            margin: 36px auto 60px;
+            padding: 0 18px;
+            position: relative;
+            z-index: 10;
+        }
+        .private-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 22px;
+            margin-top: 22px;
+        }
+        .private-card {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 2px solid rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 14px 34px rgba(17, 24, 39, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        }
+        .private-card h3 {
+            margin: 0 0 10px;
+            font-size: 1.22rem;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .private-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #1877f2, #0d5bd9);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+        }
+        .feed-copy-box {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            background: rgba(17, 24, 39, 0.06);
+            border: 1.5px solid rgba(24, 119, 242, 0.35);
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin: 12px 0 16px;
+        }
+        .feed-copy-box input {
+            flex: 1 1 240px;
+            border: none;
+            background: transparent;
+            font-family: monospace;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0f172a;
+            outline: none;
+        }
+        .fb-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 999px;
+            border: none;
+            font-weight: 800;
+            font-size: 0.92rem;
+            cursor: pointer;
+            color: #ffffff;
+            background: linear-gradient(135deg, #1877f2, #0a52b5);
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.32);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+        }
+        .fb-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(24, 119, 242, 0.45);
+        }
+        .fb-action-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+        .fb-copy-btn {
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(24, 119, 242, 0.4);
+            background: #ffffff;
+            color: #1877f2;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .fb-copy-btn:hover {
+            background: #1877f2;
+            color: #ffffff;
+        }
+        .fb-status-output {
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 0.86rem;
+            line-height: 1.45;
+            background: rgba(15, 23, 42, 0.06);
+            border: 1px solid rgba(15, 23, 42, 0.14);
+            color: #1e293b;
+            white-space: pre-wrap;
+            display: none;
+        }
+        .fb-meta-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0 16px;
+        }
+        .fb-meta-pill {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 11px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(17, 24, 39, 0.12);
+            color: #334155;
+        }
+        .login-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+            margin: 20px auto 0;
+        }
+        .login-form-group input {
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(17, 24, 39, 0.2);
+            font-size: 0.95rem;
+            outline: none;
+        }
+    </style>
+</head>
+<body class="is-local">
+    <header class="header-wrapper">
+        <div class="header-top">
+            <a href="/" class="header-brand">
+                <img src="/static/img/logo_jin_3d.png" alt="jin.com.mx Logo" class="brand-icon">
+                <span class="brand-text">jin<span class="rgb-split-text">.com.mx</span></span>
+            </a>
+            <div class="header-actions">
+                <a href="/" class="header-cta-btn"><span>Volver al Catálogo</span></a>
+                {% if authenticated %}
+                <a href="/privado/logout" class="header-cta-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c);">
+                    <span>Cerrar Sesión</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="private-wrap">
+        <div class="catalog-header-bar">
+            <div class="catalog-title-group">
+                <h2>Panel Privado de Control <span class="rgb-split-text">jin.com.mx</span></h2>
+                <p>Sincronización OAuth2 Mercado Libre, Meta Commerce Manager y Autopublicación Facebook</p>
+            </div>
+        </div>
+
+        {% if not authenticated %}
+        <div class="private-card" style="max-width: 500px; margin: 28px auto; text-align: center;">
+            <span class="private-badge">Acceso Protegido</span>
+            <h3 style="justify-content: center; margin-top: 12px;">Iniciar Sesión en Panel Privado</h3>
+            <p style="font-size: 0.9rem; color: #475569;">Ingresa la clave de administración para gestionar la sincronización con Mercado Libre y Facebook.</p>
+            {% if error_msg %}
+            <div style="color: #dc2626; font-weight: 700; font-size: 0.86rem; margin-bottom: 8px;">{{ error_msg }}</div>
+            {% endif %}
+            <form method="post" action="/privado/login" class="login-form-group">
+                <input type="password" name="password" placeholder="Contraseña del panel privado" required>
+                <button type="submit" class="fb-action-btn">Acceder al Panel Privado</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="private-grid">
+            <!-- Tarjeta Modular: Sincronización en Vivo con Facebook -->
+            <section class="private-card" id="facebookSyncCard">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                    <span class="private-badge">Meta Commerce &amp; Graph API</span>
+                    <a href="https://www.facebook.com/jin.com.mx" target="_blank" rel="noopener noreferrer" style="font-size: 0.82rem; font-weight: 800; color: #1877f2; text-decoration: none;">
+                        facebook.com/jin.com.mx ↗
+                    </a>
+                </div>
+                <h3>Sincronización en Vivo con Facebook</h3>
+                <p style="font-size: 0.88rem; color: #334155; margin: 0 0 10px;">
+                    Conecta este feed XML RSS 2.0 en <strong>Meta Commerce Manager</strong> para mantener sincronizado todo el inventario activo de Mercado Libre en tu Tienda de Facebook e Instagram.
+                </p>
+
+                <label for="fbCatalogFeedInput" style="font-size: 0.78rem; font-weight: 800; color: #475569; text-transform: uppercase;">
+                    URL del Catálogo Dinámico (RSS 2.0 XML):
+                </label>
+                <div class="feed-copy-box">
+                    <input id="fbCatalogFeedInput" type="text" readonly value="https://www.jin.com.mx/api/facebook-catalog.xml">
+                    <button type="button" class="fb-copy-btn" id="copyFbFeedBtn" onclick="copyFacebookFeedUrl()">
+                        Copiar URL
+                    </button>
+                    <a href="/api/facebook-catalog.xml" target="_blank" rel="noopener noreferrer" class="fb-copy-btn" style="text-decoration: none;">
+                        Ver XML ↗
+                    </a>
+                </div>
+
+                <div class="fb-meta-pills">
+                    <span class="fb-meta-pill">Auto-Post Webhook: <strong>{{ 'Activo' if fb_auto_post_enabled else 'Pausado' }}</strong></span>
+                    <span class="fb-meta-pill">Credenciales Graph API: <strong>{{ 'Configuradas' if fb_credentials_configured else 'Pendientes en Render' }}</strong></span>
+                    <span class="fb-meta-pill">IDs Publicados: <strong>{{ posted_fb_count }}</strong></span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                    <button type="button" class="fb-action-btn" id="publishLatestFbBtn" onclick="publishLatestToFacebook()">
+                        Publicar Último Artículo en Facebook Ahora
+                    </button>
+                </div>
+
+                <div id="fbPublishStatusBox" class="fb-status-output"></div>
+            </section>
+
+            <!-- Tarjeta Modular: Estado de Mercado Libre OAuth2 -->
+            <section class="private-card">
+                <span class="private-badge" style="background: linear-gradient(135deg, #2d74e7, #1c5dc2);">Mercado Libre OAuth2</span>
+                <h3 style="margin-top: 10px;">Estado del Catálogo en Vivo</h3>
+                <p style="font-size: 0.88rem; color: #334155; margin: 0 0 12px;">
+                    Vendedor ID: <strong>{{ seller_id }}</strong> | Productos activos en caché: <strong>{{ product_count }}</strong> (Fuente: <code>{{ catalog_source }}</code>)
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;">
+                    <a href="/auth/mercadolibre" class="fb-action-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        Conectar / Renovar Token Mercado Libre
+                    </a>
+                    <a href="/api/productos-ml" target="_blank" rel="noopener noreferrer" class="fb-copy-btn" style="text-decoration: none; display: inline-flex; align-items: center;">
+                        Ver JSON API ↗
+                    </a>
+                </div>
+            </section>
+        </div>
+        {% endif %}
+    </main>
+
+    <script>
+        function copyFacebookFeedUrl() {
+            const input = document.getElementById('fbCatalogFeedInput');
+            const btn = document.getElementById('copyFbFeedBtn');
+            if (!input) return;
+            input.select();
+            input.setSelectionRange(0, 99999);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(input.value);
+            } else {
+                document.execCommand('copy');
+            }
+            if (btn) {
+                const prev = btn.textContent;
+                btn.textContent = '¡Copiado!';
+                setTimeout(() => { btn.textContent = prev; }, 2000);
+            }
+        }
+
+        async function publishLatestToFacebook() {
+            const btn = document.getElementById('publishLatestFbBtn');
+            const statusBox = document.getElementById('fbPublishStatusBox');
+            if (!btn || !statusBox) return;
+
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = 'Sincronizando con Facebook...';
+            statusBox.style.display = 'block';
+            statusBox.style.borderColor = 'rgba(24, 119, 242, 0.35)';
+            statusBox.textContent = 'Consultando último artículo activo de Mercado Libre y enviando a Facebook Graph API...';
+
+            try {
+                const res = await fetch('/api/facebook/publish-latest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ limit: 1 })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.ok) {
+                    statusBox.style.borderColor = '#16a34a';
+                    statusBox.textContent = '✅ ' + (data.message || 'Artículo publicado con éxito en Facebook.') +
+                        (data.fb_post_id ? '\nID de publicación FB: ' + data.fb_post_id : '') +
+                        (data.caption_preview ? '\n\nVista previa del post:\n' + data.caption_preview : '');
+                } else {
+                    statusBox.style.borderColor = '#d97706';
+                    statusBox.textContent = 'ℹ️ Estado: ' + (data.message || JSON.stringify(data, null, 2)) +
+                        (data.caption_preview ? '\n\nVista previa del copy generado:\n' + data.caption_preview : '');
+                }
+            } catch (err) {
+                statusBox.style.borderColor = '#dc2626';
+                statusBox.textContent = '❌ Error de red al intentar publicar en Facebook: ' + err.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+    </script>
+</body>
+</html>

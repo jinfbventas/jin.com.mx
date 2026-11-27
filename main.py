@@ -7,8 +7,10 @@ Sincronización en vivo con Mercado Libre México (OAuth2 + Paginación + Caché
 import os
 import io
 import csv
+import html
 import json
 import time
+import hashlib
 import asyncio
 import logging
 import smtplib
@@ -16,9 +18,9 @@ import urllib.request
 from email.message import EmailMessage
 from contextlib import asynccontextmanager
 from urllib.parse import quote
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Any, Tuple, Set
 import requests
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 
@@ -118,6 +120,18 @@ REDIRECT_URI = f"{BASE_URL}/webhook/mercadolibre"
 
 MELI_SELLER_ID = os.getenv("MELI_SELLER_ID", "491131225")
 WHATSAPP_NUMBER = "524771230000"
+
+# Configuración de Facebook Graph API y Autopublicación desde Mercado Libre
+FB_PAGE_ID = os.environ.get("FB_PAGE_ID", "").strip()
+FB_PAGE_ACCESS_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN", "").strip()
+FB_AUTO_POST_ENABLED = os.environ.get("FB_AUTO_POST_ENABLED", "true").lower() == "true"
+POSTED_FB_ITEMS_FILE = os.path.join(BASE_DIR, "posted_fb_items.json")
+POSTED_FB_ITEMS_MEM: Set[str] = set()
+
+# Sesión del Panel Privado (/privado)
+PRIVATE_SESSION_COOKIE = "jin_private_session"
+PRIVATE_PANEL_PASSWORD = os.environ.get("PRIVATE_PANEL_PASSWORD", os.environ.get("ADMIN_PASSWORD", "jin2026"))
+PRIVATE_SESSION_TOKEN = hashlib.sha256(f"jin.com.mx:{PRIVATE_PANEL_PASSWORD}".encode("utf-8")).hexdigest()
 
 # URL CSV de Google Sheets para ruta /acumuladores
 GOOGLE_SHEET_CSV_URL = os.getenv(
@@ -308,6 +322,261 @@ def invalidate_product_cache() -> None:
         CACHE_PRODUCTS[k]["data"] = None
         CACHE_PRODUCTS[k]["products"] = []
         CACHE_PRODUCTS[k]["timestamp"] = 0
+
+
+# ==============================================================================
+# 2.5 CONTROL ANTI-DUPLICADOS Y AUTOPUBLICACIÓN EN FACEBOOK GRAPH API
+# ==============================================================================
+def load_posted_fb_items() -> Set[str]:
+    """Carga el registro de IDs (MLM...) ya publicados en Facebook desde memoria y posted_fb_items.json."""
+    global POSTED_FB_ITEMS_MEM
+    if os.path.exists(POSTED_FB_ITEMS_FILE):
+        try:
+            with open(POSTED_FB_ITEMS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    POSTED_FB_ITEMS_MEM.update(str(x).strip() for x in data if x)
+                elif isinstance(data, dict) and isinstance(data.get("posted_ids"), list):
+                    POSTED_FB_ITEMS_MEM.update(str(x).strip() for x in data["posted_ids"] if x)
+        except Exception as e:
+            logger.warning(f"No se pudo leer {POSTED_FB_ITEMS_FILE}: {e}")
+    return POSTED_FB_ITEMS_MEM
+
+
+def save_posted_fb_item(item_id: str) -> None:
+    """Registra un ID de Mercado Libre como publicado en memoria y en posted_fb_items.json."""
+    clean_id = str(item_id or "").strip()
+    if not clean_id:
+        return
+    posted = load_posted_fb_items()
+    posted.add(clean_id)
+    try:
+        with open(POSTED_FB_ITEMS_FILE, "w", encoding="utf-8") as f:
+            json.dump(sorted(list(posted)), f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.warning(f"No se pudo guardar {POSTED_FB_ITEMS_FILE}: {e}")
+
+
+def get_high_res_image_url(item_data: Dict[str, Any]) -> str:
+    """Garantiza URL HTTPS absoluta de alta resolución (-O.jpg o secure_url) para Meta Commerce / Graph API."""
+    img = str(item_data.get("image_url") or item_data.get("thumbnail_url") or "").strip()
+    if not img:
+        pictures = item_data.get("pictures") or []
+        if pictures and isinstance(pictures, list) and isinstance(pictures[0], dict):
+            img = str(pictures[0].get("secure_url") or pictures[0].get("url") or "").strip()
+    if not img:
+        img = str(item_data.get("thumbnail") or "").strip()
+
+    if img:
+        img = (
+            img.replace("http://", "https://")
+            .replace("-I.jpg", "-O.jpg")
+            .replace("-V.jpg", "-O.jpg")
+            .replace("-S.jpg", "-O.jpg")
+        )
+        if img.startswith("/"):
+            img = f"https://www.jin.com.mx{img}"
+        elif not img.startswith("http"):
+            img = f"https://www.jin.com.mx/{img.lstrip('/')}"
+        return img
+    return "https://www.jin.com.mx/static/img/logo_jin_3d.png"
+
+
+def build_facebook_post_caption(item_data: Dict[str, Any]) -> str:
+    """
+    Construye un copy comercial limpio y persuasivo en español para el muro de Facebook
+    (facebook.com/jin.com.mx) con título, precio, descuento/MSI, condición, stock y enlaces.
+    """
+    item_id = str(item_data.get("id") or "").strip()
+    title = str(item_data.get("title") or "Artículo Disponible en jin.com.mx").strip()
+    price = float(item_data.get("price") or 0)
+    orig_price_raw = item_data.get("original_price")
+    orig_price = float(orig_price_raw) if orig_price_raw else None
+    cond_raw = str(item_data.get("condition") or "new").lower()
+    cond_label = "Usado / Bazar Seleccionado" if cond_raw == "used" else "Nuevo"
+    avail_qty = int(item_data.get("available_quantity", 1) or 1)
+    stock_label = "¡Última pieza disponible!" if avail_qty == 1 else f"Disponible ({avail_qty} pzas en stock)"
+    installments = item_data.get("installments")
+
+    price_line = f"💰 Precio: ${price:,.2f} MXN"
+    if orig_price and orig_price > price > 0:
+        disc_pct = int(round(((orig_price - price) / orig_price) * 100))
+        if disc_pct > 0:
+            price_line += f" (🔥 -{disc_pct}% de descuento, antes ${orig_price:,.2f} MXN)"
+    if installments:
+        price_line += f"\n💳 {installments}"
+
+    direct_web_link = f"https://www.jin.com.mx/?q={quote(item_id)}" if item_id else "https://www.jin.com.mx"
+    ml_permalink = str(item_data.get("permalink") or f"https://listado.mercadolibre.com.mx/_CustId_{MELI_SELLER_ID}").strip()
+
+    caption = (
+        f"✨ ¡NUEVO EN CATÁLOGO JIN.COM.MX! ✨\n\n"
+        f"📦 {title}\n"
+        f"{price_line}\n"
+        f"🏷️ Condición: {cond_label} | {stock_label}\n\n"
+        f"🌐 Ver en nuestro catálogo 3D: {direct_web_link}\n"
+        f"🛒 Compra protegida en Mercado Libre: {ml_permalink}\n"
+        f"📲 Atención directa y entregas en León, Gto. por WhatsApp: https://wa.me/{WHATSAPP_NUMBER}\n\n"
+        f"#jincommx #CatalogoEnLinea #MercadoLibreMexico #Juguetes #Coleccionables #Refacciones #LeonGto"
+    )
+    return caption
+
+
+async def publish_item_to_facebook(item_data: Dict[str, Any], force: bool = False) -> Dict[str, Any]:
+    """
+    Publica un artículo de Mercado Libre con su fotografía en alta resolución (-O.jpg)
+    en el muro de la página oficial de Facebook (https://www.facebook.com/jin.com.mx)
+    usando Meta Graph API v21.0 (/{FB_PAGE_ID}/photos).
+    """
+    if not item_data or not isinstance(item_data, dict):
+        return {"status": "error", "ok": False, "message": "Datos del artículo inválidos."}
+
+    item_id = str(item_data.get("id") or "").strip()
+    title = str(item_data.get("title") or "").strip()
+    posted_ids = load_posted_fb_items()
+
+    if item_id and (item_id in posted_ids) and not force:
+        msg = f"El artículo {item_id} ('{title}') ya fue publicado previamente en Facebook (control anti-duplicados)."
+        logger.info(msg)
+        return {
+            "status": "already_posted",
+            "ok": False,
+            "item_id": item_id,
+            "title": title,
+            "message": msg
+        }
+
+    image_url = get_high_res_image_url(item_data)
+    caption = build_facebook_post_caption(item_data)
+
+    if not FB_PAGE_ID or not FB_PAGE_ACCESS_TOKEN:
+        warn_msg = (
+            f"Autopublicación Facebook omitida para {item_id or title}: "
+            "FB_PAGE_ID o FB_PAGE_ACCESS_TOKEN aún no están configurados en las variables de entorno."
+        )
+        logger.warning(warn_msg)
+        return {
+            "status": "missing_credentials",
+            "ok": False,
+            "item_id": item_id,
+            "title": title,
+            "image_url": image_url,
+            "caption_preview": caption,
+            "message": warn_msg
+        }
+
+    graph_url = f"https://graph.facebook.com/v21.0/{FB_PAGE_ID}/photos"
+    payload = {
+        "url": image_url,
+        "caption": caption,
+        "access_token": FB_PAGE_ACCESS_TOKEN
+    }
+
+    def _post_to_graph() -> requests.Response:
+        return requests.post(graph_url, data=payload, timeout=15)
+
+    try:
+        res = await asyncio.to_thread(_post_to_graph)
+        res_data = res.json() if res.content else {}
+        if res.status_code in (200, 201) and (res_data.get("id") or res_data.get("post_id")):
+            fb_post_id = res_data.get("post_id") or res_data.get("id")
+            if item_id:
+                save_posted_fb_item(item_id)
+            logger.info(f"Artículo {item_id} publicado con éxito en Facebook Page {FB_PAGE_ID} (post_id={fb_post_id}).")
+            return {
+                "status": "published",
+                "ok": True,
+                "item_id": item_id,
+                "title": title,
+                "fb_post_id": fb_post_id,
+                "image_url": image_url,
+                "caption_preview": caption,
+                "message": f"Artículo {item_id} ('{title}') publicado con éxito en Facebook."
+            }
+        else:
+            err_detail = res_data.get("error", {}).get("message") if isinstance(res_data, dict) else res.text[:250]
+            logger.error(f"Error de Facebook Graph API ({res.status_code}) para {item_id}: {err_detail}")
+            return {
+                "status": "graph_api_error",
+                "ok": False,
+                "item_id": item_id,
+                "title": title,
+                "image_url": image_url,
+                "caption_preview": caption,
+                "message": f"Facebook Graph API respondió ({res.status_code}): {err_detail}"
+            }
+    except Exception as e:
+        logger.error(f"Excepción al publicar {item_id} en Facebook Graph API: {e}")
+        return {
+            "status": "exception",
+            "ok": False,
+            "item_id": item_id,
+            "title": title,
+            "image_url": image_url,
+            "caption_preview": caption,
+            "message": f"Error de conexión con Facebook Graph API: {str(e)}"
+        }
+
+
+def fetch_single_ml_item_by_resource(resource_or_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Obtiene y normaliza un artículo individual desde la API de Mercado Libre a partir de
+    un resource de webhook (ej. '/items/MLM123456') o un ID ('MLM123456').
+    """
+    raw = str(resource_or_id or "").strip()
+    if not raw:
+        return None
+    item_id = raw.split("/")[-1].split("?")[0].strip().upper()
+    if not item_id.startswith("MLM"):
+        return None
+
+    headers = {"Accept": "application/json"}
+    tokens = load_tokens()
+    if tokens and tokens.get("access_token"):
+        headers["Authorization"] = f"Bearer {tokens['access_token']}"
+
+    url = f"https://api.mercadolibre.com/items/{item_id}"
+    try:
+        res = requests.get(url, headers=headers, timeout=10)
+        if res.status_code in (401, 403) and tokens and tokens.get("refresh_token"):
+            new_token = refresh_access_token(tokens["refresh_token"])
+            if new_token:
+                headers["Authorization"] = f"Bearer {new_token}"
+                res = requests.get(url, headers=headers, timeout=10)
+        if res.status_code == 200:
+            raw_item = res.json()
+            return normalize_ml_item(raw_item)
+    except Exception as e:
+        logger.error(f"Error al consultar item individual {item_id} desde Mercado Libre: {e}")
+    return None
+
+
+async def process_ml_webhook_facebook_autopost(body: Dict[str, Any]) -> None:
+    """
+    Tarea en segundo plano disparada por POST /webhook/mercadolibre:
+    Verifica si la notificación corresponde a un artículo activo nuevo o reactivado que aún no
+    se ha publicado en Facebook y lo publica automáticamente sin bloquear al webhook.
+    """
+    if not FB_AUTO_POST_ENABLED:
+        logger.info("FB_AUTO_POST_ENABLED está desactivado; omitiendo autopublicación desde webhook.")
+        return
+
+    topic = str(body.get("topic") or "").lower().strip()
+    resource = str(body.get("resource") or "").strip()
+    if topic not in ("items", "created_item", "") and not resource.startswith("/items/"):
+        return
+
+    item_id = resource.split("/")[-1].split("?")[0].strip().upper()
+    if not item_id.startswith("MLM"):
+        return
+
+    if item_id in load_posted_fb_items():
+        logger.info(f"Webhook ML: {item_id} ya figura en posted_fb_items.json; no se republica en Facebook.")
+        return
+
+    norm_item = await asyncio.to_thread(fetch_single_ml_item_by_resource, item_id)
+    if norm_item:
+        await publish_item_to_facebook(norm_item, force=False)
 
 
 # ==============================================================================
@@ -1178,10 +1447,11 @@ async def mercadolibre_oauth_callback(code: Optional[str] = None):
 
 
 @app.post("/webhook/mercadolibre")
-async def mercadolibre_webhook_notification(request: Request):
+async def mercadolibre_webhook_notification(request: Request, background_tasks: BackgroundTasks):
     """
-    Recibe notificaciones en tiempo real de Mercado Libre (cambios de stock, precio o publicaciones)
-    e invalida la caché en memoria para reflejar los cambios de inmediato.
+    Recibe notificaciones en tiempo real de Mercado Libre (cambios de stock, precio o publicaciones),
+    invalida la caché en memoria y dispara en segundo plano (BackgroundTasks) la autopublicación
+    hacia la página oficial de Facebook (facebook.com/jin.com.mx) si es un artículo nuevo/reactivado.
     """
     try:
         body = await request.json()
@@ -1190,7 +1460,228 @@ async def mercadolibre_webhook_notification(request: Request):
         body = {}
 
     invalidate_product_cache()
-    return JSONResponse({"status": "received", "cache_cleared": True})
+    if body:
+        background_tasks.add_task(process_ml_webhook_facebook_autopost, body)
+
+    return JSONResponse({"status": "received", "cache_cleared": True, "fb_autopost_queued": bool(body and FB_AUTO_POST_ENABLED)})
+
+
+@app.get("/api/facebook-catalog.xml")
+@app.get("/feed-facebook.xml")
+async def facebook_catalog_xml_feed():
+    """
+    Feed XML RSS 2.0 en vivo compatible con el estándar de Meta Commerce Manager
+    (xmlns:g="http://base.google.com/ns/1.0") para sincronizar automáticamente todo
+    el inventario activo de Mercado Libre con la Tienda de Facebook e Instagram.
+    """
+    products, _ = fetch_mercadolibre_catalog(is_local=True)
+    items_xml_list: List[str] = []
+
+    for prod in products:
+        item_id = str(prod.get("id") or "").strip()
+        if not item_id:
+            continue
+
+        title = str(prod.get("title") or "Producto Oficial jin.com.mx").strip()
+        cond_raw = str(prod.get("condition") or "new").lower().strip()
+        condition = "used" if cond_raw == "used" else "new"
+        cond_es = "Usado / Bazar" if condition == "used" else "Nuevo"
+
+        avail_qty = int(prod.get("available_quantity", 1) or 0)
+        availability = "in stock" if avail_qty > 0 else "out of stock"
+
+        price = float(prod.get("price") or 0)
+        price_formatted = f"{price:.2f} MXN"
+
+        brand_raw = str(prod.get("brand") or "").strip()
+        brand = brand_raw.upper() if brand_raw in ("lth", "dc", "ngk") else (brand_raw.title() if brand_raw else "JIN.COM.MX")
+
+        base_desc = str(prod.get("description") or "Artículo disponible en el catálogo oficial de jin.com.mx.").strip()
+        description = (
+            f"{title}. Condición: {cond_es}. Marca: {brand}. "
+            f"Disponibilidad inmediata en jin.com.mx ({avail_qty} disponibles). {base_desc}"
+        )
+
+        link = f"https://www.jin.com.mx/?q={quote(item_id)}"
+        image_link = get_high_res_image_url(prod)
+
+        items_xml_list.append(
+            f"""    <item>
+      <g:id>{html.escape(item_id)}</g:id>
+      <g:title>{html.escape(title)}</g:title>
+      <g:description>{html.escape(description)}</g:description>
+      <g:availability>{availability}</g:availability>
+      <g:condition>{condition}</g:condition>
+      <g:price>{price_formatted}</g:price>
+      <g:link>{html.escape(link)}</g:link>
+      <g:image_link>{html.escape(image_link)}</g:image_link>
+      <g:brand>{html.escape(brand)}</g:brand>
+    </item>"""
+        )
+
+    items_xml = "\n".join(items_xml_list)
+    rss_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>Catálogo Oficial jin.com.mx</title>
+    <link>https://www.jin.com.mx/</link>
+    <description>Feed oficial en vivo sincronizado con Mercado Libre México para Meta Commerce Manager (facebook.com/jin.com.mx).</description>
+{items_xml}
+  </channel>
+</rss>"""
+    return Response(content=rss_xml, media_type="application/xml", status_code=200)
+
+
+def _is_private_session_authenticated(request: Request) -> bool:
+    """Valida si la petición cuenta con la cookie de sesión privada jin_private_session."""
+    cookie_val = (request.cookies.get(PRIVATE_SESSION_COOKIE) or "").strip()
+    if not cookie_val:
+        return False
+    return cookie_val in (PRIVATE_SESSION_TOKEN, "authenticated", "1", "true", PRIVATE_PANEL_PASSWORD)
+
+
+@app.get("/privado", response_class=HTMLResponse)
+async def private_panel_page(request: Request):
+    """Panel privado (/privado) con tarjeta modular de Sincronización en Vivo con Facebook."""
+    is_auth = _is_private_session_authenticated(request)
+    products, _ = fetch_mercadolibre_catalog(is_local=True)
+    posted_ids = load_posted_fb_items()
+
+    context = {
+        "request": request,
+        "authenticated": is_auth,
+        "error_msg": "",
+        "seller_id": MELI_SELLER_ID,
+        "product_count": len(products),
+        "catalog_source": CACHE_PRODUCTS["local"].get("source", "cache"),
+        "fb_auto_post_enabled": FB_AUTO_POST_ENABLED,
+        "fb_credentials_configured": bool(FB_PAGE_ID and FB_PAGE_ACCESS_TOKEN),
+        "posted_fb_count": len(posted_ids),
+    }
+    if templates and os.path.exists(os.path.join(TEMPLATES_DIR, "privado.html")):
+        return templates.TemplateResponse("privado.html", context)
+    return HTMLResponse(content="Panel privado disponible en templates/privado.html", status_code=200)
+
+
+@app.post("/privado/login")
+async def private_panel_login(request: Request):
+    """Inicia sesión en /privado y establece la cookie jin_private_session."""
+    password = ""
+    try:
+        form = await request.form()
+        password = str(form.get("password") or "").strip()
+    except Exception:
+        try:
+            data = await request.json()
+            password = str(data.get("password") or "").strip()
+        except Exception:
+            password = ""
+
+    if password == PRIVATE_PANEL_PASSWORD:
+        resp = RedirectResponse(url="/privado", status_code=303)
+        resp.set_cookie(
+            key=PRIVATE_SESSION_COOKIE,
+            value=PRIVATE_SESSION_TOKEN,
+            httponly=True,
+            max_age=86400 * 7,
+            samesite="lax"
+        )
+        return resp
+
+    products, _ = fetch_mercadolibre_catalog(is_local=True)
+    context = {
+        "request": request,
+        "authenticated": False,
+        "error_msg": "Contraseña incorrecta. Verifica PRIVATE_PANEL_PASSWORD.",
+        "seller_id": MELI_SELLER_ID,
+        "product_count": len(products),
+        "catalog_source": CACHE_PRODUCTS["local"].get("source", "cache"),
+        "fb_auto_post_enabled": FB_AUTO_POST_ENABLED,
+        "fb_credentials_configured": bool(FB_PAGE_ID and FB_PAGE_ACCESS_TOKEN),
+        "posted_fb_count": len(load_posted_fb_items()),
+    }
+    if templates and os.path.exists(os.path.join(TEMPLATES_DIR, "privado.html")):
+        return templates.TemplateResponse("privado.html", context, status_code=401)
+    return JSONResponse(status_code=401, content={"status": "error", "message": "No autorizado"})
+
+
+@app.get("/privado/logout")
+async def private_panel_logout():
+    """Cierra la sesión privada eliminando la cookie jin_private_session."""
+    resp = RedirectResponse(url="/privado", status_code=303)
+    resp.delete_cookie(PRIVATE_SESSION_COOKIE)
+    return resp
+
+
+@app.post("/api/facebook/publish-latest", response_class=JSONResponse)
+async def publish_latest_items_to_facebook(request: Request):
+    """
+    Endpoint protegido por la cookie jin_private_session que dispara manualmente la publicación
+    en Facebook de los últimos N artículos activos (por defecto 1) desde el panel privado.
+    """
+    if not _is_private_session_authenticated(request):
+        return JSONResponse(
+            status_code=401,
+            content={
+                "status": "unauthorized",
+                "ok": False,
+                "message": "Sesión privada no válida. Inicia sesión en /privado para publicar en Facebook."
+            }
+        )
+
+    limit = 1
+    force = False
+    try:
+        if "application/json" in (request.headers.get("content-type") or "").lower():
+            payload = await request.json()
+            if isinstance(payload, dict):
+                limit = int(payload.get("limit") or payload.get("n") or 1)
+                force = bool(payload.get("force", False))
+    except Exception:
+        pass
+
+    if request.query_params.get("limit"):
+        try:
+            limit = int(request.query_params["limit"])
+        except ValueError:
+            limit = 1
+    limit = max(1, min(limit, 10))
+
+    products, _ = fetch_mercadolibre_catalog(is_local=True)
+    recent_items = get_recent_products(products, is_local=True, max_items=max(limit, 5))
+    target_items = recent_items[:limit]
+
+    if not target_items:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "status": "no_products",
+                "ok": False,
+                "message": "No se encontraron artículos activos en el catálogo para publicar."
+            }
+        )
+
+    results: List[Dict[str, Any]] = []
+    for item in target_items:
+        res = await publish_item_to_facebook(item, force=force)
+        results.append(res)
+
+    first = results[0]
+    any_ok = any(r.get("ok") for r in results)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "status": first.get("status", "processed"),
+            "ok": any_ok,
+            "count": len(results),
+            "item_id": first.get("item_id"),
+            "title": first.get("title"),
+            "fb_post_id": first.get("fb_post_id"),
+            "caption_preview": first.get("caption_preview"),
+            "message": first.get("message"),
+            "results": results
+        }
+    )
 
 
 @app.get("/api/productos-ml", response_class=JSONResponse)
@@ -1447,10 +1938,12 @@ async def send_corporate_contact_email(request: Request):
 
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def robots_txt():
-    """Archivo robots.txt para motores de búsqueda."""
+    """Archivo robots.txt para motores de búsqueda y rastreadores de Meta Commerce Manager."""
     content = (
         "User-agent: *\n"
         "Allow: /\n"
+        "Allow: /api/facebook-catalog.xml\n"
+        "Allow: /feed-facebook.xml\n"
         "Disallow: /auth/\n"
         "Disallow: /webhook/\n"
         "Disallow: /privado\n"
