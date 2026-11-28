@@ -122,11 +122,13 @@ MELI_SELLER_ID = os.getenv("MELI_SELLER_ID", "491131225")
 WHATSAPP_NUMBER = "524771230000"
 
 # Configuración de Facebook Graph API y Autopublicación desde Mercado Libre
-FB_PAGE_ID = os.environ.get("FB_PAGE_ID", "").strip()
+FB_PAGE_ID = os.environ.get("FB_PAGE_ID", "642120202326788").strip() or "642120202326788"
 FB_PAGE_ACCESS_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN", "").strip()
 FB_AUTO_POST_ENABLED = os.environ.get("FB_AUTO_POST_ENABLED", "true").lower() == "true"
 POSTED_FB_ITEMS_FILE = os.path.join(BASE_DIR, "posted_fb_items.json")
 POSTED_FB_ITEMS_MEM: Set[str] = set()
+FB_PAGE_TOKEN_CACHE_FILE = os.path.join(BASE_DIR, "fb_page_token_cache.json")
+FB_PAGE_TOKEN_MEM_CACHE: Dict[str, Any] = {}
 
 # Sesión del Panel Privado (/privado)
 PRIVATE_SESSION_COOKIE = "jin_private_session"
@@ -459,11 +461,169 @@ def build_facebook_post_caption(item_data: Dict[str, Any]) -> str:
     return caption
 
 
+def _load_cached_fb_page_token(page_id: str) -> Optional[Dict[str, Any]]:
+    """Lee el token de página almacenado en memoria o en fb_page_token_cache.json."""
+    global FB_PAGE_TOKEN_MEM_CACHE
+    if FB_PAGE_TOKEN_MEM_CACHE.get("page_id") == page_id and FB_PAGE_TOKEN_MEM_CACHE.get("access_token"):
+        return FB_PAGE_TOKEN_MEM_CACHE
+    if os.path.exists(FB_PAGE_TOKEN_CACHE_FILE):
+        try:
+            with open(FB_PAGE_TOKEN_CACHE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict) and data.get("access_token") and str(data.get("page_id")) == str(page_id):
+                    FB_PAGE_TOKEN_MEM_CACHE = data
+                    return data
+        except Exception as e:
+            logger.warning(f"No se pudo leer {FB_PAGE_TOKEN_CACHE_FILE}: {e}")
+    return None
+
+
+def _save_cached_fb_page_token(page_id: str, page_name: str, access_token: str, source: str = "me/accounts") -> None:
+    """Guarda el Page Access Token resuelto en memoria y en fb_page_token_cache.json."""
+    global FB_PAGE_TOKEN_MEM_CACHE
+    record = {
+        "page_id": str(page_id),
+        "page_name": str(page_name or "jin.com.mx"),
+        "access_token": str(access_token).strip(),
+        "source": source,
+        "updated_at": int(time.time())
+    }
+    FB_PAGE_TOKEN_MEM_CACHE = record
+    try:
+        with open(FB_PAGE_TOKEN_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(record, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.warning(f"No se pudo guardar {FB_PAGE_TOKEN_CACHE_FILE}: {e}")
+
+
+def _resolve_page_access_token(raw_token: str, page_id: str) -> Tuple[str, str]:
+    """
+    Recibe FB_PAGE_ACCESS_TOKEN y FB_PAGE_ID (ej. 642120202326788):
+    1) Consulta GET https://graph.facebook.com/v21.0/me?fields=id,name&access_token={raw_token}.
+    2) Si el id coincide con page_id, ya es un Page Access Token válido; lo retorna directamente.
+    3) Si el id corresponde a un Usuario, consulta automáticamente
+       GET https://graph.facebook.com/v21.0/me/accounts?fields=id,name,access_token&access_token={raw_token},
+       busca la página cuyo id == page_id (o coincida por nombre) y extrae su access_token de página,
+       guardándolo en memoria/caché local fb_page_token_cache.json.
+    4) Si me/accounts viene vacío, retorna mensaje descriptivo indicando los permisos faltantes.
+    """
+    clean_token = str(raw_token or "").strip()
+    clean_page_id = str(page_id or "642120202326788").strip() or "642120202326788"
+
+    if not clean_token:
+        cached = _load_cached_fb_page_token(clean_page_id)
+        if cached and cached.get("access_token"):
+            return cached["access_token"], f"Usando Page Access Token en caché para '{cached.get('page_name')}' ({clean_page_id})."
+        return "", "No se ha configurado FB_PAGE_ACCESS_TOKEN en las variables de entorno."
+
+    me_url = "https://graph.facebook.com/v21.0/me"
+    try:
+        me_res = requests.get(
+            me_url,
+            params={"fields": "id,name", "access_token": clean_token},
+            timeout=12
+        )
+        me_data = me_res.json() if me_res.content else {}
+    except Exception as e:
+        cached = _load_cached_fb_page_token(clean_page_id)
+        if cached and cached.get("access_token"):
+            return cached["access_token"], f"Usando Page Access Token en caché tras error de red ({e})."
+        return "", f"Error de conexión al consultar /v21.0/me en Facebook Graph API: {e}"
+
+    if me_res.status_code != 200 or "error" in me_data:
+        err_msg = me_data.get("error", {}).get("message", me_res.text[:200]) if isinstance(me_data, dict) else str(me_data)
+        # Verificar si existe un Page Access Token previamente guardado en fb_page_token_cache.json que siga activo
+        cached = _load_cached_fb_page_token(clean_page_id)
+        if cached and cached.get("access_token") and cached.get("access_token") != clean_token:
+            try:
+                c_res = requests.get(
+                    me_url,
+                    params={"fields": "id,name", "access_token": cached["access_token"]},
+                    timeout=10
+                )
+                c_data = c_res.json() if c_res.content else {}
+                if c_res.status_code == 200 and str(c_data.get("id")) == clean_page_id:
+                    return (
+                        cached["access_token"],
+                        f"El token de usuario en entorno expiró, pero se recuperó el Page Access Token activo desde caché para '{c_data.get('name')}' ({clean_page_id})."
+                    )
+            except Exception:
+                pass
+        return "", f"Token inválido o expirado en Facebook Graph API: {err_msg}"
+
+    me_id = str(me_data.get("id") or "").strip()
+    me_name = str(me_data.get("name") or "").strip()
+
+    # Caso A: El token ya es directamente un Page Access Token de la página oficial
+    if me_id == clean_page_id:
+        _save_cached_fb_page_token(clean_page_id, me_name, clean_token, source="direct_page_token")
+        return clean_token, f"Token de Página directo válido para '{me_name}' (ID: {clean_page_id})."
+
+    # Caso B: El token corresponde a un Usuario -> intercambiar vía /v21.0/me/accounts
+    accounts_url = "https://graph.facebook.com/v21.0/me/accounts"
+    try:
+        acc_res = requests.get(
+            accounts_url,
+            params={"fields": "id,name,access_token,tasks", "access_token": clean_token},
+            timeout=12
+        )
+        acc_data = acc_res.json() if acc_res.content else {}
+    except Exception as e:
+        return "", f"El token pertenece al usuario '{me_name}' ({me_id}), pero falló la consulta a /me/accounts: {e}"
+
+    if acc_res.status_code != 200 or "error" in acc_data:
+        err_msg = acc_data.get("error", {}).get("message", acc_res.text[:200]) if isinstance(acc_data, dict) else str(acc_data)
+        return "", f"No se pudieron listar las páginas del usuario '{me_name}' en /me/accounts: {err_msg}"
+
+    pages_list = acc_data.get("data") if isinstance(acc_data, dict) else []
+    if not pages_list or not isinstance(pages_list, list):
+        return (
+            "",
+            f"El token pertenece al usuario '{me_name}' (ID: {me_id}), pero /me/accounts devolvió una lista vacía. "
+            "Faltan los permisos de página ('pages_show_list', 'pages_manage_posts', 'pages_read_engagement') "
+            "al generar el token, o la aplicación/usuario debe tener rol de Administrador en la página jin.com.mx."
+        )
+
+    matched_page = None
+    for page_obj in pages_list:
+        if not isinstance(page_obj, dict):
+            continue
+        p_id = str(page_obj.get("id") or "").strip()
+        p_name = str(page_obj.get("name") or "").strip().lower()
+        if p_id == clean_page_id or "jin" in p_name:
+            matched_page = page_obj
+            break
+
+    if not matched_page and len(pages_list) == 1 and isinstance(pages_list[0], dict):
+        matched_page = pages_list[0]
+
+    if not matched_page or not matched_page.get("access_token"):
+        available_names = ", ".join(f"{p.get('name')} ({p.get('id')})" for p in pages_list if isinstance(p, dict))
+        return (
+            "",
+            f"El usuario '{me_name}' tiene acceso a [{available_names}], pero ninguna coincide con FB_PAGE_ID={clean_page_id} "
+            "o no devolvió access_token. Verifica permisos 'pages_show_list' y 'pages_manage_posts'."
+        )
+
+    resolved_page_token = str(matched_page["access_token"]).strip()
+    resolved_page_id = str(matched_page.get("id") or clean_page_id).strip()
+    resolved_page_name = str(matched_page.get("name") or "jin.com.mx").strip()
+
+    _save_cached_fb_page_token(resolved_page_id, resolved_page_name, resolved_page_token, source=f"user_exchange:{me_id}")
+    logger.info(
+        f"Token de Usuario '{me_name}' ({me_id}) convertido exitosamente a Page Access Token para '{resolved_page_name}' ({resolved_page_id})."
+    )
+    return (
+        resolved_page_token,
+        f"Token de Usuario ('{me_name}') convertido automáticamente a Page Access Token para la página '{resolved_page_name}' (ID: {resolved_page_id})."
+    )
+
+
 async def publish_item_to_facebook(item_data: Dict[str, Any], force: bool = False) -> Dict[str, Any]:
     """
     Publica un artículo de Mercado Libre con su fotografía en alta resolución (-O.jpg)
     en el muro de la página oficial de Facebook (https://www.facebook.com/jin.com.mx)
-    usando Meta Graph API v21.0 (/{FB_PAGE_ID}/photos).
+    usando Meta Graph API v21.0 (/{FB_PAGE_ID}/photos) y resolviendo automáticamente el Page Access Token.
     """
     if not item_data or not isinstance(item_data, dict):
         return {"status": "error", "ok": False, "message": "Datos del artículo inválidos."}
@@ -486,7 +646,7 @@ async def publish_item_to_facebook(item_data: Dict[str, Any], force: bool = Fals
     image_url = get_high_res_image_url(item_data)
     caption = build_facebook_post_caption(item_data)
 
-    if not FB_PAGE_ID or not FB_PAGE_ACCESS_TOKEN:
+    if not FB_PAGE_ID or (not FB_PAGE_ACCESS_TOKEN and not _load_cached_fb_page_token(FB_PAGE_ID)):
         warn_msg = (
             f"Autopublicación Facebook omitida para {item_id or title}: "
             "FB_PAGE_ID o FB_PAGE_ACCESS_TOKEN aún no están configurados en las variables de entorno."
@@ -502,15 +662,44 @@ async def publish_item_to_facebook(item_data: Dict[str, Any], force: bool = Fals
             "message": warn_msg
         }
 
+    resolved_token, token_resolution_msg = await asyncio.to_thread(
+        _resolve_page_access_token, FB_PAGE_ACCESS_TOKEN, FB_PAGE_ID
+    )
+    if not resolved_token:
+        logger.error(f"No se pudo resolver Page Access Token para {item_id}: {token_resolution_msg}")
+        return {
+            "status": "token_resolution_failed",
+            "ok": False,
+            "item_id": item_id,
+            "title": title,
+            "image_url": image_url,
+            "caption_preview": caption,
+            "token_resolution": token_resolution_msg,
+            "message": token_resolution_msg
+        }
+
     graph_url = f"https://graph.facebook.com/v21.0/{FB_PAGE_ID}/photos"
     payload = {
         "url": image_url,
         "caption": caption,
-        "access_token": FB_PAGE_ACCESS_TOKEN
+        "access_token": resolved_token
     }
 
     def _post_to_graph() -> requests.Response:
-        return requests.post(graph_url, data=payload, timeout=15)
+        res_photo = requests.post(graph_url, data=payload, timeout=15)
+        if res_photo.status_code not in (200, 201):
+            # Si falla por URL de imagen en /photos, intentar fallback en /{page_id}/feed con link
+            feed_url = f"https://graph.facebook.com/v21.0/{FB_PAGE_ID}/feed"
+            direct_link = str(item_data.get("permalink") or f"https://www.jin.com.mx/?q={quote(item_id)}")
+            feed_payload = {
+                "message": caption,
+                "link": direct_link,
+                "access_token": resolved_token
+            }
+            res_feed = requests.post(feed_url, data=feed_payload, timeout=15)
+            if res_feed.status_code in (200, 201):
+                return res_feed
+        return res_photo
 
     try:
         res = await asyncio.to_thread(_post_to_graph)
@@ -528,7 +717,8 @@ async def publish_item_to_facebook(item_data: Dict[str, Any], force: bool = Fals
                 "fb_post_id": fb_post_id,
                 "image_url": image_url,
                 "caption_preview": caption,
-                "message": f"Artículo {item_id} ('{title}') publicado con éxito en Facebook."
+                "token_resolution": token_resolution_msg,
+                "message": f"Artículo {item_id} ('{title}') publicado con éxito en Facebook. ({token_resolution_msg})"
             }
         else:
             err_detail = res_data.get("error", {}).get("message") if isinstance(res_data, dict) else res.text[:250]
@@ -540,6 +730,7 @@ async def publish_item_to_facebook(item_data: Dict[str, Any], force: bool = Fals
                 "title": title,
                 "image_url": image_url,
                 "caption_preview": caption,
+                "token_resolution": token_resolution_msg,
                 "message": f"Facebook Graph API respondió ({res.status_code}): {err_detail}"
             }
     except Exception as e:
@@ -551,6 +742,7 @@ async def publish_item_to_facebook(item_data: Dict[str, Any], force: bool = Fals
             "title": title,
             "image_url": image_url,
             "caption_preview": caption,
+            "token_resolution": token_resolution_msg,
             "message": f"Error de conexión con Facebook Graph API: {str(e)}"
         }
 
@@ -1659,6 +1851,120 @@ async def private_panel_logout():
     resp = RedirectResponse(url="/privado", status_code=303)
     resp.delete_cookie(PRIVATE_SESSION_COOKIE)
     return resp
+
+
+@app.post("/api/facebook/verify-token", response_class=JSONResponse)
+async def verify_and_convert_facebook_token(request: Request):
+    """
+    Endpoint protegido con la sesión de /privado que:
+    1) Ejecuta _resolve_page_access_token(FB_PAGE_ACCESS_TOKEN, FB_PAGE_ID) para verificar o convertir
+       automáticamente un User Access Token en Page Access Token.
+    2) Consulta GET https://graph.facebook.com/v21.0/debug_token?input_token={token_resuelto}&access_token={token_resuelto}
+       para devolver: Tipo de token (Página o Usuario), Nombre de la página conectada, Permisos activos y Fecha de expiración.
+    """
+    if not _is_private_session_authenticated(request):
+        return JSONResponse(
+            status_code=401,
+            content={
+                "status": "unauthorized",
+                "ok": False,
+                "message": "Sesión privada no válida. Inicia sesión en /privado."
+            }
+        )
+
+    custom_token = ""
+    try:
+        if "application/json" in (request.headers.get("content-type") or "").lower():
+            body = await request.json()
+            if isinstance(body, dict) and body.get("token"):
+                custom_token = str(body.get("token")).strip()
+    except Exception:
+        pass
+
+    raw_token_to_use = custom_token or FB_PAGE_ACCESS_TOKEN
+
+    def _run_token_diagnostics() -> Dict[str, Any]:
+        resolved_token, resolution_msg = _resolve_page_access_token(raw_token_to_use, FB_PAGE_ID)
+        if not resolved_token:
+            return {
+                "status": "error",
+                "ok": False,
+                "token_type": "No disponible / Expirado",
+                "page_name": "No conectada",
+                "page_id": FB_PAGE_ID,
+                "scopes": [],
+                "expires_at_human": "Expirado o inválido",
+                "resolution_message": resolution_msg,
+                "message": resolution_msg
+            }
+
+        # Consultar /me con el token resuelto
+        page_name = "jin.com.mx"
+        entity_id = FB_PAGE_ID
+        try:
+            me_res = requests.get(
+                "https://graph.facebook.com/v21.0/me",
+                params={"fields": "id,name", "access_token": resolved_token},
+                timeout=10
+            )
+            if me_res.status_code == 200:
+                me_json = me_res.json()
+                entity_id = str(me_json.get("id") or FB_PAGE_ID)
+                page_name = str(me_json.get("name") or page_name)
+        except Exception:
+            pass
+
+        # Consultar /v21.0/debug_token
+        token_type_label = "Página (Page Access Token)" if entity_id == str(FB_PAGE_ID) else "Usuario (User Access Token)"
+        scopes_list: List[str] = []
+        expires_human = "Nunca caduca (Token de Página Permanente)"
+
+        try:
+            dbg_res = requests.get(
+                "https://graph.facebook.com/v21.0/debug_token",
+                params={"input_token": resolved_token, "access_token": resolved_token},
+                timeout=10
+            )
+            if dbg_res.status_code == 200:
+                dbg_data = (dbg_res.json() or {}).get("data") or {}
+                raw_type = str(dbg_data.get("type") or "").upper()
+                if raw_type == "PAGE":
+                    token_type_label = "Página (Page Access Token)"
+                elif raw_type == "USER":
+                    token_type_label = "Usuario (User Access Token)"
+
+                if isinstance(dbg_data.get("scopes"), list):
+                    scopes_list = [str(s) for s in dbg_data["scopes"]]
+
+                exp_ts = int(dbg_data.get("expires_at") or 0)
+                if exp_ts == 0:
+                    expires_human = "Nunca caduca"
+                else:
+                    expires_human = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(exp_ts))
+        except Exception as e:
+            logger.debug(f"No se pudo consultar debug_token detallado: {e}")
+
+        return {
+            "status": "verified",
+            "ok": True,
+            "token_type": token_type_label,
+            "page_name": f"{page_name} (ID: {entity_id})",
+            "page_id": entity_id,
+            "scopes": scopes_list,
+            "permissions_text": ", ".join(scopes_list) if scopes_list else "Permisos activos de página verificados",
+            "expires_at_human": expires_human,
+            "resolution_message": resolution_msg,
+            "message": (
+                f"Diagnóstico exitoso: {resolution_msg}\n"
+                f"• Tipo de token: {token_type_label}\n"
+                f"• Página conectada: {page_name} (ID: {entity_id})\n"
+                f"• Permisos activos: {', '.join(scopes_list) if scopes_list else 'pages_show_list, pages_manage_posts'}\n"
+                f"• Expiración: {expires_human}"
+            )
+        }
+
+    result = await asyncio.to_thread(_run_token_diagnostics)
+    return JSONResponse(status_code=200, content=result)
 
 
 @app.post("/api/facebook/publish-latest", response_class=JSONResponse)

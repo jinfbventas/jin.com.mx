@@ -233,6 +233,9 @@
                     <button type="button" class="fb-action-btn" id="publishLatestFbBtn" onclick="publishLatestToFacebook()">
                         Publicar Último Artículo en Facebook Ahora
                     </button>
+                    <button type="button" class="fb-copy-btn" id="verifyFbTokenBtn" onclick="verifyFacebookToken()" style="padding: 11px 16px; font-size: 0.85rem;">
+                        Verificar / Convertir Token FB
+                    </button>
                 </div>
 
                 <div id="fbPublishStatusBox" class="fb-status-output"></div>
@@ -274,6 +277,49 @@
                 const prev = btn.textContent;
                 btn.textContent = '¡Copiado!';
                 setTimeout(() => { btn.textContent = prev; }, 2000);
+            }
+        }
+
+        async function verifyFacebookToken() {
+            const btn = document.getElementById('verifyFbTokenBtn');
+            const statusBox = document.getElementById('fbPublishStatusBox');
+            if (!btn || !statusBox) return;
+
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = 'Verificando Token...';
+            statusBox.style.display = 'block';
+            statusBox.style.borderColor = 'rgba(24, 119, 242, 0.35)';
+            statusBox.textContent = 'Consultando Graph API (/v21.0/me, /me/accounts y /debug_token)...';
+
+            try {
+                const res = await fetch('/api/facebook/verify-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+
+                if (res.ok && data.ok) {
+                    statusBox.style.borderColor = '#16a34a';
+                    statusBox.textContent =
+                        '✅ TOKEN FACEBOOK VERIFICADO Y LISTO\n' +
+                        '• Conversión / Origen: ' + (data.resolution_message || 'OK') + '\n' +
+                        '• Tipo de token: ' + (data.token_type || 'Página') + '\n' +
+                        '• Página conectada: ' + (data.page_name || 'jin.com.mx') + '\n' +
+                        '• Permisos activos: ' + (data.permissions_text || 'Verificados') + '\n' +
+                        '• Fecha de expiración: ' + (data.expires_at_human || 'Nunca caduca');
+                } else {
+                    statusBox.style.borderColor = '#d97706';
+                    statusBox.textContent =
+                        '⚠️ DIAGNÓSTICO DE TOKEN FACEBOOK:\n' +
+                        (data.message || JSON.stringify(data, null, 2));
+                }
+            } catch (err) {
+                statusBox.style.borderColor = '#dc2626';
+                statusBox.textContent = '❌ Error al verificar el token de Facebook: ' + err.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
         }
 
