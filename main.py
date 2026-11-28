@@ -130,8 +130,45 @@ POSTED_FB_ITEMS_MEM: Set[str] = set()
 
 # Sesión del Panel Privado (/privado)
 PRIVATE_SESSION_COOKIE = "jin_private_session"
-PRIVATE_PANEL_PASSWORD = os.environ.get("PRIVATE_PANEL_PASSWORD", os.environ.get("ADMIN_PASSWORD", "jin2026"))
-PRIVATE_SESSION_TOKEN = hashlib.sha256(f"jin.com.mx:{PRIVATE_PANEL_PASSWORD}".encode("utf-8")).hexdigest()
+PRIVATE_PANEL_PASSWORD = os.environ.get(
+    "PRIVATE_PANEL_PASSWORD",
+    os.environ.get("PRIVATE_PASSWORD", os.environ.get("ADMIN_PASSWORD", "jin2026"))
+)
+SECRET_KEY = os.environ.get("SECRET_KEY", PRIVATE_PANEL_PASSWORD)
+PRIVATE_SESSION_TOKEN = hashlib.sha256(f"jin.com.mx:{SECRET_KEY}:{PRIVATE_PANEL_PASSWORD}".encode("utf-8")).hexdigest()
+
+
+def _get_valid_private_passwords() -> Set[str]:
+    """
+    Obtiene el conjunto de contraseñas válidas para /privado a partir de:
+    - PRIVATE_ACCESS_LIST (JSON dict ej. {"ale@jin.com.mx":"MAch300886!2026_0"} o lista)
+    - PRIVATE_PASSWORD / ADMIN_PASSWORD / PRIVATE_PANEL_PASSWORD
+    """
+    valid: Set[str] = set()
+    raw_list = os.environ.get("PRIVATE_ACCESS_LIST", "").strip()
+    if raw_list:
+        try:
+            parsed = json.loads(raw_list)
+            if isinstance(parsed, dict):
+                for k, v in parsed.items():
+                    if v is not None and str(v).strip():
+                        valid.add(str(v).strip())
+            elif isinstance(parsed, list):
+                for item in parsed:
+                    if item is not None and str(item).strip():
+                        valid.add(str(item).strip())
+        except Exception:
+            # Si no es JSON válido, permitir coincidencia directa si se definió como texto plano
+            valid.add(raw_list)
+
+    for env_key in ("PRIVATE_PASSWORD", "ADMIN_PASSWORD", "PRIVATE_PANEL_PASSWORD"):
+        val = os.environ.get(env_key, "").strip()
+        if val:
+            valid.add(val)
+
+    if PRIVATE_PANEL_PASSWORD:
+        valid.add(PRIVATE_PANEL_PASSWORD)
+    return valid
 
 # URL CSV de Google Sheets para ruta /acumuladores
 GOOGLE_SHEET_CSV_URL = os.getenv(
@@ -1538,7 +1575,8 @@ def _is_private_session_authenticated(request: Request) -> bool:
     cookie_val = (request.cookies.get(PRIVATE_SESSION_COOKIE) or "").strip()
     if not cookie_val:
         return False
-    return cookie_val in (PRIVATE_SESSION_TOKEN, "authenticated", "1", "true", PRIVATE_PANEL_PASSWORD)
+    valid_tokens = {PRIVATE_SESSION_TOKEN, "authenticated", "1", "true"} | _get_valid_private_passwords()
+    return cookie_val in valid_tokens
 
 
 @app.get("/privado", response_class=HTMLResponse)
@@ -1582,7 +1620,7 @@ async def private_panel_login(request: Request):
         except Exception:
             password = ""
 
-    if password == PRIVATE_PANEL_PASSWORD:
+    if password and password in _get_valid_private_passwords():
         resp = RedirectResponse(url="/privado", status_code=303)
         resp.set_cookie(
             key=PRIVATE_SESSION_COOKIE,
@@ -1597,7 +1635,7 @@ async def private_panel_login(request: Request):
     context = {
         "request": request,
         "authenticated": False,
-        "error_msg": "Contraseña incorrecta. Verifica PRIVATE_PANEL_PASSWORD.",
+        "error_msg": "Contraseña incorrecta. Verifica tus credenciales de acceso privado.",
         "seller_id": MELI_SELLER_ID,
         "product_count": len(products),
         "catalog_source": CACHE_PRODUCTS["local"].get("source", "cache"),
