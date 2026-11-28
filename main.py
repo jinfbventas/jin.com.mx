@@ -1376,8 +1376,9 @@ async def read_root(request: Request):
         return HTMLResponse(content=html_content, status_code=200)
 
     return templates.TemplateResponse(
-        "index.html",
-        {
+        request=request,
+        name="index.html",
+        context={
             "request": request,
             "seller_id": MELI_SELLER_ID,
             "body_class": body_class,
@@ -1559,7 +1560,11 @@ async def private_panel_page(request: Request):
         "posted_fb_count": len(posted_ids),
     }
     if templates and os.path.exists(os.path.join(TEMPLATES_DIR, "privado.html")):
-        return templates.TemplateResponse("privado.html", context)
+        return templates.TemplateResponse(
+            request=request,
+            name="privado.html",
+            context=context
+        )
     return HTMLResponse(content="Panel privado disponible en templates/privado.html", status_code=200)
 
 
@@ -1601,7 +1606,12 @@ async def private_panel_login(request: Request):
         "posted_fb_count": len(load_posted_fb_items()),
     }
     if templates and os.path.exists(os.path.join(TEMPLATES_DIR, "privado.html")):
-        return templates.TemplateResponse("privado.html", context, status_code=401)
+        return templates.TemplateResponse(
+            request=request,
+            name="privado.html",
+            context=context,
+            status_code=401
+        )
     return JSONResponse(status_code=401, content={"status": "error", "message": "No autorizado"})
 
 
